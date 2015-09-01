@@ -1,0 +1,114 @@
+{
+  "sizeType":[
+    
+    {
+      "sizeDisplay":"6px",
+      "sizeName":"6"
+      
+    },
+    {
+      "sizeDisplay":"7px",
+      "sizeName":"7"
+      
+    },
+    {
+      "sizeDisplay":"8px",
+      "sizeName":"8"
+      
+    },
+    {
+      "sizeDisplay":"9px",
+      "sizeName":"9"
+      
+    },
+    {
+      "sizeDisplay":"10px",
+      "sizeName":"10"
+      
+    },
+    {
+      "sizeDisplay":"11px",
+      "sizeName":"11"
+      
+    },
+    {
+      "sizeDisplay":"12px",
+      "sizeName":"12"
+      
+    },
+    {
+      "sizeDisplay":"13px",
+      "sizeName":"13"
+      
+    },
+    {
+      "sizeDisplay":"14px",
+      "sizeName":"14"
+      
+    },
+    {
+      "sizeDisplay":"15px",
+      "sizeName":"15"
+      
+    },
+    {
+      "sizeDisplay":"16px",
+      "sizeName":"16"
+      
+    },
+    {
+      "sizeDisplay":"17px",
+      "sizeName":"17"
+      
+    },
+    {
+      "sizeDisplay":"18px",
+      "sizeName":"18"
+      
+    },
+    {
+      "sizeDisplay":"19px",
+      "sizeName":"19"
+      
+    },
+    {
+      "sizeDisplay":"20px",
+      "sizeName":"20"
+      
+    },
+    {
+      "sizeDisplay":"21px",
+      "sizeName":"21"
+      
+    },
+    {
+      "sizeDisplay":"22px",
+      "sizeName":"22"
+      
+    },
+    {
+      "sizeDisplay":"23px",
+      "sizeName":"23"
+      
+    },
+    {
+      "sizeDisplay":"24px",
+      "sizeName":"24"
+      
+    },
+    {
+      "sizeDisplay":"25px",
+      "sizeName":"25"
+      
+    },
+    {
+      "sizeDisplay":"26px",
+      "sizeName":"26"
+      
+    }
+    
+    ]
+}
+  
+  
+  

@@ -1,0 +1,58 @@
+{
+  "view": [
+
+    {
+    "name":"DEFAULT",
+    "imagename":"detail_view_logo.png",
+    "itemid":12
+    },
+    {
+      "name":"LIST",
+      "imagename":"list_view_logo.png",
+      "itemid":11
+    },
+     {
+      "name":"TILES",
+      "imagename":"grid_view_logo.png",
+      "itemid":13
+    },
+     {
+      "name":"SHUFFLE",
+      "imagename":"pintrest_view_logo.png",
+      "itemid":14
+    }
+  ],
+  "sort": [
+     {
+      "name":"ALPHABET",
+      "imagename":"alphabet_sort_view.png",
+      "itemid":21
+    },
+     {
+      "name":"COLORS",
+      "imagename":"color_sort_view.png",
+      "itemid":22
+    },
+     {
+      "name":"CREATED TIME",
+      "imagename":"modifiedtime_sort_view.png",
+      "itemid":23
+    },
+     {
+      "name":"MODIFIED TIME",
+      "imagename":"createdtime_sort_view.png",
+      "itemid":24
+    },
+    {
+      "name":"REMINDER TIME",
+      "imagename":"sortReminder.png",
+      "itemid":25
+    },
+    {
+      "name":"TIME BOMB",
+      "imagename":"sortBomb.png",
+      "itemid":26
+    }
+  ]
+  
+}

@@ -7,8 +7,28 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <FacebookSDK/FacebookSDK.h>
 
-@interface ViewController : UIViewController
+
+@interface ViewController : UIViewController<UITextFieldDelegate>
+
+
+//text fields
+
+@property (strong, nonatomic) IBOutlet UITextField *firstName;
+@property (strong, nonatomic) IBOutlet UITextField *lastName;
+@property (strong, nonatomic) IBOutlet UITextField *email;
+@property (strong, nonatomic) IBOutlet UITextField *password;
+@property (strong, nonatomic) IBOutlet UITextField *confirmPassword;
+
+
+//Buttons
+
+- (IBAction)signUp:(id)sender;
+- (IBAction)signIn:(id)sender;
+
+- (IBAction)facebookButton:(id)sender;
+- (IBAction)gmailButton:(id)sender;
 
 
 @end

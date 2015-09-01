@@ -1,0 +1,84 @@
+{
+  "fontType":[
+    
+    {
+      "displayname":"Arial",
+      "fontName":"arial"
+      
+    },
+    {
+      "displayname":"Times new roman",
+      "fontName":"times new roman"
+      
+    },
+    {
+      "displayname":"Helvetica",
+      "fontName":"helvetica"
+      
+    },
+    {
+      "displayname":"Monotype corsiva",
+      "fontName":"monotype corsiva"
+      
+    },
+    {
+      "displayname":"Edwardian",
+      "fontName":"edwardian"
+      
+    },
+    {
+      "displayname":"Mongolian baiti",
+      "fontName":"mongolian baiti"
+      
+    },
+    {
+      "displayname":"Sakkal majalla",
+      "fontName":"sakkal majalla"
+      
+    },
+    {
+      "displayname":"DOSIS BOOK",
+      "fontName":"DOSIS BOOK"
+      
+    },
+    {
+      "displayname":"DANCING SCRIPT",
+      "fontName":"DANCING SCRIPT"
+      
+    },
+    {
+      "displayname":"Eras medium ITC",
+      "fontName":"eras medium ITC"
+      
+    },
+    {
+      "displayname":"CINZEL DECORATIVE",
+      "fontName":"CINZEL DECORATIVE"
+      
+    },
+    {
+      "displayname":"UNCTION",
+      "fontName":"UNCTION"
+      
+    },
+    {
+      "displayname":"LINDEN HILL",
+      "fontName":"LINDEN HILL"
+      
+    },
+    {
+      "displayname":"PACIFICO",
+      "fontName":"PACIFICO"
+      
+    },
+    {
+      "displayname":"WINDSONG",
+      "fontName":"WINDSONG"
+      
+    }
+    
+    ]
+}
+  
+  
+  
