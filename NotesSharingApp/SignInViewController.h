@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import <FacebookSDK/FacebookSDK.h>
+#import <GoogleSignIn/GoogleSignIn.h>
 
-@interface SignInViewController : UIViewController<UITextFieldDelegate>
+@interface SignInViewController : UIViewController<UITextFieldDelegate,GIDSignInUIDelegate>
 
 //Text fields
 
@@ -23,5 +24,10 @@
 
 - (IBAction)facebookButton:(id)sender;
 - (IBAction)gmailButton:(id)sender;
+
+
+
+//gmail
+@property(weak, nonatomic) IBOutlet GIDSignInButton *signInButton;
 
 @end

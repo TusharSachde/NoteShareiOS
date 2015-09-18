@@ -52,9 +52,9 @@
 -(void)btnCancelClick:(id)sender
 {
     
-    if ([_delegate respondsToSelector:@selector(dismissFolderView: WithTag:)])
+    if ([_delegate respondsToSelector:@selector(dismissFolderView: itemTitle:)])
     {
-        [_delegate dismissFolderView:CANCEL];
+        [_delegate dismissFolderView:CANCEL itemTitle:@""];
     }
     
     
@@ -62,9 +62,9 @@
 -(void)btnOkClick:(id)sender
 {
     
-    if ([_delegate respondsToSelector:@selector(dismissFolderView: WithTag:)])
+    if ([_delegate respondsToSelector:@selector(dismissFolderView:itemTitle:)])
     {
-        [_delegate dismissFolderView:OK];
+        [_delegate dismissFolderView:OK_BUTTON itemTitle:(_stringAlertTitle.length>0?_stringAlertTitle:@"")];
     }
 }
 

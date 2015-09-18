@@ -14,6 +14,8 @@ bool isPauseButton;
 
 - (void)awakeFromNib {
     // Initialization code
+    _playButton.hidden=NO;
+    _pauseButton.hidden=YES;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -22,7 +24,11 @@ bool isPauseButton;
     // Configure the view for the selected state
 }
 - (IBAction)pauseTapped:(id)sender
+
 {
+    
+    _playButton.hidden=NO;
+    _pauseButton.hidden=YES;
     
         if ([_delegate respondsToSelector:@selector(didPlaycontrolTapped:isPlay:isPaused:inView:)])
         {
@@ -32,6 +38,10 @@ bool isPauseButton;
 }
 - (IBAction)playTapped:(id)sender
 {
+    
+    _playButton.hidden=YES;
+    _pauseButton.hidden=NO;
+    
     if ([_delegate respondsToSelector:@selector(didPlaycontrolTapped:isPlay:isPaused:inView:)])
     {
         [_delegate didPlaycontrolTapped:_noteitemList isPlay:YES isPaused:NO inView:self];

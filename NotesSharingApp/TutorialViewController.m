@@ -19,8 +19,7 @@
 NSArray *imageNames;
 
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad{
     [super viewDidLoad];
     
     // Load images

@@ -189,260 +189,252 @@
 
 #pragma fonts for noteshare
 
-//16
+////16
 #define SMCFONT_ArialMTRegular                  @"ArialMT"
-#define SMCFONT_ArialBoldMT                  @"Arial-BoldMT"
-#define SMCFONT_ArialItalicMT                  @"Arial-ItalicMT"
-
-
-
-
-
-//2
-#define SMCFONT_TimesNewRomanPSMTRegular             @"TimesNewRomanPSMT"
-#define SMCFONT_TimesNewRomanPSBoldMT                @"TimesNewRomanPS-BoldMT"
-#define SMCFONT_TimesNewRomanPSItalicMT              @"TimesNewRomanPS-ItalicMT"
-
-
-
-
-//8
-#define SMCFONT_HelveticaNeueRegular                  @"HelveticaNeue"
-#define SMCFONT_HelveticaNeueBold                  @"HelveticaNeue-Bold"
-#define SMCFONT_HelveticaNeueItalic                  @"HelveticaNeue-Italic"
-
-
-
-
-
-#define SMCFONT_MonotypeCorsivaRegular                  @"MonotypeCorsiva"
-
-
-
-
-#define SMCFONT_EdwardianScriptITCRegular                  @"EdwardianScriptITC"
-
-
-
-
-#define SMCFONT_MongolianBaitiRegular                  @"MongolianBaiti"
-
-
-
-
-#define SMCFONT_SakkalMajallaRegular                  @"SakkalMajalla"
-
-
-
-
-#define SMCFONT_DosisBold                  @"Dosis-Bold"
-
-
-
-
-
-
-#define SMCFONT_DancingScriptRegular                  @"DancingScript"
-
-
-
-
-#define SMCFONT_ErasITCMediumRegular                  @"ErasITC-Medium"
-
-
-
-#define SMCFONT_CinzelDecorativeRegular                  @"CinzelDecorative-Regular"
-
-
-
-
-#define SMCFONT_junctionRegular                 @"junctionregular"
-
-
-
-#define SMCFONT_LindenHillRegular                 @"LindenHill-Regular"
-
-
-
-
-#define SMCFONT_PacificoRegular                 @"Pacifico-Regular"
-
-
-
-#define SMCFONT_WINDSONGRegular                 @"WINDSONG"
-
-
-
-
-
-
-
-#pragma others noteshare
-
-#define SMCFONT_DevanagariSangamMN                  @"DevanagariSangamMN"
-#define SMCFONT_DevanagariSangamMNBold              @"DevanagariSangamMN-Bold"
-
-
-//1
-#define SMCFONT_AvenirNextRegular                 @"AvenirNext-Regular"
-#define SMCFONT_AvenirNextBold                    @"AvenirNext-Bold"
-#define SMCFONT_AvenirNextItalic                  @"AvenirNext-Italic"
-
-#define SMCFONT_KohinoorDevanagariRegular           @"KohinoorDevanagari-Light"
-
-//3
-#define SMCFONT_GillSansReular                  @"GillSans"
-#define SMCFONT_GillSansBold                 @"GillSans-Bold"
-#define SMCFONT_GillSansItalic                  @"GillSans-Italic"
-
-
-#define SMCFONT_KailasaRegular                  @"Kailasa"
-#define SMCFONT_KailasaBold                 @"Kailasa-Bold"
-
-
-#define SMCFONT_BradleyHandITCTTBold                  @"BradleyHandITCTT-Bold"
-
-
-#define SMCFONT_SavoyeLetPlainRegular                  @"SavoyeLetPlain"
-
-
-#define SMCFONT_DancingScriptRegular                 @"DancingScript"
-
-
-//4
-#define SMCFONT_TrebuchetMSRegular                  @"TrebuchetMS"
-#define SMCFONT_TrebuchetMSBold                  @"TrebuchetMS-Bold"
-#define SMCFONT_TrebuchetMSItalic                 @"TrebuchetMS-Italic"
-
-
-//5
-#define SMCFONT_BaskervilleRegular                 @"Baskerville"
-#define SMCFONT_BaskervilleBold                  @"Baskerville-Bold"
-#define SMCFONT_BaskervilleItalic                  @"Baskerville-Italic"
-
-
-//6
-#define SMCFONT_BodoniSvtyTwoITCTTBookRegular                  @"BodoniSvtyTwoITCTT-Book"
-#define SMCFONT_BodoniSvtyTwoITCTTBold                 @"BodoniSvtyTwoITCTT-Bold"
-#define SMCFONT_BodoniSvtyTwoITCTTBookIta                 @"BodoniSvtyTwoITCTT-BookIta"
-
-
-#define SMCFONT_HoeflerTextRegular                 @"HoeflerText-Regular"
-#define SMCFONT_HoeflerTextItalic                  @"HoeflerText-Italic"
-
-
-//7
-#define SMCFONT_OptimaRegular                  @"Optima-Regular"
-#define SMCFONT_OptimaBold                 @"Optima-Bold"
-#define SMCFONT_OptimaItalic                 @"Optima-Italic"
-
-
-
-#define SMCFONT_PartyLetPlainRegular                  @"PartyLetPlain"
-
-
-#define SMCFONT_BanglaSangamMNRegular                  @"BanglaSangamMN"
-#define SMCFONT_BanglaSangamMNBold                  @"BanglaSangamMN-Bold"
-
-
-//9
-#define SMCFONT_SuperclarendonRegular                  @"Superclarendon-Regular"
-#define SMCFONT_SuperclarendonBold                  @"Superclarendon-Bold"
-#define SMCFONT_SuperclarendonItalic                  @"Superclarendon-Italic"
-
-
-
-//10
-#define SMCFONT_IowanOldStyleRomanRegular                  @"IowanOldStyle-Roman"
-#define SMCFONT_IowanOldStyleBold                  @"IowanOldStyle-Bold"
-#define SMCFONT_IowanOldStyleItalic                 @"IowanOldStyle-Italic"
-
-
-
-//11
-#define SMCFONT_CochinRegular                  @"Cochin"
-#define SMCFONT_CochinBold                 @"Cochin-Bold"
-#define SMCFONT_CochinItalic                  @"Cochin-Italic"
-
-
-//12
-#define SMCFONT_EuphemiaUCASRegular                  @"EuphemiaUCAS"
-#define SMCFONT_EuphemiaUCASBold                  @"EuphemiaUCAS-Bold"
-#define SMCFONT_EuphemiaUCASItalic                 @"EuphemiaUCAS-Italic"
-
-
-#define SMCFONT_AcademyEngravedLetPlainRegular                 @"AcademyEngravedLetPlain"
-
-#define SMCFONT_HelveticaRegular                  @"Helvetica"
-#define SMCFONT_HelveticaBold                  @"Helvetica-Bold"
-
-
-#define SMCFONT_AmericanTypewriterRegular                  @"AmericanTypewriter"
-#define SMCFONT_AmericanTypewriterBold                  @"AmericanTypewriter-Bold"
-
-
-//13
-#define SMCFONT_DidotRegular                  @"Didot"
-#define SMCFONT_DidotBold                  @"Didot-Bold"
-#define SMCFONT_DidotItalic                  @"Didot-Italic"
-
-
-
-//14
-#define SMCFONT_CourierNewPSMTregular                  @"CourierNewPSMT"
-#define SMCFONT_CourierNewPSBoldMT                  @"CourierNewPS-BoldMT"
-#define SMCFONT_CourierNewPSItalicMT                  @"CourierNewPS-ItalicMT"
-
-
-
-//15
-#define SMCFONT_AvenirNextCondensedRegular                  @"AvenirNextCondensed-Regular"
-#define SMCFONT_AvenirNextCondensedBold                  @"AvenirNextCondensed-Bold"
-#define SMCFONT_AvenirNextCondensedItalic                @"AvenirNextCondensed-Italic"
-
-
-#define SMCFONT_DamascusRegular                 @"Damascus"
-#define SMCFONT_DamascusBold                  @"DamascusBold"
-
-
-
-
-#define SMCFONT_OriyaSangamMNRegular                  @"OriyaSangamMN"
-#define SMCFONT_OriyaSangamMNBold                  @"OriyaSangamMN-Bold"
-
-
-
-//17
-#define SMCFONT_Georgiaregular                  @"Georgia"
-#define SMCFONT_GeorgiaBold                  @"Georgia-Bold"
-#define SMCFONT_GeorgiaItalic                  @"Georgia-Italic"
-
-
-
-//18
-#define SMCFONT_VerdanaRegular                 @"Verdana"
-#define SMCFONT_VerdanaBold                  @"Verdana-Bold"
-#define SMCFONT_VerdanaItalic                  @"Verdana-Italic"
-
-
-//19
-#define SMCFONT_MarionRegular                  @"Marion-Regular"
-#define SMCFONT_MarionBold                  @"Marion-Bold"
-#define SMCFONT_MarionItalic                 @"Marion-Italic"
-
-//20
-#define SMCFONT_MenloRegular                  @"Menlo-Regular"
-#define SMCFONT_MenloBold                 @"Menlo-Bold"
-#define SMCFONT_MenloItalic                  @"Menlo-Italic"
-
-
-
-
-
-
-
-
-
+//#define SMCFONT_ArialBoldMT                  @"Arial-BoldMT"
+//#define SMCFONT_ArialItalicMT                  @"Arial-ItalicMT"
+//
+//
+//
+//
+//
+////2
+//#define SMCFONT_TimesNewRomanPSMTRegular             @"TimesNewRomanPSMT"
+//#define SMCFONT_TimesNewRomanPSBoldMT                @"TimesNewRomanPS-BoldMT"
+//#define SMCFONT_TimesNewRomanPSItalicMT              @"TimesNewRomanPS-ItalicMT"
+//
+//
+//
+//
+////8
+//#define SMCFONT_HelveticaNeueRegular                  @"HelveticaNeue"
+//#define SMCFONT_HelveticaNeueBold                  @"HelveticaNeue-Bold"
+//#define SMCFONT_HelveticaNeueItalic                  @"HelveticaNeue-Italic"
+//
+//
+//
+//
+//
+//#define SMCFONT_MonotypeCorsivaRegular                  @"MonotypeCorsiva"
+//
+//
+//
+//
+//#define SMCFONT_EdwardianScriptITCRegular                  @"EdwardianScriptITC"
+//
+//
+//
+//
+//#define SMCFONT_MongolianBaitiRegular                  @"MongolianBaiti"
+//
+//
+//
+//
+//#define SMCFONT_SakkalMajallaRegular                  @"SakkalMajalla"
+//
+//
+//
+//
+//#define SMCFONT_DosisBold                  @"Dosis-Bold"
+//
+//
+//
+//
+//
+//
+//#define SMCFONT_DancingScriptRegular                  @"DancingScript"
+//
+//
+//
+//
+//#define SMCFONT_ErasITCMediumRegular                  @"ErasITC-Medium"
+//
+//
+//
+//#define SMCFONT_CinzelDecorativeRegular                  @"CinzelDecorative-Regular"
+//
+//
+//
+//
+//#define SMCFONT_junctionRegular                 @"junctionregular"
+//
+//
+//
+//#define SMCFONT_LindenHillRegular                 @"LindenHill-Regular"
+//
+//
+//
+//
+//#define SMCFONT_PacificoRegular                 @"Pacifico-Regular"
+//
+//
+//
+//#define SMCFONT_WINDSONGRegular                 @"WINDSONG"
+//
+//
+//
+//
+//
+//
+//
+//#pragma others noteshare
+//
+//#define SMCFONT_DevanagariSangamMN                  @"DevanagariSangamMN"
+//#define SMCFONT_DevanagariSangamMNBold              @"DevanagariSangamMN-Bold"
+//
+//
+////1
+//#define SMCFONT_AvenirNextRegular                 @"AvenirNext-Regular"
+//#define SMCFONT_AvenirNextBold                    @"AvenirNext-Bold"
+//#define SMCFONT_AvenirNextItalic                  @"AvenirNext-Italic"
+//
+//#define SMCFONT_KohinoorDevanagariRegular           @"KohinoorDevanagari-Light"
+//
+////3
+//#define SMCFONT_GillSansReular                  @"GillSans"
+//#define SMCFONT_GillSansBold                 @"GillSans-Bold"
+//#define SMCFONT_GillSansItalic                  @"GillSans-Italic"
+//
+//
+//#define SMCFONT_KailasaRegular                  @"Kailasa"
+//#define SMCFONT_KailasaBold                 @"Kailasa-Bold"
+//
+//
+//#define SMCFONT_BradleyHandITCTTBold                  @"BradleyHandITCTT-Bold"
+//
+//
+//#define SMCFONT_SavoyeLetPlainRegular                  @"SavoyeLetPlain"
+//
+//
+//#define SMCFONT_DancingScriptRegular                 @"DancingScript"
+//
+//
+////4
+//#define SMCFONT_TrebuchetMSRegular                  @"TrebuchetMS"
+//#define SMCFONT_TrebuchetMSBold                  @"TrebuchetMS-Bold"
+//#define SMCFONT_TrebuchetMSItalic                 @"TrebuchetMS-Italic"
+//
+//
+////5
+//#define SMCFONT_BaskervilleRegular                 @"Baskerville"
+//#define SMCFONT_BaskervilleBold                  @"Baskerville-Bold"
+//#define SMCFONT_BaskervilleItalic                  @"Baskerville-Italic"
+//
+//
+////6
+//#define SMCFONT_BodoniSvtyTwoITCTTBookRegular                  @"BodoniSvtyTwoITCTT-Book"
+//#define SMCFONT_BodoniSvtyTwoITCTTBold                 @"BodoniSvtyTwoITCTT-Bold"
+//#define SMCFONT_BodoniSvtyTwoITCTTBookIta                 @"BodoniSvtyTwoITCTT-BookIta"
+//
+//
+//#define SMCFONT_HoeflerTextRegular                 @"HoeflerText-Regular"
+//#define SMCFONT_HoeflerTextItalic                  @"HoeflerText-Italic"
+//
+//
+////7
+//#define SMCFONT_OptimaRegular                  @"Optima-Regular"
+//#define SMCFONT_OptimaBold                 @"Optima-Bold"
+//#define SMCFONT_OptimaItalic                 @"Optima-Italic"
+//
+//
+//
+//#define SMCFONT_PartyLetPlainRegular                  @"PartyLetPlain"
+//
+//
+//#define SMCFONT_BanglaSangamMNRegular                  @"BanglaSangamMN"
+//#define SMCFONT_BanglaSangamMNBold                  @"BanglaSangamMN-Bold"
+//
+//
+////9
+//#define SMCFONT_SuperclarendonRegular                  @"Superclarendon-Regular"
+//#define SMCFONT_SuperclarendonBold                  @"Superclarendon-Bold"
+//#define SMCFONT_SuperclarendonItalic                  @"Superclarendon-Italic"
+//
+//
+//
+////10
+//#define SMCFONT_IowanOldStyleRomanRegular                  @"IowanOldStyle-Roman"
+//#define SMCFONT_IowanOldStyleBold                  @"IowanOldStyle-Bold"
+//#define SMCFONT_IowanOldStyleItalic                 @"IowanOldStyle-Italic"
+//
+//
+//
+////11
+//#define SMCFONT_CochinRegular                  @"Cochin"
+//#define SMCFONT_CochinBold                 @"Cochin-Bold"
+//#define SMCFONT_CochinItalic                  @"Cochin-Italic"
+//
+//
+////12
+//#define SMCFONT_EuphemiaUCASRegular                  @"EuphemiaUCAS"
+//#define SMCFONT_EuphemiaUCASBold                  @"EuphemiaUCAS-Bold"
+//#define SMCFONT_EuphemiaUCASItalic                 @"EuphemiaUCAS-Italic"
+//
+//
+//#define SMCFONT_AcademyEngravedLetPlainRegular                 @"AcademyEngravedLetPlain"
+//
+//#define SMCFONT_HelveticaRegular                  @"Helvetica"
+//#define SMCFONT_HelveticaBold                  @"Helvetica-Bold"
+//
+//
+//#define SMCFONT_AmericanTypewriterRegular                  @"AmericanTypewriter"
+//#define SMCFONT_AmericanTypewriterBold                  @"AmericanTypewriter-Bold"
+//
+//
+////13
+//#define SMCFONT_DidotRegular                  @"Didot"
+//#define SMCFONT_DidotBold                  @"Didot-Bold"
+//#define SMCFONT_DidotItalic                  @"Didot-Italic"
+//
+//
+//
+////14
+//#define SMCFONT_CourierNewPSMTregular                  @"CourierNewPSMT"
+//#define SMCFONT_CourierNewPSBoldMT                  @"CourierNewPS-BoldMT"
+//#define SMCFONT_CourierNewPSItalicMT                  @"CourierNewPS-ItalicMT"
+//
+//
+//
+////15
+//#define SMCFONT_AvenirNextCondensedRegular                  @"AvenirNextCondensed-Regular"
+//#define SMCFONT_AvenirNextCondensedBold                  @"AvenirNextCondensed-Bold"
+//#define SMCFONT_AvenirNextCondensedItalic                @"AvenirNextCondensed-Italic"
+//
+//
+//#define SMCFONT_DamascusRegular                 @"Damascus"
+//#define SMCFONT_DamascusBold                  @"DamascusBold"
+//
+//
+//
+//
+//#define SMCFONT_OriyaSangamMNRegular                  @"OriyaSangamMN"
+//#define SMCFONT_OriyaSangamMNBold                  @"OriyaSangamMN-Bold"
+//
+//
+//
+////17
+//#define SMCFONT_Georgiaregular                  @"Georgia"
+//#define SMCFONT_GeorgiaBold                  @"Georgia-Bold"
+//#define SMCFONT_GeorgiaItalic                  @"Georgia-Italic"
+//
+//
+//
+////18
+//#define SMCFONT_VerdanaRegular                 @"Verdana"
+//#define SMCFONT_VerdanaBold                  @"Verdana-Bold"
+//#define SMCFONT_VerdanaItalic                  @"Verdana-Italic"
+//
+//
+////19
+//#define SMCFONT_MarionRegular                  @"Marion-Regular"
+//#define SMCFONT_MarionBold                  @"Marion-Bold"
+//#define SMCFONT_MarionItalic                 @"Marion-Italic"
+//
+////20
+//#define SMCFONT_MenloRegular                  @"Menlo-Regular"
+//#define SMCFONT_MenloBold                 @"Menlo-Bold"
+//#define SMCFONT_MenloItalic                  @"Menlo-Italic"
+//
 
 
 @interface SMCThemesSupport : NSObject

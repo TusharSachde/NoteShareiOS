@@ -117,11 +117,11 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     self.tapGestureRecognizer.delegate             = self;
     [self.cellScrollView addGestureRecognizer:self.tapGestureRecognizer];
 
-    self.longPressGestureRecognizer = [[SWLongPressGestureRecognizer alloc] initWithTarget:self action:@selector(scrollViewPressed:)];
-    self.longPressGestureRecognizer.cancelsTouchesInView = NO;
-    self.longPressGestureRecognizer.minimumPressDuration = kLongPressMinimumDuration;
-    self.longPressGestureRecognizer.delegate = self;
-    [self.cellScrollView addGestureRecognizer:self.longPressGestureRecognizer];
+//    self.longPressGestureRecognizer = [[SWLongPressGestureRecognizer alloc] initWithTarget:self action:@selector(scrollViewPressed:)];
+//    self.longPressGestureRecognizer.cancelsTouchesInView = NO;
+//    self.longPressGestureRecognizer.minimumPressDuration = kLongPressMinimumDuration;
+//    self.longPressGestureRecognizer.delegate = self;
+//    [self.cellScrollView addGestureRecognizer:self.longPressGestureRecognizer];
 
     // Create the left and right utility button views, as well as vanilla UIViews in which to embed them.  We can manipulate the latter in order to effect clipping according to scroll position.
     // Such an approach is necessary in order for the utility views to sit on top to get taps, as well as allow the backgroundColor (and private UITableViewCellBackgroundView) to work properly.
@@ -470,11 +470,24 @@ static NSString * const kTableViewPanState = @"state";
 - (void)rightUtilityButtonHandler:(id)sender
 {
     SWUtilityButtonTapGestureRecognizer *utilityButtonTapGestureRecognizer = (SWUtilityButtonTapGestureRecognizer *)sender;
-    NSUInteger utilityButtonIndex = utilityButtonTapGestureRecognizer.buttonIndex;
-    if ([self.delegate respondsToSelector:@selector(swipeableTableViewCell:didTriggerRightUtilityButtonWithIndex:)])
+      id viewtapped= utilityButtonTapGestureRecognizer.view;
+    if ([viewtapped isKindOfClass:[UIButton class]])
     {
-        [self.delegate swipeableTableViewCell:self didTriggerRightUtilityButtonWithIndex:utilityButtonIndex];
+        
+        NSInteger cellindexSelected=((UIButton*)viewtapped).tag-100;
+        if (cellindexSelected==-100)
+        {
+            cellindexSelected=0;
+        }
+        
+        NSUInteger utilityButtonIndex = utilityButtonTapGestureRecognizer.buttonIndex;
+        if ([self.delegate respondsToSelector:@selector(swipeableTableViewCell:didTriggerRightUtilityButtonWithIndex:withCellIndex:)])
+        {
+            [self.delegate swipeableTableViewCell:self didTriggerRightUtilityButtonWithIndex:utilityButtonIndex withCellIndex:cellindexSelected];
+        }
     }
+    
+    
 }
 
 - (void)leftUtilityButtonHandler:(id)sender

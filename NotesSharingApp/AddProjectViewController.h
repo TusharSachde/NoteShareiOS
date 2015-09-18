@@ -13,6 +13,7 @@
 #import "customAlertBoxViewController.h"
 
 #import "OptionsSlidePopUpView.h"
+#import "DBManager.h"
 
 
 typedef enum : NSUInteger {
@@ -27,15 +28,18 @@ typedef enum : NSUInteger {
 {
     
     
-    
 }
+
 @property(nonatomic,strong) UIImage *noteimage;
 @property(nonatomic,assign)NOTETYPE notetype;
 @property(nonatomic,strong)NSURL *audioPlayPath;
+@property(nonatomic,strong)NSString *imagePath;
+@property(nonatomic,strong)NSString *noteElementID;
 @property(nonatomic,strong)NSString *strAudioPlayPath;
 @property(nonatomic,strong)NSString *strAudioTotalTime;
-@property(nonatomic,strong)NSAttributedString *textString;
-
+@property(nonatomic,strong)NSString *textString;
+@property(nonatomic,assign)BOOL isEdited;
+@property(nonatomic,assign)NSInteger positionIn;
 @end
 
 @interface AddProjectViewController : UIViewController<UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UITableViewDataSource,UITableViewDelegate,UIGestureRecognizerDelegate,AVAudioRecorderDelegate, AVAudioPlayerDelegate,UITextViewDelegate,UITextFieldDelegate>
@@ -59,6 +63,7 @@ typedef enum : NSUInteger {
 }
 
 @property (strong, nonatomic)  OptionsSlidePopUpView *optionsSlidePopupView;
+@property (strong, nonatomic)  DBNoteItems *dbnotelistItem;
 
 //buttons
 - (IBAction)cameraButton:(id)sender;
@@ -86,22 +91,15 @@ typedef enum : NSUInteger {
 
 //views
 @property (strong, nonatomic) IBOutlet UIView *defaultView;
-
 @property (strong, nonatomic) IBOutlet UIView *textIconView;
-
 @property (strong, nonatomic) IBOutlet UIView *scribbleIconView;
 @property (strong, nonatomic) IBOutlet UIView *audioIconView;
-
 
 
 //contentViews
 @property (strong, nonatomic) IBOutlet UIView *scribleView;
 @property (strong, nonatomic) IBOutlet UIView *defaultTableView;
 
-
-
-
-//text outlets
 
 //textbuttons
 @property (strong, nonatomic) IBOutlet UIButton *back;
@@ -153,11 +151,9 @@ typedef enum : NSUInteger {
 @property (strong, nonatomic) IBOutlet UIButton *scribleOptionsBtn;
 - (IBAction)scribleOptionsBtn:(id)sender;
 
-//scrible outlets
-
+//scribleimg outlets
 @property (weak, nonatomic) IBOutlet UIImageView *mainImage;
 @property (weak, nonatomic) IBOutlet UIImageView *tempDrawImage;
-
 
 
 //audio outlets
@@ -197,9 +193,7 @@ typedef enum : NSUInteger {
 @property (weak, nonatomic) IBOutlet UISlider *currentTimeSlider;
 @property (strong, nonatomic) IBOutlet UIView *audioView;
 
-
 @property (strong, nonatomic) IBOutlet UIView *textViewOption;
-
 @property (strong, nonatomic) IBOutlet UILabel *recordTimeDisplay;
 
 
@@ -207,11 +201,11 @@ typedef enum : NSUInteger {
 //text options
 
 @property (strong, nonatomic) IBOutlet UITextView *textField;
-@property (strong, nonatomic) IBOutlet UILabel *textPreview;
--(IBAction)previewBtn:(id)sender;
-@property (strong,nonatomic)IBOutlet UIButton *previewBtn;
+//@property (strong, nonatomic) IBOutlet UILabel *textPreview;
+//-(IBAction)previewBtn:(id)sender;
+//@property (strong,nonatomic)IBOutlet UIButton *previewBtn;
 
-@property (strong, nonatomic) IBOutlet UIScrollView *scrollTextPreview;
+//@property (strong, nonatomic) IBOutlet UIScrollView *scrollTextPreview;
 
 
 //buttons

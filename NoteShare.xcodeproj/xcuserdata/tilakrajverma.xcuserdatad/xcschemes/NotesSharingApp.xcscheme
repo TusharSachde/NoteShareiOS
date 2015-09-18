@@ -57,9 +57,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "83C6FBD01B3411EB002E186B"
-            BuildableName = "NotesSharingApp.app"
-            BlueprintName = "NotesSharingApp"
-            ReferencedContainer = "container:NotesSharingApp.xcodeproj">
+            BuildableName = "NoteShare.app"
+            BlueprintName = "NoteShare"
+            ReferencedContainer = "container:NoteShare.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -77,9 +77,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "83C6FBD01B3411EB002E186B"
-            BuildableName = "NotesSharingApp.app"
-            BlueprintName = "NotesSharingApp"
-            ReferencedContainer = "container:NotesSharingApp.xcodeproj">
+            BuildableName = "NoteShare.app"
+            BlueprintName = "NoteShare"
+            ReferencedContainer = "container:NoteShare.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>

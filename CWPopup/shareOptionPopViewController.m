@@ -10,9 +10,20 @@
 #import "UIViewController+CWPopup.h"
 #import "sharePopupCell.h"
 
+
+@interface SharingOptions ()
+
+@end
+@implementation SharingOptions
+
+
+
+@end
+
+
 @interface shareOptionPopViewController ()
 @property (weak, nonatomic) IBOutlet UINavigationItem *lblAlertTitle;
-@property(nonatomic,strong)NSArray *arrShare;
+@property(nonatomic,strong)NSMutableArray  *arrShare;
 @property(nonatomic,strong)NSArray *arrShareIcon;
 @end
 
@@ -42,9 +53,36 @@
     // [self.view addSubview:toolbarBackground];
     //[self.view sendSubviewToBack:toolbarBackground];
     // set size
-    _arrShare=[[NSArray alloc]initWithObjects:@"NoteShare",@"Whatsapp",@"Email",@"SMS",@"Facebook Messanger", nil];
     
-    _arrShareIcon=[[NSArray alloc]initWithObjects:@"notes2NotesIcon.png",@"socialwhatsapp.png",@"emailNotesShareIcon.png",@"speechBubbleIcon.png",@"socialFB.png", nil];
+    NSString *strPath=[[NSBundle mainBundle] pathForResource:@"sharingOptions" ofType:@"txt"];
+    
+    NSData *dateJson=[NSData dataWithContentsOfFile:strPath];
+    
+    _arrShare =[[NSMutableArray alloc]init];
+    
+    if (dateJson)
+    {
+        id response=[NSJSONSerialization JSONObjectWithData:dateJson options:NSJSONReadingMutableContainers error:nil];
+        NSArray *arrData=[response valueForKey:@"sharingList"];
+        
+        for (NSDictionary *dict in arrData)
+        {
+            SharingOptions *options=[[SharingOptions alloc]init];
+            options.strId=[dict valueForKey:@"Id"];
+            options.strName=[dict valueForKey:@"name"];
+            options.strImageName=[dict valueForKey:@"imageName"];
+            
+            [_arrShare addObject:options];
+            
+        }
+        
+        
+    }
+
+    
+
+    
+    
     
     _lblAlertTitle.title=_stringAlertTitle;
 }
@@ -59,7 +97,7 @@
     
     if ([_delegate respondsToSelector:@selector(dismissSharePopAlert:)])
     {
-        [_delegate dismissSharePopAlert:CANCEL];
+        [_delegate dismissSharePopAlert:cancel];
     }
     
     
@@ -69,7 +107,7 @@
     
     if ([_delegate respondsToSelector:@selector(dismissSharePopAlert:)])
     {
-        [_delegate dismissSharePopAlert:OK];
+        [_delegate dismissSharePopAlert:done];
     }
 }
 
@@ -93,10 +131,10 @@
         cell = [[sharePopupCell alloc] init];
     }
     
-
-     cell.nameLbl.text = [_arrShare objectAtIndex:indexPath.row];
+    SharingOptions *options= [_arrShare objectAtIndex:indexPath.row];
+     cell.nameLbl.text =options.strName ;
    
-     cell.imageIcon.image=[UIImage imageNamed:[_arrShareIcon objectAtIndex:indexPath.row]];
+     cell.imageIcon.image=[UIImage imageNamed:options.strImageName];
     
     
     /*
@@ -115,6 +153,14 @@
     */
     return cell;
     
+}
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    SharingOptions *options= [_arrShare objectAtIndex:indexPath.row];
+    if ([_delegate respondsToSelector:@selector(dismissSharePopAlert:withSharingOption:)])
+    {
+        [_delegate dismissSharePopAlert:done withSharingOption:options];
+    }
 }
 
 

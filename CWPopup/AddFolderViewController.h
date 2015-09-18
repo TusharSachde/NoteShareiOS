@@ -10,16 +10,17 @@
 
 typedef enum : NSUInteger {
     textBtn,
-    OK,
+    OK_BUTTON,
     CANCEL,
     
 } CREATEFOLDER;
 
 
-@protocol PopUpViewDelegate <NSObject>
+@protocol PopUpViewDelegate1 <NSObject>
 
 //-(void)dismissViewWithTag:(NSInteger)selectedOption;
 -(void)dismissFolderView:(CREATEFOLDER)selectOption;
+-(void)dismissFolderView:(CREATEFOLDER)selectOption itemTitle:(NSString*)itemTitle;
 -(void)dismissFolderView:(CREATEFOLDER)selectOption   WithTag:(NSInteger)selectedOption;
 
 @end
@@ -35,6 +36,6 @@ typedef enum : NSUInteger {
 @property (strong, nonatomic) IBOutlet UITextField *addFolder;
 
 @property(nonatomic,strong)NSString *stringAlertTitle;
-@property(nonatomic,weak)id <PopUpViewDelegate> delegate;
+@property(nonatomic,weak)id <PopUpViewDelegate1> delegate;
 
 @end

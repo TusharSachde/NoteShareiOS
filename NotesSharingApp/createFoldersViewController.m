@@ -15,12 +15,10 @@
 #import "CHTCollectionViewWaterfallFooter.h"
 #import "NSArray+SIAdditions.h"
 #import "UIColor+SIAdditions.h"
-
 #import "customAlertBoxViewController.h"
 #import "UIViewController+CWPopup.h"
-
 #import "AddFolderViewController.h"
-
+#import "pushNoteInFolderViewController.h"
 
 #define CELL_COUNT 30
 #define CELL_IDENTIFIER @"WaterfallCell"
@@ -28,7 +26,10 @@
 #define FOOTER_IDENTIFIER @"WaterfallFooter"
 #import "SMCThemesSupport.h"
 
-@interface createFoldersViewController ()<SlidePopUpViewDelegate,PopUpViewDelegate>
+#import "DBManager.h"
+
+@interface createFoldersViewController ()<SlidePopUpViewDelegate,PopUpViewDelegate1,UIAlertViewDelegate>
+
 @property (nonatomic,assign) NSInteger temp;
 @property (nonatomic,assign) NSInteger pop;
 @property(nonatomic,assign)NSInteger selectedButton;
@@ -45,18 +46,54 @@
 @property (nonatomic,strong)NSMutableArray *arrNotes;
 
 @property (nonatomic,strong)NSArray *colorArr;
+@property (nonatomic,strong) NSMutableArray *rightUtilityButtons ;
+
+
+@property(nonatomic,strong)DBManager *dbmanager;
+@property(nonatomic,strong)NSArray *arrAll;
+@property(nonatomic,strong)NSArray *arrAll1;
 
 @property(nonatomic)NSInteger selectedIndexPath;
-
+@property(nonatomic,strong)NSIndexPath *indexPath1;
+@property(nonatomic,strong)NSString *MyCount;
+@property(nonatomic,strong)UILabel *count;
 
 @end
 
 @implementation createFoldersViewController
 
-NSIndexPath *indexPath1;
+@synthesize indexPath1,MyCount,count;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    _dbmanager=[[DBManager alloc]init];
+    
+    [_dbmanager createDbANdTableFolder];
+    
+#pragma mark-get allNote
+    _arrAll=[_dbmanager getRecordsFolder:[_dbmanager getDbFilePathFolder]];
+    
+    NSLog(@"%@",_arrAll);
+    
+    
+    
+#pragma mark-get all uptaedNote
+    
+    _arrAll1=[_dbmanager getRecordsFolder:[_dbmanager getDbFilePathFolder]];
+    
+    for (DBNoteItems *noteItems in _arrAll1)
+    {
+        NSLog(@"Updated values:{%@ \n  %@ \n %@ \n %@\n %@ \n}",noteItems.create_folder_Id,noteItems.folder_Title,noteItems.folder_Created_Time,noteItems.folder_Deleted,noteItems.folder_Modified_Time);
+        
+    }
+    
+    
+#pragma mark-DeleteNote
+    
+    // DBNoteItems *noteItems1 =arrAll1[0];
+    //[_dbManager deleteNote:[_dbManager getDbFilePath] withNoteItem:noteItems1];
+    
     
     
     _viewArr=[[NSMutableArray alloc]init];
@@ -91,7 +128,7 @@ NSIndexPath *indexPath1;
     _imgView.layer.borderWidth = 1.0f;
     _imgView.layer.borderColor = [[UIColor colorWithRed:(246/255.0) green:(65/255.0) blue:(79/255.0) alpha:1]CGColor];
     
-    _selectedButton=201;
+    _selectedButton=202;
     [_tbl reloadData];
     
     self.viewCollectionview.hidden=YES;
@@ -109,19 +146,10 @@ NSIndexPath *indexPath1;
     [self.view addSubview:_popup];
     
     
-    
-    //UIGesture Long Pressed Cell
-    UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc]
-                                          initWithTarget:self action:@selector(handleLongPress:)];
-    lpgr.minimumPressDuration = 1.0; //seconds
-    lpgr.delegate = self;
-    [self.tbl addGestureRecognizer:lpgr];
-    
     _selectedIndexPath=0;
     
     
 }
-
 
 -(UIStatusBarStyle)preferredStatusBarStyle{
     return UIStatusBarStyleLightContent;
@@ -134,8 +162,8 @@ NSIndexPath *indexPath1;
 
 -(void)getLeftBtn{
     
-    UIView *viewLeftnavBar=[[UIView alloc]initWithFrame:CGRectMake(0.0, 0.0,40.0, 40)];
-    viewLeftnavBar.backgroundColor=[UIColor clearColor];
+    UIView *viewLeftNavBar=[[UIView alloc]initWithFrame:CGRectMake(0.0, 0.0,40.0, 40)];
+    viewLeftNavBar.backgroundColor=[UIColor clearColor];
     
     UIButton *Btn=[[UIButton alloc]initWithFrame:CGRectMake(0.0, 5.0, 30, 30)];
     // Btn.backgroundColor = [UIColor yellowColor];
@@ -144,14 +172,14 @@ NSIndexPath *indexPath1;
     
     [Btn setBackgroundImage:[UIImage imageNamed:[NSString stringWithFormat:@"sidebarIcon40x40.png"]]  forState:UIControlStateNormal];
     [Btn addTarget:self action:@selector(sideBarBtn:) forControlEvents:UIControlEventTouchUpInside];
-    [viewLeftnavBar addSubview:Btn];
+    [viewLeftNavBar addSubview:Btn];
     
     UIImageView *Btn2=[[UIImageView alloc]initWithFrame:CGRectMake(40.0, 10.0, 90, 20)];
-    [Btn2 setImage:[UIImage imageNamed:[NSString stringWithFormat:@"noteshareNavBarTitle2.png"]]];
-    [viewLeftnavBar addSubview:Btn2];
+    [Btn2 setImage:[UIImage imageNamed:[NSString stringWithFormat:@"ns_logo.png"]]];
+    [viewLeftNavBar addSubview:Btn2];
     
     
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithCustomView:viewLeftnavBar];
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithCustomView:viewLeftNavBar];
     [self.navigationItem setLeftBarButtonItem:addButton];
     
 }
@@ -205,27 +233,27 @@ NSIndexPath *indexPath1;
     
 #pragma mark-Note list detail
     
-    NSString *strPath2=[[NSBundle mainBundle]pathForResource:@"notelist" ofType:@"txt"];
-    NSData *data2=[NSData dataWithContentsOfFile:strPath2];
+#pragma mark-Note list detail
     
-    id response2=[NSJSONSerialization JSONObjectWithData:data2 options:NSJSONReadingMutableContainers error:nil];
     
-    NSArray *arrNote=[response2 valueForKey:@"notes"];
-    
-    for (NSDictionary *dict in arrNote)
+    for (DBNoteItems *noteItem in _arrAll)
     {
+        
         SlideDataModel *model=[[SlideDataModel alloc]init];
-        model.cellName=[dict valueForKey:@"cellName"];
-        model.cellDetail=[dict valueForKey:@"cellDetail"];
-        model.cellId=[[dict valueForKey:@"cellId"] integerValue];
-        model.colours=[dict valueForKey:@"colours"];
-        model.modifiedtime=[dict valueForKey:@"modifiedtime"];
-        model.createdtime=[dict valueForKey:@"createdtime"];
-        model.timebomb=[dict valueForKey:@"timebomb"];
+        model.cellName=noteItem.folder_Title;
+        //        model.cellDetail=[dict valueForKey:@"cellDetail"];
+        model.cellId= noteItem.create_folder_Id.integerValue;
+        //        model.colours=[dict valueForKey:@"colours"];
+        model.modifiedtime=noteItem.folder_Modified_Time;
+        model.createdtime=noteItem.folder_Created_Time;
+        //        model.timebomb=[dict valueForKey:@"timebomb"];
+        
         
         [_arrNotes addObject:model];
     }
     
+   // MyCount=[NSString stringWithFormat:@"NOTES (%i)",(int)_arrNotes.count];
+    [_tbl reloadData];
     
 }
 
@@ -346,6 +374,32 @@ NSIndexPath *indexPath1;
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
+    _selectedIndexPath=indexPath.row;
+    DBNoteItems *items=[_arrAll si_objectOrNilAtIndex:indexPath.row];
+    
+   NSArray* arrData=[_dbmanager getAllRecordsWithFolderId:[_dbmanager getDbFilePath] where:items.create_folder_Id];
+    
+    
+    
+    [self performSegueWithIdentifier:@"folderPushNoteElement" sender:nil];
+
+    
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    id destinationVc=segue.destinationViewController;
+    
+    if ([destinationVc isKindOfClass:[pushNoteInFolderViewController class]]
+        )
+    {
+        DBNoteItems *noteItem=[_arrAll si_objectOrNilAtIndex:_selectedIndexPath];
+        NSLog(@"DBNOTEITEM = %@,%@",noteItem.folder_Title,noteItem.create_folder_Id);
+        
+        pushNoteInFolderViewController *addProjectViewController=(pushNoteInFolderViewController*)destinationVc;
+        [addProjectViewController setDbnoteID:noteItem];
+        
+    }
+    
     
 }
 
@@ -400,28 +454,89 @@ NSIndexPath *indexPath1;
 
 - (IBAction)addField:(id)sender {
     
-    /*
-    AddFolderViewController *samplePopupViewController = [[AddFolderViewController alloc] initWithNibName:@"AddFolderViewController" bundle:nil];
-    [samplePopupViewController setStringAlertTitle:@"ADD FOLDER NAME"];
-    samplePopupViewController.delegate=self;
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Folder title" delegate:self cancelButtonTitle:@"Continue" otherButtonTitles:@"Cancel",nil];
+    alert.delegate=self;
     
-    [self presentPopupViewController:samplePopupViewController animated:YES completion:^(void) {
-        NSLog(@"popup view presented");
-    }];
-     
-     */
+    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    UITextField * alertTextField = [alert textFieldAtIndex:0];
+    alertTextField.keyboardType = UIKeyboardTypeDefault;
+    alertTextField.placeholder = @"Folder title here";
+    [alert show];
 
-    
-   // NSMutableArray *arrNotes=[[NSMutableArray alloc]initWithArray:_arrNotes];
-    SlideDataModel *model=[[SlideDataModel alloc]init];
-    
-    model.cellName=@"folder name will add here ";
-    
-    
-    [_arrNotes addObject:model];
-    [_tbl reloadData];
-    
+}
 
+-(NSString*)date2str:(NSDate*)myNSDateInstance onlyDate:(BOOL)onlyDate{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    if (onlyDate) {
+        [formatter setDateFormat:@"yyyy-MM-dd"];
+    }else{
+        [formatter setDateFormat: @"yyyy-MM-dd HH:mm:ss z"];
+    }
+    
+    //Optionally for time zone conversions
+    [formatter setTimeZone:[NSTimeZone timeZoneWithName:@"GMT"]];
+    
+    NSString *stringFromDate = [formatter stringFromDate:myNSDateInstance];
+    return stringFromDate;
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    
+    
+    switch (buttonIndex)
+    {
+        case 0:
+        {
+            NSString *strCreateTime=[self date2str:[NSDate date] onlyDate:NO];
+            
+            NSString *strTitle=[alertView textFieldAtIndex:0].text;
+            NSLog(@"ADDED TITILE:%@",strTitle);
+            
+            
+#pragma mark-insert note
+            
+            int success= [_dbmanager insert:[_dbmanager getDbFilePathFolder] withName:strTitle folder_color:@"ffffff" folder_created_time:strCreateTime folder_modified_time:strCreateTime folder_time_bomb:0 folder_reminder_time:strCreateTime user_id:@"9234" note_id:@"" note_element:@"" server_key:@"" ];
+            
+            if (success==0)
+            {
+                NSLog(@"Folder created successfully");
+                
+                NSArray *arrItems=[_dbmanager getRecordsFolder:[_dbmanager getDbFilePathFolder] where:strTitle];
+                DBNoteItems *noteItems=[arrItems si_objectOrNilAtIndex:0];
+                
+                NSLog(@"{%@ \n  %@ \n %@\n}",noteItems.create_folder_Id,noteItems.folder_Title,noteItems.folder_Created_Time);
+                
+                
+                
+                for (DBNoteItems *noteItem in arrItems)
+                {
+                    
+                    SlideDataModel *model=[[SlideDataModel alloc]init];
+                    
+                    model.cellName=noteItem.folder_Title;
+                    //        model.cellDetail=[dict valueForKey:@"cellDetail"];
+                    model.cellId= noteItem.create_folder_Id.integerValue;
+                    //        model.colours=[dict valueForKey:@"colours"];
+                    model.modifiedtime=noteItem.folder_Modified_Time;
+                    model.createdtime=noteItem.folder_Created_Time;
+                    [_arrNotes addObject:model];
+                }
+                [_tbl  reloadData];
+            }
+            
+        }
+            break;
+        case 1:
+        {
+            NSLog(@"1");//no
+        }
+            break;
+            
+        default:
+            break;
+            
+}
 }
 
 - (IBAction)view:(id)sender {
@@ -438,6 +553,7 @@ NSIndexPath *indexPath1;
     [_popup setArrItems:[NSArray arrayWithArray:_viewArr]];
     
 }
+
 -(void)didItemClick:(SlideDataModel *)dataModel{
     
     switch (dataModel.itemId)
@@ -793,7 +909,9 @@ NSIndexPath *indexPath1;
             UIView *myBackView = [[UIView alloc] initWithFrame:cell.frame];
             myBackView.backgroundColor = [UIColor colorWithRed:(255/255.0) green:(119/255.0) blue:(121/255.0) alpha:0.5];
             cell.selectedBackgroundView = myBackView;
-            cell.nameOfFolder.text =model.cellName;//[self.cellName si_objectOrNilAtIndex:indexPath.row];
+            NSString *firstCapChar = [[model.cellName substringToIndex:1] capitalizedString];
+            NSString *cappedString = [model.cellName stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:firstCapChar];
+            cell.nameOfFolder.text = cappedString;//[self.cellName si_objectOrNilAtIndex:indexPath.row];
             cell.notesDesc.text =@"";// [self.cellDeatil objectAtIndex:indexPath.row];
             cell.timeStamp.text =@"";// [self.cellTimeDetail objectAtIndex:indexPath.row];
             cell.contentView.backgroundColor=[UIColor si_getColorWithHexString:model.colours];
@@ -825,7 +943,9 @@ NSIndexPath *indexPath1;
             
             
             cell.selectedBackgroundView = myBackView;
-            cell.nameOfFolder.text = model.cellName;//[self.cellName si_objectOrNilAtIndex:indexPath.row];
+            NSString *firstCapChar = [[model.cellName substringToIndex:1] capitalizedString];
+            NSString *cappedString = [model.cellName stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:firstCapChar];
+            cell.nameOfFolder.text = cappedString;//[self.cellName si_objectOrNilAtIndex:indexPath.row];
             cell.notesDesc.text = model.cellDetail;//[self.cellDeatil si_objectOrNilAtIndex:indexPath.row];
             cell.timeStamp.text = model.createdtime;//[self.cellTimeDetail si_objectOrNilAtIndex:indexPath.row];
             cell.contentView.backgroundColor=[UIColor si_getColorWithHexString:model.colours];
@@ -866,7 +986,9 @@ NSIndexPath *indexPath1;
                 SlideDataModel *model=[_arrNotes si_objectOrNilAtIndex:convertedIndex];
                 
                 cell.view1.hidden=NO;
-                cell.lblDetail1.text=model.cellName;//[_cellName si_objectOrNilAtIndex:convertedIndex];
+                NSString *firstCapChar = [[model.cellName substringToIndex:1] capitalizedString];
+                NSString *cappedString = [model.cellName stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:firstCapChar];
+                cell.lblDetail1.text = cappedString;
                 cell.lblTitle1.text=model.cellDetail;//[_cellDeatil si_objectOrNilAtIndex:convertedIndex];
                 cell.view1.backgroundColor=[UIColor si_getColorWithHexString:model.colours];
                 cell.timeLbl1.text=model.createdtime;
@@ -884,7 +1006,9 @@ NSIndexPath *indexPath1;
                 SlideDataModel *model=[_arrNotes si_objectOrNilAtIndex:convertedIndex+1];
                 
                 cell.view2.hidden=NO;
-                cell.lblDetail2.text=model.cellName;//[_cellName si_objectOrNilAtIndex:convertedIndex+1];
+                NSString *firstCapChar = [[model.cellName substringToIndex:1] capitalizedString];
+                NSString *cappedString = [model.cellName stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:firstCapChar];
+                cell.lblDetail2.text = cappedString;
                 
                 cell.lblTitle2.text=model.cellDetail;//[_cellDeatil si_objectOrNilAtIndex:convertedIndex+1];
                 cell.view2.backgroundColor=[UIColor si_getColorWithHexString:model.colours];
@@ -970,41 +1094,6 @@ NSIndexPath *indexPath1;
 
 - (IBAction)sideBar:(id)sender {
 }
-
--(void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer{
-    CGPoint p = [gestureRecognizer locationInView:self.tbl];
-    //CGPoint location = [gestureRecognizer locationInView:self.view];
-    
-    indexPath1 = [self.tbl indexPathForRowAtPoint:p];
-    
-    if (indexPath1 == nil)
-    {
-        NSLog(@"long press on table view but not on a row");
-    }
-    else if (gestureRecognizer.state == UIGestureRecognizerStateBegan)
-    {
-        
-        _selectedIndexPath=indexPath1.row;
-        
-      //  CGRect targetRectangle = CGRectMake(location.x,location.y,50,50);
-        
-        NSLog(@"Long Gesture pressed");
-        
-        customAlertBoxViewController *samplePopupViewController = [[customAlertBoxViewController alloc] initWithNibName:@"customAlertBoxViewController" bundle:nil];
-        [samplePopupViewController setStringAlertTitle:@"Select Color"];
-        samplePopupViewController.delegate=self;
-        
-        [self presentPopupViewController:samplePopupViewController animated:YES completion:^(void) {
-            NSLog(@"popup view presented");
-        }];
-        
-    }
-    else {
-        
-        // NSLog(@"gestureRecognizer.state = %d", gestureRecognizer.state);
-    }
-}
-
 
 
 @end

@@ -1,0 +1,29 @@
+{
+"sharingList": [
+{
+"name": "NoteShare",
+"Id": "100",
+"imageName": "notes2NotesIcon.png"
+},
+{
+"name": "Whatsapp",
+"Id": "101",
+"imageName": "socialwhatsapp.png"
+},
+{
+"name": "Email",
+"Id": "102",
+"imageName": "emailNotesShareIcon.png"
+},
+{
+"name": "SMS",
+"Id": "103",
+"imageName": "speechBubbleIcon.png"
+},
+{
+"name": "Facebook Messanger",
+"Id": "104",
+"imageName": "socialFB.png"
+}
+]
+}

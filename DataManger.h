@@ -21,4 +21,5 @@
 -(UserDetail*)tutorialMethod;
 -(void)tutorialMethodDetail:(UserDetail*)userdetail;
 
+
 @end

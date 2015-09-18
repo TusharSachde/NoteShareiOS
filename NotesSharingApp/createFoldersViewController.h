@@ -21,7 +21,7 @@
 
 
 
-@interface createFoldersViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UICollectionViewDataSource, CHTCollectionViewDelegateWaterfallLayout,UIGestureRecognizerDelegate,PopUpViewDelegate>
+@interface createFoldersViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UICollectionViewDataSource,UIGestureRecognizerDelegate, CHTCollectionViewDelegateWaterfallLayout,PopUpViewDelegate>
 
 //tbl
 @property (strong, nonatomic) IBOutlet UITableView *tbl;
@@ -55,8 +55,7 @@
 @property (strong, nonatomic) NSURL *videoURL;
 @property (strong, nonatomic) MPMoviePlayerController *videoController;
 
-//long press gesture
-@property (strong, nonatomic) IBOutlet UILongPressGestureRecognizer *handleLongPress;
+
 
 
 @end

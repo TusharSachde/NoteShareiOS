@@ -10,7 +10,7 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 
-@interface SignInViewController ()
+@interface SignInViewController ()<GIDSignInDelegate>
 
 @end
 
@@ -24,6 +24,13 @@
     
     self.userName.delegate=self;
     self.password.delegate=self;
+    
+    
+    //gplus
+    [GIDSignIn sharedInstance].shouldFetchBasicProfile = YES;
+    
+    [GIDSignIn sharedInstance].uiDelegate = self;
+    [GIDSignIn sharedInstance].delegate = self;
     
 }
 
@@ -89,6 +96,12 @@
 }
 
 - (IBAction)gmailButton:(id)sender {
+    
+    [GIDSignIn sharedInstance].shouldFetchBasicProfile = YES;
+    [GIDSignIn sharedInstance].uiDelegate = self;
+    [GIDSignIn sharedInstance].delegate = self;
+    [[GIDSignIn sharedInstance] signIn];
+    
 }
 
 #pragma hideKeyboard
@@ -104,5 +117,54 @@
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     [[self view] endEditing:YES];
 }
+
+
+
+#pragma gmail login
+
+- (void)signInWillDispatch:(GIDSignIn *)signIn error:(NSError *)error {
+    
+}
+
+// Present a view that prompts the user to sign in with Google
+- (void)signIn:(GIDSignIn *)signIn
+presentViewController:(UIViewController *)viewController
+{
+    [self presentViewController:viewController animated:YES completion:nil];
+}
+
+
+// Dismiss the "Sign in with Google" view
+- (void)signIn:(GIDSignIn *)signIn
+dismissViewController:(UIViewController *)viewController
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+}
+- (void)signIn:(GIDSignIn *)signIn
+didSignInForUser:(GIDGoogleUser *)user
+     withError:(NSError *)error
+{
+    
+//    _lblEmail.text=user.profile.email;
+//    _lblName.text=user.profile.name;
+//    _lblId.text=user.userID;
+//    NSURL *profUrl=[user.profile imageURLWithDimension:71];
+//    _imgProfile.image=[UIImage imageWithData:[NSData dataWithContentsOfURL:profUrl]];
+//    _imgProfile.layer.cornerRadius=_imgProfile.frame.size.height/2.0f;
+    
+}
+- (void)signIn:(GIDSignIn *)signIn
+didDisconnectWithUser:(GIDGoogleUser *)user
+     withError:(NSError *)error {
+    // Perform any operations when the user disconnects from app here.
+    // ...
+}
+- (IBAction)didTapSignOut:(id)sender
+{
+    [[GIDSignIn sharedInstance] signOut];
+}
+
+
 
 @end

@@ -23,7 +23,7 @@
 @interface FolderViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UICollectionViewDataSource, CHTCollectionViewDelegateWaterfallLayout,UIGestureRecognizerDelegate,UISearchBarDelegate,SWTableViewCellDelegate>
 
 
-@property (strong, nonatomic) IBOutlet UISearchBar *viewSearch;
+@property (strong, nonatomic) IBOutlet UITextField *viewSearch;
 
 //buttons
 - (IBAction)sort:(id)sender;
@@ -55,5 +55,8 @@
 @property (strong, nonatomic) NSURL *videoURL;
 @property (strong, nonatomic) MPMoviePlayerController *videoController;
 
+
+//long press gesture
+@property (strong, nonatomic) IBOutlet UILongPressGestureRecognizer *lpgr;
 
 @end

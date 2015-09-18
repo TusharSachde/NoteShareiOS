@@ -8,27 +8,30 @@
 #import "AddProjectViewController.h"
 #import "ImageCell.h"
 #import "audioCell.h"
-
 #import "brushAlertViewController.h"
-#import "customAlertBoxViewController.h"
 #import "UIViewController+CWPopup.h"
 #import "FontPopupViewController.h"
 #import "colorPaperPopupViewController.h"
 #import "UIColor+SIAdditions.h"
 #import "SWRevealViewController.h"
-
-
 #import "SMCThemesSupport.h"
-
+#import "DBManager.h"
+#import "NSArray+SIAdditions.h"
+#import "AssetsLibrary/AssetsLibrary.h"
+#import "NoteColorViewController.h"
+#import "textCell.h"
 
 #define isPause [UIImage imageNamed:@"recording_status.png"]//isRecording=yes
 #define isNotPaused [UIImage imageNamed:@"pause_audio.png"]//isRecording=no
+
+
 
 @implementation NoteListItem
 
 
 
 @end
+
 
 @interface AddProjectViewController ()<PopUpViewDelegate,OptionsSlidePopUpViewDelegate,audioCellDelegate>
 @property (nonatomic,strong)NSMutableArray *photoArr;
@@ -44,7 +47,7 @@
 @property (nonatomic,strong)NSMutableAttributedString *attFinalString;
 @property (nonatomic,strong)NSString *strFontValue;
 @property (nonatomic,strong)NSString *strSizeValue;
- @property (nonatomic,strong) UIFont *currentSelectedFont;
+@property (nonatomic,strong) UIFont *currentSelectedFont;
 
 @property (nonatomic,strong) NSURL *outputFileURL;
 @property (nonatomic,strong) NSMutableArray *arrayListOfRecordSound;
@@ -55,6 +58,10 @@
 @property(nonatomic,strong)audioCell *currentCell;
 @property(nonatomic,strong)NSURL *audio;
 
+@property(nonatomic,strong)textCell *currentTextCell;
+
+@property(nonatomic,strong)UIImageView *tempImageView;//to display page image
+
 
 -(void)addOrRemoveFontTraitWithName:(NSString *)traitName andValue:(uint32_t)traitValue;
 -(void)setParagraphAlignment:(NSTextAlignment)newAlignment;
@@ -62,14 +69,26 @@
 @property(nonatomic,assign) Boolean isItalic;
 @property(nonatomic,assign) Boolean isUnderline;
 @property(nonatomic,assign) Boolean isRecording;
-@property(nonatomic,assign) Boolean isPlayingPaused;
+@property(nonatomic,assign) BOOL isPlayingPaused;
 
 
 @property(nonatomic)NSInteger selectedIndexPath;
-
 @property(nonatomic,strong)NSString *totalTime;
 
+@property(nonatomic,strong)DBManager *dbManager;
+@property(nonatomic,strong)NSArray *arrAll1;
 
+@property(nonatomic,strong)NSMutableDictionary *dictAllnoteElement;
+@property(nonatomic,strong)DBNoteItems *updatedItems;
+
+@property(nonatomic,strong)NSURL *strigImgaeUrl;
+@property(nonatomic,strong)NSURL *strigScribleUrl;
+@property(nonatomic,strong)NSAttributedString *strtext;
+
+@property(nonatomic,strong)NSString *bgColor;
+@property(nonatomic,assign)BOOL isText;
+@property(nonatomic)NSInteger currentEditedIndexPath;
+@property(nonatomic,strong)NSString *editedTextString;
 @end
 
 
@@ -78,7 +97,7 @@
 @implementation AddProjectViewController
 
 
-float audioDurationSeconds;
+//float audioDurationSeconds;
 
 @synthesize stopButton, playButton, recordPauseButton;
 
@@ -91,15 +110,21 @@ UIView *viewBg;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    
+    _currentEditedIndexPath=-1;
+    _dbManager=[[DBManager alloc]init];
     _attFinalString = [[NSMutableAttributedString alloc] init];
     _arrNotes=[[NSMutableArray alloc]init];
+    
     _currentSelectedFont=SMCFONT(SMCFONT_ArialMTRegular, 22);//By default
     _strFontValue=@"arial";
     _strSizeValue=@"22";
     
     [self.tableview setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     
-    self.textField.delegate=self;
+    //    self.textField.delegate=self;
     
     red = 0.0/255.0;
     green = 0.0/255.0;
@@ -136,18 +161,158 @@ UIView *viewBg;
     
     [self getRecordingFileName ];
     
+    _dictAllnoteElement=[[NSMutableDictionary alloc]init];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     
+    [self updateInitiDictFormDb];
+    
+    
+}
+
+
+-(void)updateInitiDictFormDb{
+    
+    [_arrNotes removeAllObjects ];
+    
+    NSArray *arrItems=[_dbManager getRecordsWithNote_Id:[_dbManager getDbFilePath] where:_dbnotelistItem.note_Id];
+    
+    _updatedItems=[arrItems si_objectOrNilAtIndex:0];
+    
+    if ([_updatedItems.note_Color isEqualToString:@"(null)"]) {
+        _updatedItems.note_Color=@"#ffffff";
+    }
+    
+    if ([_updatedItems.note_Color containsString:@".png"]) {
+        NSLog(@"string contains .png");
+        [_tableview setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:_updatedItems.note_Color]]];
+    }
+    else {
+        
+        
+        _tableview.backgroundColor = [UIColor si_getColorWithHexString:_updatedItems.note_Color];
+    }
+    
+    
+    if ( _updatedItems.note_Element.length>0)
+    {
+        
+        NSData *data=[_updatedItems.note_Element dataUsingEncoding:NSUTF8StringEncoding];
+        NSDictionary *dict=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        
+        _dictAllnoteElement=[NSMutableDictionary  dictionaryWithDictionary:dict];
+        
+        NSArray *arrItems=[_dictAllnoteElement valueForKey:@"note_element"];
+        
+        for (NSDictionary* dictItem in arrItems)
+        {
+            
+            NoteListItem *items=[[NoteListItem alloc]init];
+            
+            
+            NSString *strnoteTyp=[dictItem valueForKey:@"note_type"];
+            
+            if ([strnoteTyp isEqualToString:@"IMAGE"])//look in return reponse
+            {
+                
+                NSString *strpath=[dictItem valueForKey:@"note_content"];
+                
+                ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+                [library assetForURL:[NSURL URLWithString:strpath] resultBlock:^(ALAsset *asset)
+                 {
+                     UIImage  *copyOfOriginalImage = [UIImage imageWithCGImage:[[asset defaultRepresentation] fullScreenImage] scale:1.0 orientation:UIImageOrientationUp];
+                     
+                     items.noteElementID=[dictItem valueForKey:@"note_postion"];
+                     items.notetype=IMAGES;
+                     items.noteimage=copyOfOriginalImage;
+                     
+                     [_arrNotes addObject:items];
+                     
+                     [self getSortedData];
+                     
+                     [_tableview reloadData];
+                     
+                 }
+                        failureBlock:^(NSError *error)
+                 {
+                     // error handling
+                     NSLog(@"failure-----");
+                 }];
+            }
+            
+
+            
+            else   if ([strnoteTyp isEqualToString:@"AUDIO"])//audio
+            {
+                
+                
+                NSString *strpath=[dictItem valueForKey:@"note_content"];
+                
+                NSString* theFileName = [strpath lastPathComponent];
+                
+                items.notetype=AUDIO;
+                items.strAudioPlayPath=strpath;
+                items.noteElementID=[dictItem valueForKey:@"note_postion"];
+                items.strAudioTotalTime=[dictItem valueForKey:@"media_total_time"];
+                items.audioPlayPath=[self getAudioUrlFormFileName:theFileName];
+                [_arrNotes addObject:items];
+                [self getSortedData];
+                [_tableview reloadData];
+                
+                
+            }
+            
+            else  if ([strnoteTyp isEqualToString:@"TEXT"])//text
+                
+            {
+                items.noteElementID=[dictItem valueForKey:@"note_postion"];
+                
+                items.notetype=TEXT;
+                // NSAttributedString *strtext=[dictItem valueForKey:@"note_content"];
+                items.textString=[dictItem valueForKey:@"note_content"];
+                [self getSortedData];
+                [_arrNotes addObject:items];
+                
+            }
+            
+        }
+        
+        
+    }
+    
+    NSLog(@"%@",[UIColor si_getColorWithHexString:_updatedItems.note_Color]);
+}
+
+ 
+-(void)getSortedData{
+    
+    NSSortDescriptor *sortDescriptor;
+    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"noteElementID.intValue"
+                                                 ascending:YES];
+    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
+    NSArray *sortedArray;
+    sortedArray = [_arrNotes sortedArrayUsingDescriptors:sortDescriptors];
+    
+    _arrNotes=[NSMutableArray arrayWithArray:sortedArray];
+    
+    
+    
+}
+
+-(NSURL*)getAudioUrlFormFileName:(NSString*)fileName{
+    // NSError *err;
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *path = [documentsDirectory stringByAppendingPathComponent:fileName];
+    NSURL *url = [[NSURL alloc] initFileURLWithPath: path];
+    
+    return url;
     
 }
 
 -(void)hideSheet{
     
     [UIView animateWithDuration:0.2 animations:^{
-        
-        
         _optionsPopup.frame=CGRectMake(0.0,self.view.frame.size.height,self.view.frame.size.width,300);
         _optionsPopup.backgroundColor=[UIColor clearColor];
         [_optionsPopup layoutSubviews];
@@ -197,20 +362,14 @@ UIView *viewBg;
     [viewLeftnavBar addSubview:BtnColor];
     
     
-    
-    
-    
     UIButton *Btn2=[[UIButton alloc]initWithFrame:CGRectMake(68.0, 5.0, 28, 28)];
     [Btn2 setBackgroundImage:[UIImage imageNamed:[NSString stringWithFormat:@"save.png"]]  forState:UIControlStateNormal];
     [Btn2 addTarget:self action:@selector(backBtnPress:) forControlEvents:UIControlEventTouchUpInside];
     [viewLeftnavBar addSubview:Btn2];
     
     
-    
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithCustomView:viewLeftnavBar];
     [self.navigationItem setRightBarButtonItem:addButton];
-    
-    
     
 }
 
@@ -240,8 +399,6 @@ UIView *viewBg;
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithCustomView:viewLeftnavBar];
     [self.navigationItem setRightBarButtonItem:addButton];
     
-    
-    
 }
 
 -(void)audioNavBar{
@@ -249,7 +406,6 @@ UIView *viewBg;
     
     UIView *viewLeftnavBar=[[UIView alloc]initWithFrame:CGRectMake(0.0, 0.0,100, 44)];
     viewLeftnavBar.backgroundColor=[UIColor clearColor];
-    
     
     
     UIButton *Btn=[[UIButton alloc]initWithFrame:CGRectMake(32.0, 5.0, 30, 30)];
@@ -279,13 +435,10 @@ UIView *viewBg;
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithCustomView:viewLeftnavBar];
     [self.navigationItem setRightBarButtonItem:addButton];
     
-    
-    
 }
 
 -(IBAction)backBtnPress:(id)sender{
-
-
+    
 }
 
 -(IBAction)shareButtonNavBar:(id)sender{
@@ -310,7 +463,7 @@ UIView *viewBg;
     
     
     UIButton *BtnColor=[[UIButton alloc]initWithFrame:CGRectMake(32.0, 5.0, 30, 30)];
-    [BtnColor setBackgroundImage:[UIImage imageNamed:[NSString stringWithFormat:@"save.png"]]  forState:UIControlStateNormal];
+    [BtnColor setBackgroundImage:[UIImage imageNamed:[NSString stringWithFormat:@"color_sort_view.png"]]  forState:UIControlStateNormal];
     [BtnColor addTarget:self action:@selector(TextButtonNavBar:) forControlEvents:UIControlEventTouchUpInside];
     [viewLeftnavBar addSubview:BtnColor];
     
@@ -342,22 +495,31 @@ UIView *viewBg;
 }
 
 -(IBAction)TextbackBtnPress:(id)sender{
-
-    NoteListItem *items=[[NoteListItem alloc]init];
-    items.notetype=TEXT;
-    items.textString=_textPreview.attributedText;
-    [_arrNotes addObject:items];
-    
-    [self performSelector: @selector(back:) withObject:self afterDelay: 0.0];
-    [_tableview reloadData];
     
     
-
+    //
+    if (_isText)
+    {
+        NoteListItem *currentItem=[_arrNotes si_objectOrNilAtIndex:_currentEditedIndexPath];
+        if (currentItem&&_editedTextString.length>0)
+        {
+            currentItem.textString=_editedTextString;
+            currentItem.isEdited=NO;
+            
+            
+            [self upadteNote:_arrNotes];
+        }
+        [_tableview reloadData];
+    }
+    
+    [self.view endEditing:YES];
+    
+    
+    
+    
 }
 
 -(IBAction)ScribblebackBtnPress:(id)sender{
-    
-   
     
     _temp=100;
     _actionSheet1 = [[UIActionSheet alloc] initWithTitle:@""
@@ -393,6 +555,7 @@ UIView *viewBg;
 - (IBAction)cameraButton:(id)sender {
     
     _temp=200;
+    _isText=NO;
     
     _actionSheet2 = [[UIActionSheet alloc] initWithTitle:@"Options" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Camera", @"Gallery", nil];
     _actionSheet2.actionSheetStyle = UIActionSheetStyleDefault;
@@ -417,7 +580,7 @@ UIView *viewBg;
         
         switch (buttonIndex) {
             case 0:
-                //camera clicked
+            //camera clicked
             {
                 UIImagePickerController *picker = [[UIImagePickerController alloc] init];
                 picker.delegate = self;
@@ -427,10 +590,10 @@ UIView *viewBg;
                 
                 [self presentViewController:picker animated:YES completion:NULL];
             }
-                
-                break;
+            
+            break;
             case 1:
-                //gallery clicked
+            //gallery clicked
             {
                 UIImagePickerController *picker = [[UIImagePickerController alloc] init];
                 picker.delegate = self;
@@ -439,10 +602,10 @@ UIView *viewBg;
                 
                 [self presentViewController:picker animated:YES completion:NULL];
             }
-                break;
+            break;
             case 2:
-                //Cancel Button Clicked"
-                break;
+            //Cancel Button Clicked"
+            break;
         }
         
     }
@@ -453,49 +616,56 @@ UIView *viewBg;
         switch (buttonIndex)
         
         {
-                
+            
             case 0:
-                
-                
-                UIGraphicsBeginImageContextWithOptions(self.mainImage.bounds.size, NO, 0.0);
-                [self.mainImage.image drawInRect:CGRectMake(0,0, self.mainImage.frame.size.width, self.mainImage.frame.size.height)];
-                //[self.mainImage.image drawInRect:CGRectMake(0, 0, cell.addImage.frame.size.width, cell.addImage.frame.size.height)];
-                
-                
-                UIImage *SaveImage = UIGraphicsGetImageFromCurrentImageContext();
-                
-                
-                UIGraphicsEndImageContext();
-                
-               
-                
-                NoteListItem *items=[[NoteListItem alloc]init];
-                items.notetype=IMAGES;
-                items.noteimage=SaveImage;
-                
-                [_arrNotes addObject:items];
-                
-                
-                
-                _defaultView.hidden=NO;
-                _defaultTableView.hidden=NO;
-                _textIconView.hidden=YES;
-                _scribbleIconView.hidden=YES;
-                self.mainImage.hidden=YES;
-                self.tempDrawImage.hidden=YES;
-                _audioIconView.hidden=YES;
-                _textViewOption.hidden=YES;
-                
-                //hide content view
-                
-                _scribleView.hidden=YES;
-                
-                [self getSaveBtn];
-                
-                
-                [_tableview reloadData];
-                
-                break;
+            
+            
+            UIGraphicsBeginImageContextWithOptions(self.mainImage.bounds.size, NO, 0.0);
+            [self.mainImage.image drawInRect:CGRectMake(0,0, self.mainImage.frame.size.width, self.mainImage.frame.size.height)];
+            
+            UIImage *SaveImage = UIGraphicsGetImageFromCurrentImageContext();
+            
+            
+            UIImage *viewImage = SaveImage;
+            ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+            // Request to save the image to camera roll
+            [library writeImageToSavedPhotosAlbum:[viewImage CGImage] orientation:(ALAssetOrientation)[viewImage imageOrientation] completionBlock:^(NSURL *assetURL, NSError *error){
+                if (error) {
+                    NSLog(@"error");
+                } else {
+                    
+                    
+                    NoteListItem *items=[[NoteListItem alloc]init];
+                    items.notetype=IMAGES;
+                    items.noteimage=SaveImage;
+                    items.imagePath=assetURL.description;
+                    
+                    [_arrNotes addObject:items];
+                    [self upadteNote:_arrNotes];
+                    [_tableview reloadData];
+                    
+                }
+            }];
+            
+            
+            UIGraphicsEndImageContext();
+            
+            _defaultView.hidden=NO;
+            _defaultTableView.hidden=NO;
+            _textIconView.hidden=YES;
+            _scribbleIconView.hidden=YES;
+            self.mainImage.hidden=YES;
+            self.tempDrawImage.hidden=YES;
+            _audioIconView.hidden=YES;
+            _textViewOption.hidden=YES;
+            
+            //hide content view
+            
+            _scribleView.hidden=YES;
+            
+            [self getSaveBtn];
+            
+            break;
         }
         
         
@@ -513,18 +683,289 @@ UIView *viewBg;
     UIImageView *myImageView = [[UIImageView alloc] initWithFrame:cropRect];
     [myImageView setImage:[UIImage imageWithCGImage:croppedImage]];
     myImageView.contentMode=UIViewContentModeScaleAspectFit;
+    
     self.photoImage = image;
     
-    [picker dismissViewControllerAnimated:YES completion:nil];
     
-    NoteListItem *items=[[NoteListItem alloc]init];
-    items.notetype=IMAGES;
-    items.noteimage=self.photoImage;
-    [_arrNotes addObject:items];
+    [picker dismissViewControllerAnimated:YES completion:^{
+        
+        
+        
+    }];
     
-    [self.tableview reloadData];
+    if (picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
+        
+        
+        
+        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+        [library writeImageToSavedPhotosAlbum:image.CGImage
+                                     metadata:[info objectForKey:UIImagePickerControllerMediaMetadata]
+                              completionBlock:^(NSURL *assetURL, NSError *error) {
+                                  
+                                  if (error) {
+                                      NSLog(@"error");
+                                  } else {
+                                      
+                                      NoteListItem *items=[[NoteListItem alloc]init];
+                                      //items.noteElementID=@"";
+                                      items.notetype=IMAGES;
+                                      items.noteimage=self.photoImage;
+                                      items.imagePath=assetURL.description;
+                                      [_arrNotes addObject:items];
+                                      [self upadteNote:_arrNotes];
+                                      [self.tableview reloadData];
+                                  }
+                                  
+                              }];
+        
+        
+    }
+    
+    else if (picker.sourceType==UIImagePickerControllerSourceTypePhotoLibrary)
+    {
+        
+        NoteListItem *items=[[NoteListItem alloc]init];
+        items.noteElementID=@"";
+        items.notetype=IMAGES;
+        items.noteimage=self.photoImage;
+        items.imagePath=[info valueForKey:UIImagePickerControllerReferenceURL];
+        [_arrNotes addObject:items];
+        [self upadteNote:_arrNotes];
+        [self.tableview reloadData];
+        
+        
+    }
     
 }
+
+
+-(void)setDbnotelistItem:(DBNoteItems*)dbnotelistItem{
+    
+    _dbnotelistItem=dbnotelistItem;
+}
+
+-(NSString*)date2str:(NSDate*)myNSDateInstance onlyDate:(BOOL)onlyDate{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    if (onlyDate) {
+        [formatter setDateFormat:@"yyyy-MM-dd"];
+    }else{
+        [formatter setDateFormat: @"yyyy-MM-dd HH:mm:ss z"];
+    }
+    
+    //Optionally for time zone conversions
+    [formatter setTimeZone:[NSTimeZone timeZoneWithName:@"GMT"]];
+    
+    NSString *stringFromDate = [formatter stringFromDate:myNSDateInstance];
+    return stringFromDate;
+}
+
+
+-(void)upadteNote:(NSArray*)arrNotes{
+    
+    if ([_dictAllnoteElement valueForKey:@"note_element"]==nil)
+    {
+        [_dictAllnoteElement setObject:[[NSMutableArray alloc]init] forKey:@"note_element"];
+    }
+    
+    
+    NSMutableArray *arrData= [_dictAllnoteElement valueForKey:@"note_element"];
+    
+    int i=(int)arrNotes.count;
+    NoteListItem *item = [arrNotes lastObject];
+    
+   
+    
+    
+    
+//    if (_isText)
+//    {
+//        
+//        i=(int)_currentEditedIndexPath;
+//        
+//        item=[arrNotes si_objectOrNilAtIndex:i];
+//        
+//        [dict setObject:[NSString stringWithFormat:@"%i",i] forKey:@"note_postion"];
+//        
+//        _isText=NO;
+//        
+//        
+//    }
+//    else
+//    
+//    {
+    
+        
+//    }
+    
+    
+        {
+            NSMutableDictionary *dict=[NSMutableDictionary new];
+            [dict setObject:[NSString stringWithFormat:@"%i",i] forKey:@"note_postion"];
+            
+            switch (item.notetype)
+            {
+                case IMAGES:
+                {
+                    [dict setObject:@"IMAGE" forKey:@"note_type"];
+                    [dict setObject:[NSString stringWithFormat:@"%@",item.imagePath] forKey:@"note_content"];
+                }
+                    break;
+                case AUDIO:
+                {
+                    [dict setObject:@"AUDIO" forKey:@"note_type"];
+                    [dict setObject:[NSString stringWithFormat:@"%@",item.strAudioPlayPath] forKey:@"note_content"];
+                    [dict setObject:[NSString stringWithFormat:@"%@",item.strAudioTotalTime] forKey:@"media_total_time"];
+                    
+                }
+                    break;
+                case TEXT:
+                {
+                    
+                    //[dict setObject:[NSString stringWithFormat:@"%i",item.noteElementID.intValue] forKey:@"note_postion"];
+                    [dict setObject:@"TEXT" forKey:@"note_type"];
+                    [dict setObject:[NSString stringWithFormat:@"%@",item.textString] forKey:@"note_content"];
+                    
+                }
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            [arrData addObject:dict];
+        
+        }
+    
+  /*
+    switch (item.notetype)
+    {
+        case IMAGES:
+        {
+            [dict setObject:@"IMAGE" forKey:@"note_type"];
+            [dict setObject:[NSString stringWithFormat:@"%@",item.imagePath] forKey:@"note_content"];
+            [arrData addObject:dict];
+        }
+        break;
+        case AUDIO:
+        {
+            [dict setObject:@"AUDIO" forKey:@"note_type"];
+            [dict setObject:[NSString stringWithFormat:@"%@",item.strAudioPlayPath] forKey:@"note_content"];
+            [dict setObject:[NSString stringWithFormat:@"%@",item.strAudioTotalTime] forKey:@"media_total_time"];
+            [arrData addObject:dict];
+        }
+        break;
+        case TEXT:
+        {
+            
+            [dict setObject:[NSString stringWithFormat:@"%i",item.noteElementID.intValue] forKey:@"note_postion"];
+            [dict setObject:@"TEXT" forKey:@"note_type"];
+            [dict setObject:[NSString stringWithFormat:@"%@",item.textString] forKey:@"note_content"];
+            [arrData addObject:dict];
+            
+        }
+        break;
+        
+        default:
+        break;
+    }
+    
+   
+
+//    if (arrData.count<=0)
+//    {
+//        if (item.notetype==TEXT)
+//        {
+//            [dict setObject:[NSString stringWithFormat:@"%i",item.noteElementID.intValue] forKey:@"note_postion"];
+//            [dict setObject:@"TEXT" forKey:@"note_type"];
+//            [dict setObject:[NSString stringWithFormat:@"%@",item.textString] forKey:@"note_content"];
+//            [arrData addObject:dict];
+//            
+//        }
+//    }
+    
+//    for (NSMutableDictionary *dict in arrData)
+//    {
+//         NSString *stringType=[dict valueForKey:@"note_type"];
+//        
+//        if ([stringType isEqualToString:@"TEXT"])
+//        {
+//            if ([dict valueForKey:@"note_postion"]!=nil)
+//            {
+//                
+//                int position=[[dict valueForKey:@"note_postion"] intValue];
+//                
+//                
+//              
+//                
+//                if (position==item.noteElementID.intValue)
+//                {
+//                    [dict setObject:[NSString stringWithFormat:@"%i",item.noteElementID.intValue] forKey:@"note_postion"];
+//                    [dict setObject:@"TEXT" forKey:@"note_type"];
+//                    [dict setObject:[NSString stringWithFormat:@"%@",item.textString] forKey:@"note_content"];
+//                    
+//                }
+//                else
+//                {
+//                    [dict setObject:[NSString stringWithFormat:@"%i",item.noteElementID.intValue] forKey:@"note_postion"];
+//                    [dict setObject:@"TEXT" forKey:@"note_type"];
+//                    [dict setObject:[NSString stringWithFormat:@"%@",item.textString] forKey:@"note_content"];
+//                    [arrData addObject:dict];
+//                    
+//                }
+//                
+//            }
+//        }
+//        
+//    }
+    
+    */
+    
+    NSData  *data=[NSJSONSerialization dataWithJSONObject:_dictAllnoteElement options:NSJSONWritingPrettyPrinted error:nil];
+    NSString *srtin=[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+    NSLog(@"hello json string is:%@",srtin);
+    
+    
+    
+    NSString *modifiedTime=[self date2str:[NSDate date] onlyDate:NO];
+    _updatedItems.note_Element=srtin;
+    _updatedItems.note_Modified_Time=modifiedTime;
+    _updatedItems.note_Color=_bgColor.description;
+    
+    if ([_updatedItems.note_Color containsString:@".png"]) {
+        NSLog(@"string contains .png");
+        [_tableview setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:_updatedItems.note_Color]]];
+    } else {
+         _tableview.backgroundColor = [UIColor si_getColorWithHexString:_updatedItems.note_Color];
+    }
+   
+    [self updateinDb:_updatedItems];
+    
+}
+
+-(void)updateOnlyColor:(DBNoteItems*)notes{
+    
+    NSString *modifiedTime=[self date2str:[NSDate date] onlyDate:NO];
+    _updatedItems.note_Modified_Time=modifiedTime;
+    _updatedItems.note_Color=_bgColor.description;
+    
+    
+    if ([_updatedItems.note_Color containsString:@".png"]) {
+        NSLog(@"string contains .png");
+        [_tableview setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:_updatedItems.note_Color]]];
+    } else {
+        _tableview.backgroundColor = [UIColor si_getColorWithHexString:_updatedItems.note_Color];
+    }
+    [_dbManager UpdateNoteElements:[_dbManager getDbFilePath] withNoteItem:notes];
+    
+}
+
+
+-(void)updateinDb:(DBNoteItems*)notes{
+    
+    [_dbManager UpdateNoteElements:[_dbManager getDbFilePath] withNoteItem:notes];
+    
+}
+
 
 - (void)videoPlayBackDidFinish:(NSNotification *)notification {
     
@@ -542,14 +983,17 @@ UIView *viewBg;
     
 }
 
+
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     
     [picker dismissViewControllerAnimated:YES completion:NULL];
     
-    
 }
 
+
 - (IBAction)scribbleNotesButton:(id)sender {
+    
+      _isText=NO;
     
     [self scribbleNavBar];
     
@@ -599,29 +1043,36 @@ UIView *viewBg;
     _scribbleNotesButton.backgroundColor=[UIColor clearColor];
 }
 
-- (IBAction)textButton:(id)sender {
-
-    UITapGestureRecognizer *tapRec = [[UITapGestureRecognizer alloc]
-                                      initWithTarget:self action:@selector(tap:)];
-    [_textPreview addGestureRecognizer: tapRec];
+- (IBAction)textButton:(id)sender
+{
+    
+    _editedTextString=@"";
+    _isText=YES;
+    
+    NoteListItem *items=[[NoteListItem alloc]init];
+    items.notetype=TEXT;
+    items.isEdited=YES;
     
     
-    self.textField.layer.borderWidth = 1.0f;
-    self.textField.layer.borderColor = [[UIColor colorWithRed:(255/255) green:(90/255) blue:(96/255) alpha:1.0] CGColor];
+    [_arrNotes addObject:items];
+    // [self upadteNote:_arrNotes];
+    [_tableview reloadData];
     
-    _textField.text = @"Type Text Here...";
-    _textField.textColor = [UIColor lightGrayColor];
+    [_tableview scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:_arrNotes.count-1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES] ;
+    
+    
+    
     
     
     [self textNavBar];
-    _defaultView.hidden=YES;
-    _defaultTableView.hidden=YES;
+    _defaultView.hidden=NO;
+    _defaultTableView.hidden=NO;
     _textIconView.hidden=NO;
     _scribbleIconView.hidden=YES;
     self.mainImage.hidden=YES;
     self.tempDrawImage.hidden=YES;
     _audioIconView.hidden=YES;
-    _textViewOption.hidden=NO;
+    //_textViewOption.hidden=NO;
     //hide content view
     _scribleView.hidden=YES;
     
@@ -636,10 +1087,6 @@ UIView *viewBg;
     _isItalic=NO;
     _isUnderline=NO;
     
-}
-
--(void)tap:(UITapGestureRecognizer *)tapRec{
-    [_textPreview endEditing: YES];
 }
 
 #pragma mark - inside notes buttons
@@ -724,7 +1171,7 @@ UIView *viewBg;
 }
 
 -(IBAction)boldBtn:(id)sender{
-
+    
     _isItalic=NO;
     _isUnderline=NO;
     _isBold = !_isBold;
@@ -779,10 +1226,10 @@ UIView *viewBg;
 
 -(IBAction)underlineBtn:(id)sender{
     
-   
+    
     _isBold=NO;
     _isItalic=NO;
-   _isUnderline = !_isUnderline;
+    _isUnderline = !_isUnderline;
     
     if(_isUnderline){
         _back.backgroundColor=[UIColor clearColor];
@@ -804,576 +1251,35 @@ UIView *viewBg;
     }
 }
 
--(IBAction)previewBtn:(id)sender{
-    
-#pragma Font-arial
-    
-    if([_strFontValue.lowercaseString isEqualToString:@"arial"])
-    {
-        if (_isBold)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_ArialBoldMT, _strSizeValue.intValue);
-            
-        _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-                                        
-        }
-        
-        
-        else if (_isItalic)
-            {
-                _currentSelectedFont=SMCFONT(SMCFONT_ArialItalicMT, _strSizeValue.intValue);
-                
-                 _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-            }
-        
-        else if (_isUnderline)
-        {
-           _currentSelectedFont=SMCFONT(SMCFONT_ArialMTRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:YES];
-        }
-        else
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_ArialMTRegular, _strSizeValue.intValue);
-        
-        _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-    }
-    
-    #pragma Font-times new roman
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"times new roman"])
-    {
-        if (_isBold)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_TimesNewRomanPSBoldMT, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-            
-        }
-        
-        
-        else if (_isItalic)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_TimesNewRomanPSItalicMT, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-        else if (_isUnderline)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_TimesNewRomanPSMTRegular, _strSizeValue.intValue);
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:YES];
-        }
-        
-        else
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_TimesNewRomanPSMTRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-    }
-    
-    
-#pragma font-helvetica
-    
-    
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"helvetica"])
-    {
-        if (_isBold)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_HelveticaNeueBold, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-            
-        }
-        
-        
-        else if (_isItalic)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_HelveticaNeueRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-        
-        else if (_isUnderline)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_HelveticaNeueItalic, _strSizeValue.intValue);
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:YES];
-        }
-        else
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_HelveticaNeueItalic, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-    }
-
-    
-    
-    
-#pragma font-Monotype corsiva
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"monotype corsiva"])
-    {
-        if (_isBold)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_MonotypeCorsivaRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-            
-        }
-        
-        
-        else if (_isItalic)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_MonotypeCorsivaRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-        
-        else if (_isUnderline)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_MonotypeCorsivaRegular, _strSizeValue.intValue);
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:YES];
-        }
-        else
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_MonotypeCorsivaRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-    }
-
-    
-#pragma font-Edwardian
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"edwardian"])
-    {
-        if (_isBold)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_EdwardianScriptITCRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-            
-        }
-        
-        
-        else if (_isItalic)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_EdwardianScriptITCRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-        
-        else if (_isUnderline)
-        {
-             _currentSelectedFont=SMCFONT(SMCFONT_EdwardianScriptITCRegular, _strSizeValue.intValue);
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:YES];
-        }
-        else
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_EdwardianScriptITCRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-    }
-
-    
-#pragma font-Mongolian baiti
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"mongolian baiti"])
-    {
-        if (_isBold)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_MongolianBaitiRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-            
-        }
-        
-        
-        else if (_isItalic)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_MongolianBaitiRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-        
-        else if (_isUnderline)
-        {
-             _currentSelectedFont=SMCFONT(SMCFONT_MongolianBaitiRegular, _strSizeValue.intValue);
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:YES];
-        }
-        else
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_MongolianBaitiRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-    }
-
-    
-#pragma font-Sakkal majalla
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"sakkal majalla"])
-    {
-        if (_isBold)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_SakkalMajallaRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-            
-        }
-        
-        
-        else if (_isItalic)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_SakkalMajallaRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-        
-        else if (_isUnderline)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_SakkalMajallaRegular, _strSizeValue.intValue);
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:YES];
-        }
-        else
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_SakkalMajallaRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-    }
-
-    
-    
-#pragma font-DOSIS BOOK
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"dosis book"])
-    {
-        if (_isBold)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_DosisBold, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-            
-        }
-        
-        
-        else if (_isItalic)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_DosisBold, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-            
-        }
-        
-        else if (_isUnderline)
-        {
-            
-             _currentSelectedFont=SMCFONT(SMCFONT_DosisBold, _strSizeValue.intValue);
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:YES];
-        }
-        else
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_DosisBold, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-    }
-
-    
-    
-#pragma font-DANCING SCRIPT
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"dancing script"])
-    {
-        if (_isBold)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_DancingScriptRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-            
-        }
-        
-        
-        else if (_isItalic)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_DancingScriptRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-        
-        else if (_isUnderline)
-        {
-            
-            _currentSelectedFont=SMCFONT(SMCFONT_DancingScriptRegular, _strSizeValue.intValue);
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:YES];
-        }
-        else
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_DancingScriptRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-    }
-
-    
-#pragma font-Eras medium ITC
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"Eras medium itc"])
-    {
-        if (_isBold)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_ErasITCMediumRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-            
-        }
-        
-        
-        else if (_isItalic)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_ErasITCMediumRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-        
-        else if (_isUnderline)
-        {
-            
-            _currentSelectedFont=SMCFONT(SMCFONT_ErasITCMediumRegular, _strSizeValue.intValue);
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:YES];
-        }
-        else
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_ErasITCMediumRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-    }
-
-    
-#pragma font-CINZEL DECORATIVE
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"cinzel decorative"])
-    {
-        if (_isBold)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_CinzelDecorativeRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-            
-        }
-        
-        
-        else if (_isItalic)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_CinzelDecorativeRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-        
-        else if (_isUnderline)
-        {
-            
-            _currentSelectedFont=SMCFONT(SMCFONT_CinzelDecorativeRegular, _strSizeValue.intValue);
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:YES];
-        }
-        else
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_CinzelDecorativeRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-    }
-
-    
-#pragma font-UNCTION
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"unction"])
-    {
-        if (_isBold)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_junctionRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-            
-        }
-        
-        
-        else if (_isItalic)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_junctionRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-        
-        else if (_isUnderline)
-        {
-            
-            _currentSelectedFont=SMCFONT(SMCFONT_junctionRegular, _strSizeValue.intValue);
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:YES];
-        }
-        else
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_junctionRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-    }
-
-    
-    
-#pragma font-LINDEN HILL
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"linden hill"])
-    {
-        if (_isBold)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_LindenHillRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-            
-        }
-        
-        
-        else if (_isItalic)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_LindenHillRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-        
-        else if (_isUnderline)
-        {
-            
-             _currentSelectedFont=SMCFONT(SMCFONT_LindenHillRegular, _strSizeValue.intValue);
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:YES];
-        }
-        else
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_LindenHillRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-    }
-    
-    
-    
-    
-#pragma font-PACIFICO
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"pacifico"])
-    {
-        if (_isBold)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_PacificoRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-            
-        }
-        
-        
-        else if (_isItalic)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_PacificoRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-        else if (_isUnderline)
-        {
-            
-             _currentSelectedFont=SMCFONT(SMCFONT_PacificoRegular, _strSizeValue.intValue);
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:YES];
-        }
-        
-        else
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_PacificoRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-    }
-    
-    
-    
-    
-#pragma font-WINDSONG
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"windsong"])
-    {
-        if (_isBold)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_WINDSONGRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-            
-        }
-        
-        
-        else if (_isItalic)
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_WINDSONGRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-        else if (_isUnderline)
-        {
-            
-            _currentSelectedFont=SMCFONT(SMCFONT_WINDSONGRegular, _strSizeValue.intValue);
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:YES];
-        }
-        
-        
-        else
-        {
-            _currentSelectedFont=SMCFONT(SMCFONT_WINDSONGRegular, _strSizeValue.intValue);
-            
-            _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-        }
-    }
-    
-    
-    
-     else
-    {
-        _textPreview.attributedText=[self setHeaderTitle:@"" subTitle:[_textField text] textfont:_currentSelectedFont textColor:[UIColor blackColor] isUnderLine:NO];
-    }
-    
-   
-_textField.text=@"";
-
-}
 
 #pragma hideKeyboard
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range
  replacementText:(NSString *)text{
     
+    NSInteger currentEditTag=textView.tag;
+    _currentEditedIndexPath=currentEditTag;
+    
+    
+    _editedTextString=textView.text;
+    NSLog(@"_editedTextString:%@",_editedTextString);
     if ([text isEqualToString:@"\n"]) {
         
-        [textView resignFirstResponder];
-        [_textField resignFirstResponder];
-        [_textPreview resignFirstResponder];
+        //[textView setReturnKeyType:UIReturnKeyDone];
         
-        return NO;
+        
+        return YES;
     }
     
     return YES;
 }
 
-- (IBAction)tapToDismiss:(id)sender {
-    [_textField endEditing:YES];
-    [_textPreview endEditing:YES];
-}
-
--(BOOL) textFieldShouldReturn:(UITextField *)textField{
-    [textField resignFirstResponder];
-    [_textPreview resignFirstResponder];
-    return YES;
+-(BOOL) textFieldShouldReturn:(UITextField *)textView{
+    
+    
+    
+    
+    return NO;
 }
 
 -(IBAction)optionsTxtBtn:(id)sender{
@@ -1580,18 +1486,35 @@ _textField.text=@"";
 
 -(void)backgroundColor:(id)sender{
     
-    
     [self.tableview setBackgroundColor: [UIColor si_getColorWithHexString:((colorPaperPopupViewController*)sender).colorString]];
+    
+    _bgColor=((colorPaperPopupViewController*)sender).colorString;
+    
+    _updatedItems.note_Color=_bgColor;
+    
+    
+    [self updateOnlyColor:_updatedItems];
+    NSLog(@"BGCOLOR IS %%%%%%%%%%%% = %@",_bgColor);
     
 }
 
 -(void)backgroundPage:(id)sender{
     
     
-    UIImageView *tempImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:((colorPaperPopupViewController*)sender).pageString]];
-    [tempImageView setFrame:self.tableview.frame];
+    _tempImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:((colorPaperPopupViewController*)sender).pageString]];
+    [_tempImageView setFrame:self.tableview.frame];
     
-    self.tableview.backgroundView = tempImageView;
+    
+    self.tableview.backgroundView =_tempImageView;
+    
+    
+    _bgColor=((colorPaperPopupViewController*)sender).pageString;
+    
+    _updatedItems.note_Color=_bgColor;
+    
+    
+    [self updateOnlyColor:_updatedItems];
+    NSLog(@"BGCOLOR IS %%%%%%%%%%%% = %@",_bgColor);
     
     
 }
@@ -1615,13 +1538,13 @@ _textField.text=@"";
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    [_textPreview endEditing:YES];
+    //[_textPreview endEditing:YES];
     mouseSwiped = NO;
     UITouch *touch = [touches anyObject];
     lastPoint = [touch locationInView:self.view];
     
     [[self view] endEditing:YES];
-
+    
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -1669,7 +1592,7 @@ _textField.text=@"";
     self.mainImage.image = UIGraphicsGetImageFromCurrentImageContext();
     self.tempDrawImage.image = nil;
     UIGraphicsEndImageContext();
-
+    
 }
 
 - (IBAction)audioBkbtn:(id)sender {
@@ -1692,6 +1615,7 @@ _textField.text=@"";
 }
 
 - (IBAction)audioStrtBtn:(id)sender {
+      _isText=NO;
     
     [self visibleAudioView];
 }
@@ -1702,7 +1626,7 @@ _textField.text=@"";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
     
-        return _arrNotes.count;
+    return _arrNotes.count;
     
     
 }
@@ -1714,7 +1638,7 @@ _textField.text=@"";
     NoteListItem *item=[_arrNotes objectAtIndex:indexPath.row];
     
     
-    if (item.notetype==IMAGES)
+    if (item.notetype==IMAGES )
     {
         UITableViewCell *cellImage = [self.tableview dequeueReusableCellWithIdentifier:@"ImageCell"];
         
@@ -1727,8 +1651,6 @@ _textField.text=@"";
         if (cell == nil) {
             cell = [[ImageCell alloc] init];
         }
-        
-        
         
         
         UIImage *image=item.noteimage;
@@ -1751,22 +1673,19 @@ _textField.text=@"";
         
         cell.addImage.userInteractionEnabled = YES;
         
-        
-        
         return cell;
     }
+    
     else if (item.notetype==AUDIO)
     {
-    
-        UITableViewCell *cellImage = [self.tableview dequeueReusableCellWithIdentifier:@"audioCell"];
         
+        UITableViewCell *cellImage = [self.tableview dequeueReusableCellWithIdentifier:@"audioCell"];
         
         
         audioCell *cell=(audioCell*)cellImage;
         
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         if (cell == nil) {
             cell = [[audioCell alloc] init];
@@ -1776,53 +1695,70 @@ _textField.text=@"";
         _audio=item.audioPlayPath;
         cell.noteitemList=item;
         cell.delegate=self;
-       
         cell.audiocellView.layer.borderWidth = 1.0f;
         cell.audiocellView.layer.borderColor = [[UIColor colorWithRed:(255/255) green:(90/255) blue:(96/255) alpha:1.0] CGColor];
         
- 
         return cell;
-    
+        
     }
     
     else if (item.notetype==TEXT)
     {
-    
-    static NSString *CellIdentifier = @"cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
-    NoteListItem *items=[_arrNotes objectAtIndex:indexPath.row];
-    cell.textLabel.numberOfLines = 0;
-    cell.textLabel.attributedText=items.textString;
-    
-    return cell;
+        //static NSString *CellIdentifier = @"cell";
+        
+        UITableViewCell *celltext = [self.tableview dequeueReusableCellWithIdentifier:@"textCell"];
+        
+        
+        
+        textCell *cell=(textCell*)celltext;
+        if (!cell)
+        {
+            cell=[[textCell alloc]init];
+            //CGSize size=[self calculateSize:item.textString];
+            
+            //cell.textView.frame=CGRectMake(cell.textView.frame.origin.x, cell.textView.frame.origin.x, size.width, size.height);
+        }
+        
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
+        NoteListItem *items=[_arrNotes objectAtIndex:indexPath.row];
+        cell.textLabel.numberOfLines = 0;
+        cell.textView.hidden=YES;
+        cell.displayLabel.hidden=YES;
+        cell.displayLabel.font=[UIFont systemFontOfSize:16.0f];
+        cell.textView.font=[UIFont systemFontOfSize:16.0f];
+        if (items.isEdited)
+        {
+            cell.textView.text=items.textString;
+            cell.textView.hidden=NO;
+            
+        }else{
+            cell.displayLabel.hidden=NO;
+            cell.displayLabel.text=items.textString;
+        }
+        
+        
+        
+        cell.textView.tag=indexPath.row
+        ;
+        cell.textView.delegate=self;
+        cell.textView.backgroundColor=[UIColor clearColor];
+        cell.contentView.layer.borderColor=[UIColor colorWithWhite:0 alpha:0.4].CGColor;
+        cell.textView.layer.borderWidth=0.5f;
+        
+        
+        return cell;
+        
     }
     
-    return [[UITableViewCell alloc]init] ;
-    
+    return [[UITableViewCell alloc]init];
 }
 
-- (CGFloat)textViewHeightForRowAtIndexPath: (NSIndexPath*)indexPath {
+- (CGFloat)x: (NSIndexPath*)indexPath {
     
-    UITextView *calculationView = [_textViews objectForKey:indexPath];
-
-    CGFloat textViewWidth = calculationView.frame.size.width;
-    if (!calculationView.attributedText) {
-        // This will be needed on load, when the text view is not inited yet
-        
-        calculationView = [[UITextView alloc] init];
-        
-         NoteListItem *items=[_arrNotes objectAtIndex:indexPath.row];
-        
-        calculationView.attributedText=items.textString;// get the text from your datasource add attributes and insert here
-        
-        textViewWidth = 290.0; // Insert the width of your UITextViews or include calculations to set it accordingly
-        
-    }
-    
-    CGSize size = [calculationView sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
-    return size.height;
+    return 0;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -1833,51 +1769,93 @@ _textField.text=@"";
     
     if (item.notetype==TEXT)
     {
-        return [self textViewHeightForRowAtIndexPath:indexPath];
+        
+        if (!item.isEdited)
+        {
+            NoteListItem* calculationView = [_arrNotes objectAtIndex:indexPath.row];
+            
+            CGSize size=[self calculateSize:calculationView.textString];
+            
+            if (size.height<20)
+            {
+                return 44;
+            }
+            return size.height;
+            
+        }
+        return 200;
+        
     }
+    
+    
     else if (item.notetype==IMAGES)
     {
-    return 220;
+        return 568;
     }
+    
+    
     else if (item.notetype==AUDIO)
     {
         return 67;
     }
+    
+    
     else return 44;
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
-    [_arrNotes removeObjectAtIndex:indexPath.row];
-    [self.tableview reloadData];
+-(CGSize)calculateSize:(NSString*)string{
+    
+    
+    CGSize constraint = CGSizeMake(210, CGFLOAT_MAX);
+    CGSize size;
+    
+    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    CGSize boundingBox = [string boundingRectWithSize:constraint
+                                              options:NSStringDrawingUsesLineFragmentOrigin
+                                           attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16.0f]}
+                                              context:context].size;
+    
+    size = CGSizeMake(ceil(boundingBox.width), ceil(boundingBox.height));
+    
+    
+    return boundingBox;
+    
 }
 
-- (void)textViewDidChange:(UITextView *)textView {
-    
-    [self.tableview beginUpdates]; // This will cause an animated update of
-    [self.tableview endUpdates];   // the height of your UITableViewCell
-    
-    [self scrollToCursorForTextView:textView]; // OPTIONAL: Follow cursor
-}
 
-- (void)textViewDidBeginEditing:(UITextView *)textView {
-    [self scrollToCursorForTextView:textView];
+- (void)textViewDidBeginEditing:(UITextView *)textView{
     
-//    [_scrollTextPreview setScrollEnabled:(YES)];
-//    [_scrollTextPreview setContentSize:CGSizeMake(320,650)];
+    // [textView setReturnKeyType:UIReturnKeyDone];
     
-    if ([textView.text isEqualToString:@"Type Text Here..."]) {
-        textView.text = @"";
-        textView.textColor = [UIColor blackColor]; //optional
-    }
-    [textView becomeFirstResponder];
+    NSInteger currentEditTag=textView.tag;
+    _currentEditedIndexPath=currentEditTag;
+    
+    
+    //    if (textView.tag!=0)
+    //    {
+    //         [self scrollToCursorForTextView:textView];
+    //    }
+    //
+    
+    _editedTextString=textView.text;
+    
+    NSLog(@"Current index:%li  text typed:%@",(long)currentEditTag,_editedTextString);
+
+    
+    
+    //[textView becomeFirstResponder];
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView{
-    if ([textView.text isEqualToString:@""]) {
-        textView.text = @"Type Text Here...";
-        textView.textColor = [UIColor lightGrayColor]; //optional
-    }
-    [textView resignFirstResponder];
+    NSInteger currentEditTag=textView.tag;
+    // [textView setReturnKeyType:UIReturnKeyDone];
+    
+    ;
+    
+    _editedTextString=textView.text;
+    
+    NSLog(@"Current index:%li  text typed:%@",(long)currentEditTag,_editedTextString);
+    
 }
 
 - (BOOL)rectVisible: (CGRect)rect {
@@ -1903,43 +1881,79 @@ _textField.text=@"";
     
 }
 
-- (void)keyboardWillShow:(NSNotification*)aNotification {
+- (void)keyboardWillShow:(NSNotification*)notification {
     
-    NSDictionary* info = [aNotification userInfo];
-    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    /* NSDictionary* info = [aNotification userInfo];
+     CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+     
+     
+     //
+     UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableview.contentInset.top, 0.0, kbSize.height, 0.0);
+     self.tableview.contentInset = contentInsets;
+     self.tableview.scrollIndicatorInsets = contentInsets;//saf
+     //
+     
+     float newVerticalPosition = -kbSize.height+65.0;
+     
+     if (_arrNotes.count>2)
+     {
+     [self moveFrameToVerticalPosition:newVerticalPosition forDuration:0.3f];
+     }*/
     
-//    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableview.contentInset.top, 0.0, kbSize.height, 0.0);
-//    self.tableview.contentInset = contentInsets;
-//    self.tableview.scrollIndicatorInsets = contentInsets;saf
-    
-    float newVerticalPosition = -kbSize.height+65.0;
-    
-    [self moveFrameToVerticalPosition:newVerticalPosition forDuration:0.3f];
+    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     
     
-    UITapGestureRecognizer *tapRec = [[UITapGestureRecognizer alloc]
-                                      initWithTarget:self action:@selector(tap:)];
-    [_textPreview addGestureRecognizer: tapRec];
+    
+    
+    NSNumber *rate = notification.userInfo[UIKeyboardAnimationDurationUserInfoKey];
+    [UIView animateWithDuration:rate.floatValue animations:^{
+        
+        UIEdgeInsets contentInsets;
+        if (UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation])) {
+            contentInsets = UIEdgeInsetsMake(0.0, 0.0, (keyboardSize.height), 0.0);
+        } else {
+            contentInsets = UIEdgeInsetsMake(0.0, 0.0, (keyboardSize.width), 0.0);
+        }
+        
+        _tableview.contentInset = contentInsets;
+        _tableview.scrollIndicatorInsets = contentInsets;
+        [_tableview scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    }];
+    
+    
     
 }
 
-- (void)keyboardWillHide:(NSNotification*)aNotification {
+- (void)keyboardWillHide:(NSNotification*)notification {
     
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:0.35];
-//    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableview.contentInset.top, 0.0,0.0,0.0);
-//    self.tableview.contentInset = contentInsets;
-//    self.tableview.scrollIndicatorInsets = contentInsets;
+    /*[UIView beginAnimations:nil context:nil];
+     [UIView setAnimationDuration:0.35];
+     UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableview.contentInset.top, 0.0,0.0,0.0);
+     self.tableview.contentInset = contentInsets;
+     self.tableview.scrollIndicatorInsets = contentInsets;
+     
+     [self moveFrameToVerticalPosition:+64.0f forDuration:0.3f];
+     
+     
+     
+     
+     [UIView commitAnimations];
+     */
     
-    [self moveFrameToVerticalPosition:+64.0f forDuration:0.3f];
     
     
-    [UIView commitAnimations];
+    
+    NSNumber *rate = notification.userInfo[UIKeyboardAnimationDurationUserInfoKey];
+    [UIView animateWithDuration:rate.floatValue animations:^{
+        
+        self.tableview.contentInset = UIEdgeInsetsZero;
+        self.tableview.scrollIndicatorInsets = UIEdgeInsetsZero;
+    }];
 }
 
 -(void)geTappedimage:(NSString*)url  indexpath:(NSIndexPath*)indexpath{
     
-
+    
     CGRect  rect=[[UIScreen mainScreen]bounds];
     
     UIImage *image;
@@ -2046,12 +2060,12 @@ _textField.text=@"";
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     
-     NoteListItem *items=[_arrNotes objectAtIndex:indexPath.row];
+    NoteListItem *items=[_arrNotes objectAtIndex:indexPath.row];
     
     
     if (items.notetype==AUDIO)
     {
-       
+        
         NSLog(@"output for audio tapped items = %@",items.audioPlayPath);
         
         
@@ -2059,18 +2073,32 @@ _textField.text=@"";
     else if (items.notetype==IMAGES)
     {
         
-      
-       [self geTappedimage:nil indexpath:indexPath];
+        
+        [self geTappedimage:nil indexpath:indexPath];
         NSLog(@"output for image tapped items = %@",items);
-    
+        
+    }
+    else if (items.notetype==TEXT)
+    {
+        
+        
+        // [self geTappedimage:nil indexpath:indexPath];
+        NSLog(@"output for image tapped items = %@",items);
+//        _currentEditedIndexPath=indexPath.row;
+//        [self textNavBar];
+//        items.isEdited=YES;
+//        _isText=YES;
+//        [_tableview reloadData];
+//        
     }
     
-   
+    
     
 }
 
 -(void)visibleAudioView{
-[recordPauseButton setImage:isPause forState:UIControlStateNormal];
+    
+    [recordPauseButton setImage:isPause forState:UIControlStateNormal];
     _audioView.hidden=NO;
     _audioView.layer.borderWidth = 1.0f;
     _audioView.layer.borderColor = [[UIColor colorWithRed:(255/255) green:(90/255) blue:(96/255) alpha:1.0] CGColor];
@@ -2088,7 +2116,10 @@ _textField.text=@"";
                                [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject],[self getRecordingFileName],
                                nil];
     
+    
     _outputFileURL = [NSURL fileURLWithPathComponents:pathComponents];
+    
+    
     
     
     // Setup audio session
@@ -2104,6 +2135,7 @@ _textField.text=@"";
     
     // Initiate and prepare the recorder
     _recorder = [[AVAudioRecorder alloc] initWithURL:_outputFileURL settings:recordSetting error:nil];
+    
     _recorder.delegate = self;
     _recorder.meteringEnabled = YES;
     [_recorder prepareToRecord];
@@ -2127,30 +2159,34 @@ _textField.text=@"";
 }
 
 -(void)PLAYWITHURL:(NSURL*)URL{
+    
     //Start playback
-    _player = [[AVAudioPlayer alloc] initWithContentsOfURL:URL error:nil];
+    NSError *err;
+    
+    _player = [[AVAudioPlayer alloc] initWithContentsOfURL:URL error:&err];
+    _player.delegate = self;
     
     if (!_player)
     {
-        NSLog(@"Error establishing player for %@", URL);
+        NSLog(@"Error establishing player for %@  %@", URL,err.description);
         return;
     }
     
-    _player.delegate = self;
+    
     
     // Change audio session for playback
     if (![[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil])
     {
-       
+        
         return;
     }
     
-   
+    
     NSLog(@"%@ ",URL);
     
-   // [_player prepareToPlay];
+    [_player prepareToPlay];
     [_player play];
-
+    
     
 }
 
@@ -2165,24 +2201,24 @@ _textField.text=@"";
     }
     
     
-        
+    
     if (!_recorder.recording) {
         
-            _isRecording=YES;
-            AVAudioSession *session = [AVAudioSession sharedInstance];
-            [session setActive:YES error:nil];
+        _isRecording=YES;
+        AVAudioSession *session = [AVAudioSession sharedInstance];
+        [session setActive:YES error:nil];
         
-            // Start recording
-            [_recorder record];
+        // Start recording
+        [_recorder record];
         [recordPauseButton setImage:isNotPaused forState:UIControlStateNormal];
         _myTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(updateRecordingTime) userInfo:nil repeats:YES];
         [_myTimer fire];
         
         _recordingLbl.text = @"Recording Started...";
         
-        }
-        
-        
+    }
+    
+    
     
     else  {
         
@@ -2190,9 +2226,9 @@ _textField.text=@"";
         // Pause recording
         [_recorder pause];
         [recordPauseButton setImage:isPause forState:UIControlStateNormal];
-         _recordingLbl.text = @"Recording Paused...";
+        _recordingLbl.text = @"Recording Paused...";
         
-        }
+    }
     
     
     [stopButton setEnabled:YES];
@@ -2212,8 +2248,8 @@ _textField.text=@"";
     
     _recordTimeDisplay.text = time;
     _totalTime=time;
-
-   
+    
+    
 }
 
 - (void)updateSlider {
@@ -2224,7 +2260,9 @@ _textField.text=@"";
     NSString *time = [[NSString alloc]
                       initWithFormat:@"%0.0f.%0.0f",
                       minutes, seconds];
-
+    
+    
+    //_currentCell.recordingLbl.text = [NSString stringWithFormat:@"%@/%@",time,_currentCell.noteitemList.strAudioTotalTime];
     
     _currentCell.recordingLbl.text = [NSString stringWithFormat:@"%@/%@",time,_currentCell.noteitemList.strAudioTotalTime];
     _currentCell.currentTimeSlider.value=_player.currentTime;
@@ -2240,19 +2278,19 @@ _textField.text=@"";
     [audioSession setActive:NO error:nil];
     
     
-    
-        NoteListItem *items=[[NoteListItem alloc]init];
-        items.notetype=AUDIO;
-        items.audioPlayPath=_outputFileURL;
-        //items.strAudioPlayPath=_strCurrentFilename;
-        items.strAudioTotalTime=_totalTime; //
-        
-        [_arrNotes addObject:items];
-    
-    NSLog(@"###############  %@",_arrNotes);
-    NSLog(@"notelist items ===== %@",items.audioPlayPath);
+    NoteListItem *items=[[NoteListItem alloc]init];
+    items.notetype=AUDIO;
+    items.audioPlayPath=_outputFileURL;
+    items.strAudioPlayPath=[NSString stringWithFormat:@"%@",_outputFileURL];
     
     
+    
+    
+    items.strAudioTotalTime=_totalTime;
+    
+    
+    [_arrNotes addObject:items];
+    [self upadteNote:_arrNotes];
     [_tableview reloadData];
     
 }
@@ -2268,23 +2306,23 @@ _textField.text=@"";
         }
         else
         {
-        
-        _player = [[AVAudioPlayer alloc] initWithContentsOfURL:_recorder.url error:nil];
-        [_player setDelegate:self];
-        
-        
-        _currentTimeSlider.hidden=NO;
-        
-        
-        
-        [_player play];
-        
-        
-        _currentTimeSlider.maximumValue=_player.duration;
-
-        
-        _myTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(updateSlider) userInfo:nil repeats:YES];
-        [_myTimer fire];
+            
+            _player = [[AVAudioPlayer alloc] initWithContentsOfURL:_recorder.url error:nil];
+            [_player setDelegate:self];
+            
+            
+            _currentTimeSlider.hidden=NO;
+            
+            
+            
+            [_player play];
+            
+            
+            _currentTimeSlider.maximumValue=_player.duration;
+            
+            
+            _myTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(updateSlider) userInfo:nil repeats:YES];
+            [_myTimer fire];
         }
         
     }
@@ -2294,7 +2332,7 @@ _textField.text=@"";
 
 - (IBAction)pauseTapped:(id)sender {
     
-
+    
     _isPlayingPaused=!_isPlayingPaused;
     
     if (_isPlayingPaused) {
@@ -2306,8 +2344,6 @@ _textField.text=@"";
         [_player play];
         _isPlayingPaused=1;
     }
-    
-
     
 }
 
@@ -2338,13 +2374,11 @@ _textField.text=@"";
 - (void)viewWillAppear:(BOOL)animated{
     
     [super viewWillAppear:animated];
-
+    
     [self getSaveBtn];
     _defaultView.hidden=NO;
     _defaultTableView.hidden=NO;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -2359,44 +2393,6 @@ _textField.text=@"";
     [UIView animateWithDuration:duration animations:^{
         self.view.frame = frame;
     }];
-}
-
-#pragma mark-textStyle
-
--(NSAttributedString*)setHeaderTitle:(NSString*)mainTitle subTitle:(NSString*)subTitle textfont:(UIFont*)font textColor:(UIColor *)color  isUnderLine:(BOOL)isUnderLine{
-    
-    
-    NSString *str2=subTitle.length>0?subTitle:@"";
-    NSRange range2 = NSMakeRange(0, str2.length);
-    
-    
-    NSMutableAttributedString *att2 = [[NSMutableAttributedString alloc] initWithString:str2];
-    
-    [att2 addAttribute:NSForegroundColorAttributeName value:color range:range2];
-    [att2 addAttribute:NSFontAttributeName value:_currentSelectedFont range:range2];
-    
-    
-    
-    if (isUnderLine)
-    {
-        
-        [att2 addAttribute:NSUnderlineColorAttributeName
-                     value:[UIColor blackColor]
-                     range:range2];
-        
-        [att2 addAttribute:NSUnderlineStyleAttributeName
-                     value:[NSNumber numberWithInteger:NSUnderlineStyleSingle]
-                     range:range2];
-        
-        
-    }
-    
-    
-    [_attFinalString appendAttributedString:att2];
-    
-
-    return _attFinalString;
-    
 }
 
 -(void)dismissSizeTable:(selectFontSize)selectedOption{
@@ -2419,187 +2415,6 @@ _textField.text=@"";
     
     _strFontValue=((FontPopupViewController*)sender).strFont;
     
-    
-#pragma Font-arial
-    
-    if([_strFontValue.lowercaseString isEqualToString:@"arial"])
-    {
-        _boldBtn.enabled=YES;
-        _italicBtn.enabled=YES;
-    }
-    
-#pragma Font-times new roman
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"times new roman"])
-    {
-        _boldBtn.enabled=YES;
-        _italicBtn.enabled=YES;
-    }
-    
-    
-#pragma font-helvetica
-    
-    
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"helvetica"])
-    {
-        _boldBtn.enabled=YES;
-        _italicBtn.enabled=YES;
-    }
-    
-    
-    
-    
-#pragma font-Monotype corsiva
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"monotype corsiva"])
-    {
-        _boldBtn.enabled=NO;
-        _italicBtn.enabled=NO;
-    }
-    
-    
-#pragma font-Edwardian
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"edwardian"])
-    {
-        _boldBtn.enabled=NO;
-        _italicBtn.enabled=NO;
-    }
-    
-    
-#pragma font-Mongolian baiti
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"mongolian baiti"])
-    {
-        _boldBtn.enabled=NO;
-        _italicBtn.enabled=NO;
-    }
-    
-    
-#pragma font-Sakkal majalla
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"sakkal majalla"])
-    {
-        _italicBtn.enabled=NO;
-        _boldBtn.enabled=NO;
-        
-    }
-    
-    
-    
-#pragma font-DOSIS BOOK
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"dosis book"])
-    {
-        
-        _boldBtn.enabled=YES;
-        
-        _italicBtn.enabled=NO;
-        
-        
-    }
-    
-    
-    
-#pragma font-DANCING SCRIPT
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"dancing script"])
-    {
-        
-        _boldBtn.enabled=NO;
-        _italicBtn.enabled=NO;
-        
-        
-        
-    }
-    
-    
-#pragma font-Eras medium ITC
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"Eras medium itc"])
-    {
-        
-        _boldBtn.enabled=NO;
-
-        _italicBtn.enabled=NO;
-        
-        
-    }
-    
-    
-#pragma font-CINZEL DECORATIVE
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"cinzel decorative"])
-    {
-        
-        
-        _boldBtn.enabled=NO;
-
-        _italicBtn.enabled=NO;
-        
-        
-    }
-    
-    
-#pragma font-UNCTION
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"unction"])
-    {
-        
-        _boldBtn.enabled=NO;
-        
-        _italicBtn.enabled=NO;
-        
-        
-        
-    }
-    
-    
-    
-#pragma font-LINDEN HILL
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"linden hill"])
-    {
-        
-        _boldBtn.enabled=NO;
-        
-        _italicBtn.enabled=NO;
-        
-        
-    }
-    
-    
-    
-    
-#pragma font-PACIFICO
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"pacifico"])
-    {
-        
-        _boldBtn.enabled=NO;
-        
-        _italicBtn.enabled=NO;
-        
-    }
-    
-    
-    
-    
-#pragma font-WINDSONG
-    
-    else if([_strFontValue.lowercaseString isEqualToString:@"windsong"])
-        
-    {
-        
-        _boldBtn.enabled=NO;
-
-        _italicBtn.enabled=NO;
-        
-        
-        
-    }
-    
 }
 
 -(void)sizes:(id)sender{
@@ -2607,7 +2422,7 @@ _textField.text=@"";
     _strSizeValue=((FontPopupViewController*)sender).strSize;
     _sizeValue=[_strSizeValue intValue];
     NSLog(@"output is %@",_strSizeValue);
- 
+    
 }
 
 -(void)didPlaycontrolTapped:(NoteListItem*)item isPlay:(BOOL)isPlay isPaused:(BOOL)isPaused inView:(audioCell *)cell{
@@ -2620,6 +2435,7 @@ _textField.text=@"";
         cell.currentTimeSlider.maximumValue=_player.duration;
         
         
+        
         _myTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(updateSlider) userInfo:nil repeats:YES];
         [_myTimer fire];
         
@@ -2628,13 +2444,13 @@ _textField.text=@"";
     else if(!isPlay) {
         
         _isPlayingPaused=0;
-            [_player pause];
-
+        [_player pause];
+        
     }
 }
 
 -(BOOL)textViewShouldEndEditing:(UITextView *)textView{
-    [_textPreview resignFirstResponder];
+    
     return YES;
 }
 

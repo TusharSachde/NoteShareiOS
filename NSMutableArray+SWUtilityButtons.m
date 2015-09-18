@@ -29,6 +29,14 @@
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self addObject:button];
 }
+- (void)sw_addUtilityButtonWithColor:(UIColor *)color icon:(UIImage *)icon withtag:(NSInteger)tag
+{
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.backgroundColor = color;
+    button.tag=tag;
+    [button setImage:icon forState:UIControlStateNormal];
+    [self addObject:button];
+}
 
 - (void)sw_addUtilityButtonWithColor:(UIColor *)color icon:(UIImage *)icon
 {

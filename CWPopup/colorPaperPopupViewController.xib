@@ -65,6 +65,89 @@
                     </subviews>
                     <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                 </view>
+                <view contentMode="scaleToFill" id="9SI-QH-qix">
+                    <rect key="frame" x="0.0" y="40" width="280" height="122"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="WDv-V3-1IC">
+                            <rect key="frame" x="30" y="27" width="30" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            <state key="normal">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="pageTable:" destination="-1" eventType="touchUpInside" id="gPu-5c-S72"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Q4b-Fq-9HA">
+                            <rect key="frame" x="76" y="27" width="30" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" red="0.58823529409999997" green="0.81176470590000005" blue="0.92941176469999998" alpha="1" colorSpace="calibratedRGB"/>
+                            <state key="normal" backgroundImage="paper1.png">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="pageTable:" destination="-1" eventType="touchUpInside" id="c2S-PK-0vg"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="f4v-so-Cme">
+                            <rect key="frame" x="126" y="27" width="30" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" red="0.59607843140000005" green="0.88235294119999996" blue="0.80392156859999997" alpha="1" colorSpace="calibratedRGB"/>
+                            <state key="normal" backgroundImage="paper2.png">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="pageTable:" destination="-1" eventType="touchUpInside" id="ps8-bG-sGB"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="eIi-VO-rG2">
+                            <rect key="frame" x="175" y="27" width="30" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" red="0.70980392160000005" green="0.8862745098" blue="0.62352941179999999" alpha="1" colorSpace="calibratedRGB"/>
+                            <state key="normal" backgroundImage="paper3.png">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="pageTable:" destination="-1" eventType="touchUpInside" id="tZY-hS-7Y5"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="4AL-xP-duh">
+                            <rect key="frame" x="224" y="27" width="30" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" red="0.94509803920000002" green="0.64705882349999999" blue="0.93725490199999995" alpha="1" colorSpace="calibratedRGB"/>
+                            <state key="normal" backgroundImage="paper4.png">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="pageTable:" destination="-1" eventType="touchUpInside" id="10R-R0-GgZ"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ZZA-1o-MTT">
+                            <rect key="frame" x="30" y="72" width="30" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" red="0.62352941179999999" green="0.85490196080000003" blue="0.52549019610000003" alpha="1" colorSpace="calibratedRGB"/>
+                            <state key="normal" backgroundImage="paper5.png">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="pageTable:" destination="-1" eventType="touchUpInside" id="uYj-xA-vke"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="fOa-8r-1DZ">
+                            <rect key="frame" x="76" y="72" width="30" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" red="0.99607843139999996" green="1" blue="0.49803921569999998" alpha="1" colorSpace="calibratedRGB"/>
+                            <state key="normal" backgroundImage="paper6.png">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="pageTable:" destination="-1" eventType="touchUpInside" id="8f7-G6-d4t"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                </view>
                 <view contentMode="scaleToFill" id="TeV-2K-VxB">
                     <rect key="frame" x="0.0" y="40" width="280" height="122"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -177,89 +260,6 @@
                             </state>
                             <connections>
                                 <action selector="colorTable:" destination="-1" eventType="touchUpInside" id="URg-SL-lal"/>
-                            </connections>
-                        </button>
-                    </subviews>
-                </view>
-                <view contentMode="scaleToFill" id="9SI-QH-qix">
-                    <rect key="frame" x="0.0" y="40" width="280" height="122"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                    <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="WDv-V3-1IC">
-                            <rect key="frame" x="30" y="27" width="30" height="30"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                            <state key="normal">
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                            <connections>
-                                <action selector="pageTable:" destination="-1" eventType="touchUpInside" id="gPu-5c-S72"/>
-                            </connections>
-                        </button>
-                        <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Q4b-Fq-9HA">
-                            <rect key="frame" x="76" y="27" width="30" height="30"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <color key="backgroundColor" red="0.58823529409999997" green="0.81176470590000005" blue="0.92941176469999998" alpha="1" colorSpace="calibratedRGB"/>
-                            <state key="normal" backgroundImage="paper1.png">
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                            <connections>
-                                <action selector="pageTable:" destination="-1" eventType="touchUpInside" id="c2S-PK-0vg"/>
-                            </connections>
-                        </button>
-                        <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="f4v-so-Cme">
-                            <rect key="frame" x="126" y="27" width="30" height="30"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <color key="backgroundColor" red="0.59607843140000005" green="0.88235294119999996" blue="0.80392156859999997" alpha="1" colorSpace="calibratedRGB"/>
-                            <state key="normal" backgroundImage="paper2.png">
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                            <connections>
-                                <action selector="pageTable:" destination="-1" eventType="touchUpInside" id="ps8-bG-sGB"/>
-                            </connections>
-                        </button>
-                        <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="eIi-VO-rG2">
-                            <rect key="frame" x="175" y="27" width="30" height="30"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <color key="backgroundColor" red="0.70980392160000005" green="0.8862745098" blue="0.62352941179999999" alpha="1" colorSpace="calibratedRGB"/>
-                            <state key="normal" backgroundImage="paper3.png">
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                            <connections>
-                                <action selector="pageTable:" destination="-1" eventType="touchUpInside" id="tZY-hS-7Y5"/>
-                            </connections>
-                        </button>
-                        <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="4AL-xP-duh">
-                            <rect key="frame" x="224" y="27" width="30" height="30"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <color key="backgroundColor" red="0.94509803920000002" green="0.64705882349999999" blue="0.93725490199999995" alpha="1" colorSpace="calibratedRGB"/>
-                            <state key="normal" backgroundImage="paper4.png">
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                            <connections>
-                                <action selector="pageTable:" destination="-1" eventType="touchUpInside" id="10R-R0-GgZ"/>
-                            </connections>
-                        </button>
-                        <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ZZA-1o-MTT">
-                            <rect key="frame" x="30" y="72" width="30" height="30"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <color key="backgroundColor" red="0.62352941179999999" green="0.85490196080000003" blue="0.52549019610000003" alpha="1" colorSpace="calibratedRGB"/>
-                            <state key="normal" backgroundImage="paper5.png">
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                            <connections>
-                                <action selector="pageTable:" destination="-1" eventType="touchUpInside" id="uYj-xA-vke"/>
-                            </connections>
-                        </button>
-                        <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="fOa-8r-1DZ">
-                            <rect key="frame" x="76" y="72" width="30" height="30"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <color key="backgroundColor" red="0.99607843139999996" green="1" blue="0.49803921569999998" alpha="1" colorSpace="calibratedRGB"/>
-                            <state key="normal" backgroundImage="paper6.png">
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                            <connections>
-                                <action selector="pageTable:" destination="-1" eventType="touchUpInside" id="8f7-G6-d4t"/>
                             </connections>
                         </button>
                     </subviews>

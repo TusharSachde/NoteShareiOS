@@ -9,17 +9,25 @@
 #import <UIKit/UIKit.h>
 
 
+@interface SharingOptions : NSObject
+
+@property(nonatomic,strong)NSString *strName;
+@property(nonatomic,strong)NSString *strId;
+@property(nonatomic,strong)NSString *strImageName;
+@end
+
+
 typedef enum : NSUInteger {
-    OK,
-    CANCEL,
+    done,
+    cancel,
     
 } selectOption;
 
 
 @protocol PopUpViewDelegate <NSObject>
 
--(void)dismissSharePopAlert:(selectOption)selectedOption;
-
+-(void)dismissSharePopAlert:(selectOption)selectedOption ;
+-(void)dismissSharePopAlert:(selectOption)selectedOption withSharingOption:(SharingOptions*)options;
 
 @end
 
