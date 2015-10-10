@@ -21,8 +21,11 @@
 @property(nonatomic,assign)NSInteger cellId;
 @property(nonatomic,strong)NSString *colours;
 @property(nonatomic,strong)NSString *modifiedtime;
+@property(nonatomic,strong)NSString *remindertime;
 @property(nonatomic,strong)NSString *createdtime;
+@property(nonatomic,strong)NSString *celllock;
 @property(nonatomic,strong)NSString *timebomb;
+@property(nonatomic,strong)NSString *noteType;
 
 
 

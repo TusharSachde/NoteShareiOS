@@ -15,12 +15,8 @@
       "name":"TILES",
       "imagename":"grid_view_logo.png",
       "itemid":13
-    },
-     {
-      "name":"SHUFFLE",
-      "imagename":"pintrest_view_logo.png",
-      "itemid":14
     }
+
   ],
   "sort": [
      {

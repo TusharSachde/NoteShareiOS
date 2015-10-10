@@ -14,10 +14,10 @@
 
 @implementation GlobalVariablesViewController
 
-@synthesize selectedFolderID;
+@synthesize viewVar;
 
 
-NSString *selectedFolderID;
+NSString *viewVar;
 
 
 

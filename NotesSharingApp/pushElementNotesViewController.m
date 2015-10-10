@@ -21,6 +21,7 @@
 #import "AssetsLibrary/AssetsLibrary.h"
 #import "NoteColorViewController.h"
 #import "textCell.h"
+#import "AudioFullViewController.h"
 
 #define isPause [UIImage imageNamed:@"recording_status.png"]//isRecording=yes
 #define isNotPaused [UIImage imageNamed:@"pause_audio.png"]//isRecording=no
@@ -86,16 +87,15 @@
 
 @property(nonatomic,strong)UIImageView *BigimgView;
 @property(nonatomic,assign)NSInteger action;
-@property(nonatomic,strong)NSIndexPath *indexPath;
+@property(nonatomic,strong)NSIndexPath *pathIndex;
 @property(nonatomic,strong)UIView *viewBg;
+@property(nonatomic,assign)float height;
 
 @end
 
 @implementation pushElementNotesViewController
 
-@synthesize stopButton, playButton, recordPauseButton,BigimgView,action,indexPath,viewBg;
-
-
+@synthesize stopButton, playButton, recordPauseButton,BigimgView,action,pathIndex,viewBg;
 
 
 - (void)viewDidLoad {
@@ -105,12 +105,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     
     
-    
+    _height=0.0;
     
     [self.tableview setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    
-    //    self.textField.delegate=self;
-    
     
     
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName : [UIColor whiteColor]};
@@ -466,6 +463,7 @@
 -(IBAction)TextbackBtnPress:(id)sender{
     
     
+    
     //
     if (_isText)
     {
@@ -476,7 +474,7 @@
             currentItem.isEdited=NO;
             
             
-            [self upadteNote:_arrNotes];
+            //[self upadteNote:_arrNotes];
         }
         [_tableview reloadData];
     }
@@ -1288,24 +1286,24 @@
     
     NoteListItem *listItem=nil;
     
-    listItem=[_arrNotes objectAtIndex:indexPath.row];
+    listItem=[_arrNotes objectAtIndex:indexpath.row];
     image=listItem.noteimage;
     
     NSLog(@"image  %@",image);
     
     
-    UIView *viewBg=[[UIView alloc]initWithFrame:rect];
-    viewBg.tag=3000;
-    viewBg.backgroundColor=[UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0];
-    viewBg.clipsToBounds=YES;
+    UIView *viewBgRect=[[UIView alloc]initWithFrame:rect];
+    viewBgRect.tag=3000;
+    viewBgRect.backgroundColor=[UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0];
+    viewBgRect.clipsToBounds=YES;
     
     
-    BigimgView=[[UIImageView alloc]initWithFrame:CGRectMake(0, 0.0, viewBg.frame.size.width, viewBg.frame.size.height)];
+    BigimgView=[[UIImageView alloc]initWithFrame:CGRectMake(0, 0.0, viewBgRect.frame.size.width, viewBgRect.frame.size.height)];
     BigimgView.image =image;
     BigimgView.contentMode=UIViewContentModeScaleAspectFit;
     
-    [viewBg addSubview:BigimgView];
-    [self.view addSubview:viewBg];
+    [viewBgRect addSubview:BigimgView];
+    [self.view addSubview:viewBgRect];
     [self addInvisibleButtons];
     [[self navigationController] setNavigationBarHidden:YES animated:YES];
     
@@ -1318,7 +1316,7 @@
     
     CGPoint point=[gesture locationInView:self.tableview];
     
-    indexPath=[self.tableview indexPathForRowAtPoint:point];
+    pathIndex=[self.tableview indexPathForRowAtPoint:point];
     
     NSInteger tag=0;
     
@@ -1350,7 +1348,7 @@
     
     NSLog(@"arr notes = %@",_arrNotes);
     
-    NoteListItem *items=[_arrNotes objectAtIndex:indexPath.row];
+    NoteListItem *items=[_arrNotes objectAtIndex:pathIndex.row];
     
     [BigimgView setImage:items.noteimage];//new add
     
@@ -1756,6 +1754,10 @@
     return YES;
 }
 
-
+- (void)textViewDidChange:(UITextView *)textView{
+    [_tableview beginUpdates];
+    _height = textView.contentSize.height;
+    [_tableview endUpdates];
+}
 
 @end

@@ -21,7 +21,7 @@
 
 @property (weak,nonatomic) UIActionSheet *sheet;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
-
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *loader;
 @property (strong, nonatomic) NSURL *videoURL;
 @property (strong, nonatomic) MPMoviePlayerController *videoController;
 

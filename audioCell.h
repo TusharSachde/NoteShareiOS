@@ -13,7 +13,9 @@
 @class  audioCell;
 @protocol audioCellDelegate <NSObject>
 
--(void)didPlaycontrolTapped:(NoteListItem*)item isPlay:(BOOL)isPlay isPaused:(BOOL)isPaused inView:(audioCell*)cell;
+-(void)didPlaycontrolTapped:(NoteListItem*)item isPlay:(BOOL)isPlay isPaused:(BOOL)isPaused inView:(audioCell*)cell atIndex:(NSInteger)indexOfCell;
+
+-(void)didCellTapped:(NoteListItem*)item  atIndex:(NSInteger)indexOfCell;
 
 @end
 
@@ -24,6 +26,7 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *pauseButton;
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
+@property (weak, nonatomic) IBOutlet UIButton *buttonCellClick;
 @property (strong, nonatomic)  NoteListItem *noteitemList;
 @property(weak,nonatomic)id<audioCellDelegate> delegate;
 
@@ -37,5 +40,6 @@
 
 
 @property (strong, nonatomic) IBOutlet UIView *audiocellView;
+@property (assign, nonatomic) NSInteger  IndexOfCell;
 
 @end

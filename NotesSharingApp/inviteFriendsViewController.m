@@ -12,7 +12,7 @@
 
 
 
-@interface inviteFriendsViewController ()
+@interface inviteFriendsViewController ()<SWRevealViewControllerDelegate>
 
 @end
 
@@ -23,13 +23,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self getLeftBtn];
-    SWRevealViewController *revealViewController = self.revealViewController;
-    if ( revealViewController )
-    {
-        [self.sidebarButton setTarget: self.revealViewController];
-        [self.sidebarButton setAction: @selector( revealToggle: )];
-        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-    }
+    SWRevealViewController *revealController = [self revealViewController];
+    
+    revealController.delegate=self;
     
 }
 
@@ -197,5 +193,29 @@
  NSLog(@"Message failed");
  }
 
+#pragma mark-DrawerDelegate
+-(void)revealController:(SWRevealViewController *)revealController drawerStatus:(DRAWERSTATUS)status
+{
+    
+    switch (status) {
+        case OPEN:
+            
+        {
+            self.view.userInteractionEnabled = NO;
+            
+        }
+            break;
+        case CLOSE:
+            
+        {
+            self.view.userInteractionEnabled = YES;
+            
+        }
+            break;
+            
+        default:
+            break;
+    }
+}
 
 @end

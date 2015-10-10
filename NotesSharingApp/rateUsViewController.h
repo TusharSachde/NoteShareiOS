@@ -15,6 +15,7 @@
 @property (strong, nonatomic) IBOutlet UIButton *sidebar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
 
+@property (strong, nonatomic) IBOutlet UIView *rateUsView;
 
 
 @end

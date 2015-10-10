@@ -21,6 +21,8 @@
 @property (strong, nonatomic) IBOutlet UIButton *shareBtn;
 @property (strong, nonatomic) IBOutlet UIButton *deleteBtn;
 
+@property (strong, nonatomic) IBOutlet UIImageView *bombImage;
+@property (strong, nonatomic) IBOutlet UIImageView *lockImage;
 
 
 @end

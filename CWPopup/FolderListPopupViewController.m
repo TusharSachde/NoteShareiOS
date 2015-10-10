@@ -50,9 +50,6 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    
-    
-    
     DBNoteItems *dbNote =[_arrFolder objectAtIndex:indexPath.row];
     
     cell.textLabel.text=dbNote.folder_Title;
@@ -65,7 +62,7 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 30;
+    return 44;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -97,4 +94,8 @@
 }
 */
 
+- (IBAction)closePopup:(id)sender {
+    
+    [_delegate dismissolderListTable:folderList];
+}
 @end

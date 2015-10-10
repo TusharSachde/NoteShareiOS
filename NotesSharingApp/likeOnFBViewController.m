@@ -9,7 +9,7 @@
 #import "likeOnFBViewController.h"
 #import "SWRevealViewController.h"
 
-@interface likeOnFBViewController ()
+@interface likeOnFBViewController ()<SWRevealViewControllerDelegate>
 
 @end
 
@@ -20,12 +20,9 @@
     // Do any additional setup after loading the view.
     [self getLeftBtn];
     SWRevealViewController *revealViewController = self.revealViewController;
-    if ( revealViewController )
-    {
-        [self.sidebarButton setTarget: self.revealViewController];
-        [self.sidebarButton setAction: @selector( revealToggle: )];
-        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-    }
+   
+    
+    revealViewController.delegate=self;
     
 }
 
@@ -67,6 +64,32 @@
 
 -(IBAction)sideBar:(id)sender{
 }
+
+#pragma mark-DrawerDelegate
+-(void)revealController:(SWRevealViewController *)revealController drawerStatus:(DRAWERSTATUS)status
+{
+    
+    switch (status) {
+        case OPEN:
+            
+        {
+            self.view.userInteractionEnabled = NO;
+            
+        }
+            break;
+        case CLOSE:
+            
+        {
+            self.view.userInteractionEnabled = YES;
+            
+        }
+            break;
+            
+        default:
+            break;
+    }
+}
+
 
 
 @end

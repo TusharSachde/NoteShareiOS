@@ -14,5 +14,6 @@
 - (IBAction)sideBar:(id)sender;
 @property (strong, nonatomic) IBOutlet UIButton *sidebar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
+@property (strong, nonatomic) IBOutlet UIView *likeUsOnFacebookView;
 
 @end

@@ -474,11 +474,11 @@ static NSString * const kTableViewPanState = @"state";
     if ([viewtapped isKindOfClass:[UIButton class]])
     {
         
-        NSInteger cellindexSelected=((UIButton*)viewtapped).tag-100;
-        if (cellindexSelected==-100)
-        {
-            cellindexSelected=0;
-        }
+        NSInteger cellindexSelected=((UIButton*)viewtapped).tag;
+//        if (cellindexSelected==-100)
+//        {
+//            cellindexSelected=0;
+//        }
         
         NSUInteger utilityButtonIndex = utilityButtonTapGestureRecognizer.buttonIndex;
         if ([self.delegate respondsToSelector:@selector(swipeableTableViewCell:didTriggerRightUtilityButtonWithIndex:withCellIndex:)])

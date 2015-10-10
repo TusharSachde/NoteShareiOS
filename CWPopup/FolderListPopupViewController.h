@@ -35,5 +35,6 @@ typedef enum : NSUInteger {
 @property(nonatomic,strong)NSArray *arrFolder;
 @property(nonatomic,strong)NSString *folderStr;
 @property(nonatomic,weak)id <PopUpFolderViewDelegate> delegate;
+- (IBAction)closePopup:(id)sender;
 
 @end

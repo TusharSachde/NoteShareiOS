@@ -9,9 +9,10 @@
 #import "AppDelegate.h"
 #import "ViewController.h"
 #import "TutorialViewController.h"
-//#import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import <OpenGLES/EAGL.h>
-#define kClientID @"107043470006-ljkmekp6evoksrt4t2p5i9o0fks74cok.apps.googleusercontent.com"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
+#define kClientID @"968760636161-b70lg7g16kcs9k2ln0rd0b239c2hs4ss.apps.googleusercontent.com"
+
 
 @interface AppDelegate ()
 
@@ -20,169 +21,168 @@
 @implementation AppDelegate
 
 
+
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    UserDetail *userDetail=[[DataManger sharedmanager]tutorialMethod]; //here get the user prefrerence,saved during login
+    
+    [GIDSignIn sharedInstance].clientID = kClientID;
+    
+    UserDetail *userDetail=[[DataManger sharedmanager]getLoogedInUserdetail];
     
     
-   // [GIDSignIn sharedInstance].clientID = kClientID;
+//    UserDetail *userDetailTutorial=[[DataManger sharedmanagerTutorial]tutorialMethod]; //here get the user prefrerence
+    
 
     
+    [FBSDKProfile enableUpdatesOnAccessTokenChange:YES];
     
+    
+   // NSString *storyboardId =userDetail.tutorialAppSeen ? @"signIn" : @"MainVC";
+    
+   // UIStoryboard *storyboard = self.window.rootViewController.storyboard;
+   // id rootViewController = [storyboard instantiateViewControllerWithIdentifier:storyboardId];
+    
+   // if ([rootViewController isKindOfClass:[UIViewController class]])
+  //  {
+   //     self.window.rootViewController = (UIViewController*)rootViewController;
+        
+        
+        
+   // }
+  //  else{
+  //      self.window.rootViewController = (ViewController*)rootViewController;
+   // }
+    
+    
+  
+        
+        NSString *storyboardId1 =userDetail.isUserKeepLoggedIn ? @"swVC" : @"signIn";
+        
+        UIStoryboard *storyboard1 = self.window.rootViewController.storyboard;
+        id rootViewController1 = [storyboard1 instantiateViewControllerWithIdentifier:storyboardId1];
+        
+        if ([rootViewController1 isKindOfClass:[UIViewController class]])
+        {
+            self.window.rootViewController = (UIViewController*)rootViewController1;
+            
+            
+            
+        }
+        else{
+            self.window.rootViewController = (ViewController*)rootViewController1;
+        }
 
-    
-    
-    NSString *storyboardId =userDetail.tutorialAppSeen ? @"signIn" : @"MainVC";
-    
-    UIStoryboard *storyboard = self.window.rootViewController.storyboard;
-    id rootViewController = [storyboard instantiateViewControllerWithIdentifier:storyboardId];
-    
-    if ([rootViewController isKindOfClass:[UIViewController class]])
-    {
-        self.window.rootViewController = (UIViewController*)rootViewController;
-        
-        
-        
-    }
-    else{
-        self.window.rootViewController = (ViewController*)rootViewController;
-    }
-    
-  //  [self configurePushNotiFication:launchOptions applictaion:application];
-    
-    
-    
+
     [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:(246/255.0) green:(65/255.0) blue:(79/255.0) alpha:1]];
     
 
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     [[UINavigationBar appearance]setTranslucent:NO];
     
-    return YES;
-    
-//    
-//    [[FBSDKApplicationDelegate sharedInstance] application:application
-//                             didFinishLaunchingWithOptions:launchOptions]
-    
-   // return YES;
+    return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                    didFinishLaunchingWithOptions:launchOptions];
 }
 
-- (BOOL)application:(UIApplication *)application
-            openURL:(NSURL *)url
-  sourceApplication:(NSString *)sourceApplication
-         annotation:(id)annotation
-{
-    return [[GIDSignIn sharedInstance] handleURL:url
-                               sourceApplication:sourceApplication
-                                      annotation:annotation];
+- (void)signIn:(GIDSignIn *)signIn
+didSignInForUser:(GIDGoogleUser *)user
+     withError:(NSError *)error {
+    
+//    NSString *userId = user.userID;                  // For client-side use only!
+//    NSString *idToken = user.authentication.idToken; // Safe to send to the server
+//    NSString *name = user.profile.name;
+//    NSString *email = user.profile.email;
+    
 }
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    
+    
+    NSLog(@"%@",[url scheme]);
+    
+    if ([[url scheme]  isEqualToString:@"fb1666504960261727"])
+    {
+        return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                              openURL:url
+                                                    sourceApplication:sourceApplication
+                                                           annotation:annotation
+                ];
+    }else{
+        
+        return [[GIDSignIn sharedInstance] handleURL:url
+                                   sourceApplication:sourceApplication
+                                          annotation:annotation];
+    }
+    
+   
+    
+    
+    
+    
+}
+
 
 
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+   
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+   
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-   // [FBSDKAppEvents activateApp];
+  
+    
+    [FBSDKAppEvents activateApp];
+    
+    [[NSNotificationCenter defaultCenter]postNotificationName:postNotification object:nil];
 
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    [self saveContext];
-}
-
-#pragma mark - Core Data stack
-
-@synthesize managedObjectContext = _managedObjectContext;
-@synthesize managedObjectModel = _managedObjectModel;
-@synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
-
-- (NSURL *)applicationDocumentsDirectory {
-    // The directory the application uses to store the Core Data store file. This code uses a directory named "com.stats.G_login" in the application's documents directory.
-    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-}
-
-- (NSManagedObjectModel *)managedObjectModel {
-    // The managed object model for the application. It is a fatal error for the application not to be able to find and load its model.
-    if (_managedObjectModel != nil) {
-        return _managedObjectModel;
-    }
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"G_login" withExtension:@"momd"];
-    _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
-    return _managedObjectModel;
-}
-
-- (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
-    // The persistent store coordinator for the application. This implementation creates and return a coordinator, having added the store for the application to it.
-    if (_persistentStoreCoordinator != nil) {
-        return _persistentStoreCoordinator;
-    }
     
-    // Create the coordinator and store
-    
-    _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"G_login.sqlite"];
-    NSError *error = nil;
-    NSString *failureReason = @"There was an error creating or loading the application's saved data.";
-    if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
-        // Report any error we got.
-        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-        dict[NSLocalizedDescriptionKey] = @"Failed to initialize the application's saved data";
-        dict[NSLocalizedFailureReasonErrorKey] = failureReason;
-        dict[NSUnderlyingErrorKey] = error;
-        error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:9999 userInfo:dict];
-        // Replace this with code to handle the error appropriately.
-        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    }
-    
-    return _persistentStoreCoordinator;
 }
 
 
-- (NSManagedObjectContext *)managedObjectContext {
-    // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.)
-    if (_managedObjectContext != nil) {
-        return _managedObjectContext;
-    }
++(void)downloadDataFromURL:(NSURL *)url withCompletionHandler:(void (^)(NSData *))completionHandler{
+    // Instantiate a session configuration object.
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     
-    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
-    if (!coordinator) {
-        return nil;
-    }
-    _managedObjectContext = [[NSManagedObjectContext alloc] init];
-    [_managedObjectContext setPersistentStoreCoordinator:coordinator];
-    return _managedObjectContext;
-}
-
-#pragma mark - Core Data Saving support
-
-- (void)saveContext {
-    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-    if (managedObjectContext != nil) {
-        NSError *error = nil;
-        if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
-            // Replace this implementation with code to handle the error appropriately.
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
+    // Instantiate a session object.
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
+    
+    // Create a data task object to perform the data downloading.
+    NSURLSessionDataTask *task = [session dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        
+        if (error != nil) {
+            // If any error occurs then just display its description on the console.
+            NSLog(@"%@", [error localizedDescription]);
         }
-    }
+        else{
+            // If no error occurs, check the HTTP status code.
+            NSInteger HTTPStatusCode = [(NSHTTPURLResponse *)response statusCode];
+            
+            // If it's other than 200, then show it on the console.
+            if (HTTPStatusCode != 200) {
+                NSLog(@"HTTP status code = %ld", (long)HTTPStatusCode);
+            }
+            
+            // Call the completion handler with the returned data on the main thread.
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                completionHandler(data);
+            }];
+        }
+    }];
+    
+    // Resume the task.
+    [task resume];
 }
-
 
 @end

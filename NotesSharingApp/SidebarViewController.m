@@ -11,9 +11,20 @@
 #import "AboutViewController.h"
 #import "rateUsViewController.h"
 #import "inviteFriendsViewController.h"
+#import "DataManger.h"
+#import "ViewController.h"
+#import "titleCell.h"
+#import "UIImageView+WebCache.h"
+#import "ChangeProfileViewController.h"
 
-@interface SidebarViewController ()
-//@property(nonatomic) BOOL clearsSelectionOnViewWillAppear __OSX_AVAILABLE_STARTING(__MAC_NA, __IPHONE_3_2);
+@interface SidebarViewController ()<DataManageDelegate>
+
+@property(nonatomic,strong)titleCell *customCell;
+@property(nonatomic,strong)UIImageView *imageView;
+@property(nonatomic,strong)UIImageView *bgimg;
+@property(nonatomic,strong)UILabel *lblusename;
+@property(nonatomic,strong)UIView *viewUserProfile;
+@property(nonatomic,strong)NSData *imagedata;
 @end
 
 @implementation SidebarViewController {
@@ -35,21 +46,87 @@
     //hide table lines
     [self.tableView setSeparatorColor:[UIColor clearColor]];
     
+    [[DataManger sharedmanager]setDatamanagerdelegate:self];
+    
     menuItems = @[@"title", @"Notes", @"Folder",@"line", @"About NoteShare", @"Terms And Conditions", @"Notification Center", @"Rate Us", @"Like Us On Facebook",@"Send Feedback",@"Invite Friends",@"Settings",@"Logout"];
     
+
+    //Get profile pic of user
+    [self addUi];
     
-    /*
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
-    if (indexPath) {
-        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+}
+-(void)addUi
+{
+    _viewUserProfile=[[UIView alloc]initWithFrame:CGRectMake(-22, -22,self.view.frame.size.width, 112)];
+    
+    if (_imagedata==nil) {
+        _viewUserProfile .backgroundColor=[UIColor colorWithRed:(246.0/255) green:(65.0/255) blue:(79.0/255) alpha:(1.0)];
     }
-    */
+    else
+    {
+        _viewUserProfile .backgroundColor=[UIColor clearColor];
+        
+    }
+    
+    
+    
+    _imageView=[[UIImageView  alloc]initWithFrame:CGRectMake(30, 30,70, 70)];
+    _imageView.backgroundColor=[UIColor clearColor];
+    _imageView.layer.cornerRadius=35.0f;
+    _imageView.layer.borderWidth=2.0f;
+    _imageView.layer.borderColor=[UIColor whiteColor].CGColor;
+    _imageView.clipsToBounds=YES;
+    
+    
+    UIButton *imgBtn=[[UIButton  alloc]initWithFrame:CGRectMake(30, 30,70, 70)];
+    [imgBtn addTarget:self action:@selector(imageBtn:) forControlEvents:UIControlEventTouchUpInside];
+    imgBtn.backgroundColor=[UIColor clearColor];
+    imgBtn.layer.cornerRadius=35.0f;
+    imgBtn.layer.borderWidth=2.0f;
+    imgBtn.layer.borderColor=[UIColor whiteColor].CGColor;
+    imgBtn.clipsToBounds=YES;
+    
+    _lblusename=[[UILabel alloc]initWithFrame:CGRectMake(112,30,self.view.frame.size.width-112,70)];
+    
+    
+    _lblusename.textColor=[UIColor whiteColor];
+    [_viewUserProfile addSubview:_bgimg];
+    [_viewUserProfile addSubview:_lblusename];
+    [_viewUserProfile addSubview:imgBtn];
+    [_viewUserProfile addSubview:_imageView];
+    
+    if ([[DataManger sharedmanager] getProfileImageStatus])
+    {
+      [_imageView setImage:[UIImage imageWithData:[[DataManger sharedmanager] getProfileImage]]];
+    }
+    else{
+        [_imageView setImage:[UIImage imageNamed:@"userdefault_bg.png"]];
+    }
+    
+    UserDetail *detail=[[DataManger sharedmanager]getLoogedInUserdetail];
+    NSLog(@"%@",detail.userName);
+    
+    _lblusename.text=[NSString stringWithFormat:@"%@",detail.userName];
+    
+    [self.view addSubview:_viewUserProfile];
     
 }
 
+-(IBAction)imageBtn:(id)sender{
+
+
+    ChangeProfileViewController *vc=[[ChangeProfileViewController alloc]initWithNibName:@"ChangeProfileViewController" bundle:nil];
+    
+    [self presentViewController:vc animated:YES completion:nil];
+
+}
+
+//
+
 - (void)viewWillAppear:(BOOL)animated{
    
-  // [ self setClearsSelectionOnViewWillAppear:NO ];
+    //Get profile pic of user
+    [self addUi];
     
 }
 
@@ -86,15 +163,19 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
+    
     NSString *CellIdentifier = [menuItems objectAtIndex:indexPath.row];
+    
+    
     selected=indexPath.row;
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    
+     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
-    //change bg color of selected cell
     UIView *myBackView = [[UIView alloc] initWithFrame:cell.frame];
-   // myBackView.backgroundColor = [UIColor colorWithRed:(255/255.0) green:(119/255.0) blue:(121/255.0) alpha:1];
     cell.selectedBackgroundView = myBackView;
     
+
     return cell;
 }
 
@@ -121,7 +202,38 @@
         [self alertStatus:@"Are you sure you want to logout?" :@"LOGOUT" :0];
     }
     
- 
+
+}
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    
+    switch (buttonIndex)
+    {
+        case 0:
+        {
+            NSLog(@"0");//yes
+            
+            [[DataManger sharedmanager]logoutUser];
+            
+            
+            NSString * storyboardName = @"Main";
+            NSString * viewControllerID = @"signIn";
+            UIStoryboard * storyboard = [UIStoryboard storyboardWithName:storyboardName bundle:nil];
+            ViewController * controller = (ViewController *)[storyboard instantiateViewControllerWithIdentifier:viewControllerID];
+            [self presentViewController:controller animated:YES completion:nil];
+            
+        }
+            break;
+        case 1:
+        {
+            NSLog(@"1");//no
+        }
+            break;
+            
+        default:
+            break;
+    }
 }
 
 - (void) prepareForSegue: (UIStoryboardSegue *) segue sender: (id) sender{
@@ -295,6 +407,24 @@
     
    
 }
+
+
+-(void)updateProfilePic
+{
+    
+    if ([[DataManger sharedmanager] getProfileImageStatus])
+    {
+        [_imageView setImage:[UIImage imageWithData:[[DataManger sharedmanager] getProfileImage]]];
+    }
+    else{
+        [_imageView setImage:[UIImage imageNamed:@"userdefault_bg.png"]];
+    }
+    
+    
+    
+}
+
+
 
 
 @end

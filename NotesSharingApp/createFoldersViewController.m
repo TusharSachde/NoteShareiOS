@@ -25,10 +25,22 @@
 #define HEADER_IDENTIFIER @"WaterfallHeader"
 #define FOOTER_IDENTIFIER @"WaterfallFooter"
 #import "SMCThemesSupport.h"
+#import "DataManger.h"
 
 #import "DBManager.h"
 
-@interface createFoldersViewController ()<SlidePopUpViewDelegate,PopUpViewDelegate1,UIAlertViewDelegate>
+@interface createFoldersViewController ()<SlidePopUpViewDelegate,PopUpViewDelegate1,UIAlertViewDelegate,SWRevealViewControllerDelegate>
+{
+
+    NSIndexPath *indexPath2;
+    NSString *MyCount;
+    NSUInteger elements;
+    NSArray *sortedArray;
+    UILabel *count;
+    UIView *viewLeftnavBar;
+    UIButton *btn;
+
+}
 
 @property (nonatomic,assign) NSInteger temp;
 @property (nonatomic,assign) NSInteger pop;
@@ -58,6 +70,13 @@
 @property(nonatomic,strong)NSString *MyCount;
 @property(nonatomic,strong)UILabel *count;
 
+@property (strong, nonatomic) IBOutlet UITextField *viewSearch;
+@property (strong, nonatomic) IBOutlet UIButton *searchBtn;
+@property(nonatomic,strong)UIView *searchView;
+@property (nonatomic) UITextField *txtSearch;
+
+
+
 @end
 
 @implementation createFoldersViewController
@@ -67,40 +86,23 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    _dbmanager=[[DBManager alloc]init];
-    
-    [_dbmanager createDbANdTableFolder];
-    
-#pragma mark-get allNote
-    _arrAll=[_dbmanager getRecordsFolder:[_dbmanager getDbFilePathFolder]];
-    
-    NSLog(@"%@",_arrAll);
-    
-    
-    
-#pragma mark-get all uptaedNote
-    
-    _arrAll1=[_dbmanager getRecordsFolder:[_dbmanager getDbFilePathFolder]];
-    
-    for (DBNoteItems *noteItems in _arrAll1)
-    {
-        NSLog(@"Updated values:{%@ \n  %@ \n %@ \n %@\n %@ \n}",noteItems.create_folder_Id,noteItems.folder_Title,noteItems.folder_Created_Time,noteItems.folder_Deleted,noteItems.folder_Modified_Time);
-        
-    }
-    
-    
-#pragma mark-DeleteNote
-    
-    // DBNoteItems *noteItems1 =arrAll1[0];
-    //[_dbManager deleteNote:[_dbManager getDbFilePath] withNoteItem:noteItems1];
-    
-    
-    
     _viewArr=[[NSMutableArray alloc]init];
     _sortArr=[[NSMutableArray alloc]init];
     _arrNotes=[[NSMutableArray alloc]init];
     _colorArr=[[NSArray alloc]init];
     
+    
+    
+    
+    _dbmanager=[[DBManager alloc]init];
+    
+    [_dbmanager createDbANdTableFolder];
+    
+    [self getFolderdata];
+    
+#pragma mark-DeleteNote
+    
+
     _colorArr=[NSArray arrayWithObjects:@"#ffffff",@"#FF2C08",@"#FFFF00",@"#2C00E6",@"#FFC6E6",@"#C03067",@"#996633",@"#00FFFF",@"#FF00FF",@"#7F007F",@"#01A2FF",@"#00FF00",@"#E4EBAD",@"#D8A9E8",nil];
     
     
@@ -109,13 +111,9 @@
     
     self.tbl.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     //sidebar menu open
-    SWRevealViewController *revealViewController = self.revealViewController;
-    if ( revealViewController )
-    {
-        [self.sidebarButton setTarget: self.revealViewController];
-        [self.sidebarButton setAction: @selector( revealToggle: )];
-        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-    }
+    SWRevealViewController *revealController = [self revealViewController];
+    
+    revealController.delegate=self;
     
     [self getLeftBtn];
     
@@ -149,6 +147,196 @@
     _selectedIndexPath=0;
     
     
+    // search view
+    self.searchView = [[UIView alloc]initWithFrame:CGRectMake(0, -40, self.view.frame.size.width, 40)];
+    
+    self.searchView.backgroundColor=[UIColor colorWithRed:(236.0/255) green:(236.0/255) blue:(236.0/255) alpha:(1.0)];
+    
+    [self.tbl addSubview:self.searchView];
+    
+    self.viewSearch = [[UITextField alloc]initWithFrame:CGRectMake(20, 5, self.view.frame.size.width-60, 28)];
+    //To make the border look very close to a UITextField
+    [self.viewSearch.layer setBorderColor:[[[UIColor grayColor] colorWithAlphaComponent:0.5] CGColor]];
+    [self.viewSearch.layer setBorderWidth:1.0];
+    
+    //The rounded corner part, where you specify your view's corner radius:
+    self.viewSearch.layer.cornerRadius = 5;
+    self.viewSearch.clipsToBounds = YES;
+    
+    self.viewSearch.backgroundColor=[UIColor whiteColor];
+    self.searchBtn=[[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width-35,4, 25, 25)];
+    self.viewSearch.delegate=self;
+    
+    self.viewSearch.placeholder=@"  Search Text...";
+    [self.viewSearch addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    
+    [self.searchBtn setBackgroundImage:[UIImage imageNamed:@"search icon.png"] forState:UIControlStateNormal];
+    [self.searchBtn addTarget:self action:@selector(searchText:) forControlEvents:UIControlEventTouchUpInside];
+    [self.searchView addSubview:self.viewSearch];
+    [self.searchView addSubview:self.searchBtn];
+    
+    
+}
+
+-(void)searchText:(id)sender{
+    
+    _arrAll=[NSMutableArray arrayWithArray:[_dbmanager getRecordsWithSearch:[_dbmanager getDbFilePath] searchText:self.viewSearch.text]];
+    
+    
+    //[self getFolderdata];
+    
+    
+}
+
+-(void)textFieldDidChange :(UITextField *)theTextField{
+    
+    
+    _arrAll=[NSMutableArray arrayWithArray:[_dbmanager getRecordsWithSearchFolder:[_dbmanager getDbFilePathFolder] searchText:theTextField.text]];
+    
+    [self updatenotelistfromDb];
+    
+    [self.tbl reloadData];
+    
+    
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView{
+    
+    
+    _arrAll=[NSMutableArray arrayWithArray:[_dbmanager getRecordsWithSearch:[_dbmanager getDbFilePath] searchText:textView.text]];
+    //[self getFolderdata];
+    
+    
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (decelerate) {
+        [self.viewSearch resignFirstResponder];
+    }
+    
+    
+    count=[[UILabel alloc]initWithFrame:CGRectMake(132.0, 10.0, 90, 20)];
+    count.tag = 7;
+    count.text=MyCount;
+    count.textColor=[UIColor whiteColor];
+    count.font=[UIFont systemFontOfSize:14.0 weight:1.0];
+    
+    
+    if(scrollView.contentOffset.y < 0)
+    {
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.2];
+        
+        self.tbl.contentInset = UIEdgeInsetsMake(40, 0, 0, 0);
+        [viewLeftnavBar addSubview:count];
+        [UIView commitAnimations];
+        
+    } else {
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.2];
+        
+        [self.viewSearch resignFirstResponder];
+        self.tbl.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+        for (count in [viewLeftnavBar subviews]) {
+            if (count.tag == 7) {
+                [count removeFromSuperview];
+            }
+        }
+        [self.txtSearch setText:@""];
+        
+        
+        [UIView commitAnimations];
+        
+        
+    }
+    
+    
+    
+}
+
+-(void)updatenotelistfromDb{
+    
+#pragma mark-Note list detail
+    
+    [_arrNotes removeAllObjects];
+    
+    NSMutableArray *arrData=[[NSMutableArray alloc]init];
+    
+    
+    
+    for (DBNoteItems *noteItem in _arrAll)
+    {
+        
+        SlideDataModel *model=[[SlideDataModel alloc]init];
+        model.cellName=noteItem.folder_Title;
+        model.cellId= noteItem.create_folder_Id.integerValue;
+        
+        
+        
+        model.modifiedtime=noteItem.folder_Modified_Time;
+        model.createdtime=noteItem.folder_Created_Time;
+        
+        
+            
+            [_arrNotes addObject:model];
+            [arrData addObject:noteItem];
+
+        
+    }
+    
+    
+    MyCount=[NSString stringWithFormat:@"FOLDER (%i)",(int)_arrNotes.count];
+    _arrAll=[[NSMutableArray alloc]initWithArray:arrData];
+    
+    [_tbl reloadData];
+}
+
+
+
+-(void)getFolderdata
+{
+    
+    [_arrNotes removeAllObjects];
+#pragma mark-get allNote
+    _arrAll=[_dbmanager getRecordsFolder:[_dbmanager getDbFilePathFolder]];
+    
+    NSLog(@"%@",_arrAll);
+    
+    
+    
+#pragma mark-get all uptaedNote
+    
+    _arrAll1=[_dbmanager getRecordsFolder:[_dbmanager getDbFilePathFolder]];
+    
+    for (DBNoteItems *noteItems in _arrAll1)
+    {
+        NSLog(@"Updated values:{%@ \n  %@ \n %@ \n %@\n %@ \n}",noteItems.create_folder_Id,noteItems.folder_Title,noteItems.folder_Created_Time,noteItems.folder_Deleted,noteItems.folder_Modified_Time);
+        
+    }
+    
+    
+#pragma mark-Note list detail
+    
+    
+    for (DBNoteItems *noteItem in _arrAll)
+    {
+        
+        SlideDataModel *model=[[SlideDataModel alloc]init];
+        model.cellName=noteItem.folder_Title;
+        //        model.cellDetail=[dict valueForKey:@"cellDetail"];
+        model.cellId= noteItem.create_folder_Id.integerValue;
+        //        model.colours=[dict valueForKey:@"colours"];
+        model.modifiedtime=noteItem.folder_Modified_Time;
+        model.createdtime=noteItem.folder_Created_Time;
+        //        model.timebomb=[dict valueForKey:@"timebomb"];
+        
+        
+        [_arrNotes addObject:model];
+    }
+    
+     MyCount=[NSString stringWithFormat:@"FOLDER (%i)",(int)_arrNotes.count];
+    [_tbl reloadData];
+    
 }
 
 -(UIStatusBarStyle)preferredStatusBarStyle{
@@ -158,6 +346,7 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    
 }
 
 -(void)getLeftBtn{
@@ -232,28 +421,7 @@
     
     
 #pragma mark-Note list detail
-    
-#pragma mark-Note list detail
-    
-    
-    for (DBNoteItems *noteItem in _arrAll)
-    {
-        
-        SlideDataModel *model=[[SlideDataModel alloc]init];
-        model.cellName=noteItem.folder_Title;
-        //        model.cellDetail=[dict valueForKey:@"cellDetail"];
-        model.cellId= noteItem.create_folder_Id.integerValue;
-        //        model.colours=[dict valueForKey:@"colours"];
-        model.modifiedtime=noteItem.folder_Modified_Time;
-        model.createdtime=noteItem.folder_Created_Time;
-        //        model.timebomb=[dict valueForKey:@"timebomb"];
-        
-        
-        [_arrNotes addObject:model];
-    }
-    
-   // MyCount=[NSString stringWithFormat:@"NOTES (%i)",(int)_arrNotes.count];
-    [_tbl reloadData];
+
     
 }
 
@@ -343,8 +511,8 @@
     
     cell.displayString = [NSString stringWithFormat:@"%ld", (long)indexPath.item];
     
-    cell.lbltitle.text=model.cellName;//[_cellName si_objectOrNilAtIndex:indexPath.item];
-    cell.lblDetail.text=model.cellDetail;//[_cellDeatil si_objectOrNilAtIndex:indexPath.item];
+    cell.lbltitle.text=model.cellName;
+    cell.lblDetail.text=model.cellDetail;
     cell.contentView.backgroundColor=[UIColor si_getColorWithHexString:model.colours];
     cell.lbltitle.numberOfLines=2;
     cell.lbltitle.lineBreakMode=NSLineBreakByWordWrapping;
@@ -456,13 +624,49 @@
     
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Folder title" delegate:self cancelButtonTitle:@"Continue" otherButtonTitles:@"Cancel",nil];
     alert.delegate=self;
-    
+    alert.tag=2000;
     alert.alertViewStyle = UIAlertViewStylePlainTextInput;
     UITextField * alertTextField = [alert textFieldAtIndex:0];
     alertTextField.keyboardType = UIKeyboardTypeDefault;
     alertTextField.placeholder = @"Folder title here";
     [alert show];
 
+}
+
+-(NSString*)date2strLocal:(NSDate*)myNSDateInstance onlyDate:(BOOL)onlyDate{
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    if (onlyDate)
+    {
+        [formatter setDateFormat:@"dd MMM yyyy"];
+    }
+    else
+    {
+        [formatter setDateFormat: @"dd MMM yyyy hh:mm a"];
+    }
+    
+    //Optionally for time zone conversions
+    [formatter setTimeZone:[NSTimeZone localTimeZone]];
+    
+    NSString *stringFromDate = [formatter stringFromDate:myNSDateInstance];
+    return stringFromDate;
+}
+
+
+-(NSDate*)str2date:(NSString*)myNSDateInstance onlyDate:(BOOL)onlyDate
+{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    if (onlyDate) {
+        [formatter setDateFormat:@"yyyy-MM-dd"];
+    }else{
+        [formatter setDateFormat: @"yyyy-MM-dd HH:mm:ss z"];
+    }
+    
+    //Optionally for time zone conversions
+    // [formatter setTimeZone:[NSTimeZone timeZoneWithName:@"GMT"]];
+    
+    NSDate *stringFromDate = [formatter dateFromString:myNSDateInstance];
+    return stringFromDate;
 }
 
 -(NSString*)date2str:(NSDate*)myNSDateInstance onlyDate:(BOOL)onlyDate{
@@ -482,48 +686,71 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     
+    if (alertView.tag==2000) {
+        
     
     
     switch (buttonIndex)
     {
         case 0:
         {
-            NSString *strCreateTime=[self date2str:[NSDate date] onlyDate:NO];
             
-            NSString *strTitle=[alertView textFieldAtIndex:0].text;
-            NSLog(@"ADDED TITILE:%@",strTitle);
+           
+             NSString *strTitle=[alertView textFieldAtIndex:0].text;
+           
+           
             
-            
+             if (![strTitle isEqualToString:@""]) {
+                
+                NSString *strCreateTime=[self date2str:[NSDate date] onlyDate:NO];
 #pragma mark-insert note
             
-            int success= [_dbmanager insert:[_dbmanager getDbFilePathFolder] withName:strTitle folder_color:@"ffffff" folder_created_time:strCreateTime folder_modified_time:strCreateTime folder_time_bomb:0 folder_reminder_time:strCreateTime user_id:@"9234" note_id:@"" note_element:@"" server_key:@"" ];
+            int success= [_dbmanager insert:[_dbmanager getDbFilePathFolder] withName:strTitle folder_color:@"ffffff" folder_created_time:strCreateTime folder_modified_time:strCreateTime folder_time_bomb:0 folder_reminder_time:strCreateTime user_id:[[DataManger sharedmanager] getUserId] note_id:@"" note_element:@"" server_key:@"" ];
             
             if (success==0)
             {
-                NSLog(@"Folder created successfully");
-                
-                NSArray *arrItems=[_dbmanager getRecordsFolder:[_dbmanager getDbFilePathFolder] where:strTitle];
-                DBNoteItems *noteItems=[arrItems si_objectOrNilAtIndex:0];
-                
-                NSLog(@"{%@ \n  %@ \n %@\n}",noteItems.create_folder_Id,noteItems.folder_Title,noteItems.folder_Created_Time);
                 
                 
+               
+                    
+                    NSLog(@"Folder created successfully");
+                    
+                    NSArray *arrItems=[_dbmanager getRecordsFolder:[_dbmanager getDbFilePathFolder] where:strTitle];
+                    DBNoteItems *noteItems=[arrItems si_objectOrNilAtIndex:0];
+                    
+                    NSLog(@"{%@ \n  %@ \n %@\n}",noteItems.create_folder_Id,noteItems.folder_Title,noteItems.folder_Created_Time);
+                    
+                    
+                    
+                    for (DBNoteItems *noteItem in arrItems)
+                    {
+                        
+                        SlideDataModel *model=[[SlideDataModel alloc]init];
+                        
+                        model.cellName=noteItem.folder_Title;
+                        //        model.cellDetail=[dict valueForKey:@"cellDetail"];
+                        model.cellId= noteItem.create_folder_Id.integerValue;
+                        //        model.colours=[dict valueForKey:@"colours"];
+                        model.modifiedtime=noteItem.folder_Modified_Time;
+                        model.createdtime=noteItem.folder_Created_Time;
+                        [_arrNotes addObject:model];
+                    }
+                    [_tbl  reloadData];
                 
-                for (DBNoteItems *noteItem in arrItems)
+                
+            }
+                
+                
+            }
+                
+                else//alert error
                 {
                     
-                    SlideDataModel *model=[[SlideDataModel alloc]init];
+                    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Field cannot be blank" delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+                    [alert show];
+                    [_tbl reloadData];
                     
-                    model.cellName=noteItem.folder_Title;
-                    //        model.cellDetail=[dict valueForKey:@"cellDetail"];
-                    model.cellId= noteItem.create_folder_Id.integerValue;
-                    //        model.colours=[dict valueForKey:@"colours"];
-                    model.modifiedtime=noteItem.folder_Modified_Time;
-                    model.createdtime=noteItem.folder_Created_Time;
-                    [_arrNotes addObject:model];
                 }
-                [_tbl  reloadData];
-            }
             
         }
             break;
@@ -535,8 +762,44 @@
             
         default:
             break;
+            }
+        
             
 }
+    
+    else if (alertView.tag==3000)
+    {
+    
+        switch (buttonIndex) {
+            
+    case 0:
+        {
+            
+            //cancel
+            break;
+        }
+    case 1:
+        {
+
+                [_dbmanager deleteFolder:[_dbmanager getDbFilePathFolder] withNoteItem:[NSString stringWithFormat:@"%li",(long)btn.tag]];
+            
+                [self getFolderdata];
+                [_tbl reloadData];
+            
+        break;
+        }
+
+    }
+    }
+    
+    
+    else{
+
+        [_tbl reloadData];
+    
+    }
+    
+    
 }
 
 - (IBAction)view:(id)sender {
@@ -879,10 +1142,12 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
+    
+    //UITableViewCell *cellDetail = [tableView dequeueReusableCellWithIdentifier:@"FolderCell"];
+    
     UITableViewCell *cell1 = [tableView dequeueReusableCellWithIdentifier:@"FolderCell"];
     
-    UITableViewCell *cellDetail = [tableView dequeueReusableCellWithIdentifier:@"FolderCell"];
-    
+  
     UITableViewCell *cellGrid = [tableView dequeueReusableCellWithIdentifier:@"FolderGridCell"];
     
     //view
@@ -911,9 +1176,9 @@
             cell.selectedBackgroundView = myBackView;
             NSString *firstCapChar = [[model.cellName substringToIndex:1] capitalizedString];
             NSString *cappedString = [model.cellName stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:firstCapChar];
-            cell.nameOfFolder.text = cappedString;//[self.cellName si_objectOrNilAtIndex:indexPath.row];
-            cell.notesDesc.text =@"";// [self.cellDeatil objectAtIndex:indexPath.row];
-            cell.timeStamp.text =@"";// [self.cellTimeDetail objectAtIndex:indexPath.row];
+            cell.nameOfFolder.text = cappedString;
+            cell.notesDesc.text =@"";
+            cell.timeStamp.text =@"";
             cell.contentView.backgroundColor=[UIColor si_getColorWithHexString:model.colours];
             return cell;
             
@@ -927,14 +1192,19 @@
             //list detail
             
             
-            FolderTableViewCell *cell=(FolderTableViewCell*)cellDetail;
+            FolderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FolderCell"];
+            
             
             if (cell == nil) {
-                cell = [[FolderTableViewCell alloc] init];
+                cell = [[FolderTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"FolderCell"];
             }
+
             
-            cell.shareBtn.hidden=NO;
+            
+            cell.shareBtn.hidden=YES;
             cell.deleteBtn.hidden=NO;
+            
+            
             
             SlideDataModel *model=[_arrNotes si_objectOrNilAtIndex:indexPath.row];
             
@@ -945,10 +1215,27 @@
             cell.selectedBackgroundView = myBackView;
             NSString *firstCapChar = [[model.cellName substringToIndex:1] capitalizedString];
             NSString *cappedString = [model.cellName stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:firstCapChar];
-            cell.nameOfFolder.text = cappedString;//[self.cellName si_objectOrNilAtIndex:indexPath.row];
-            cell.notesDesc.text = model.cellDetail;//[self.cellDeatil si_objectOrNilAtIndex:indexPath.row];
-            cell.timeStamp.text = model.createdtime;//[self.cellTimeDetail si_objectOrNilAtIndex:indexPath.row];
+            cell.nameOfFolder.text = cappedString;
+            cell.notesDesc.text = model.cellDetail;
+            //cell.timeStamp.text = model.createdtime;
+            
+            
+            
+            NSDate *dateGmt=[self str2date:model.createdtime onlyDate:NO];
+            
+            NSString *strDate=[self date2strLocal:dateGmt onlyDate:NO];
+            
+            cell.timeStamp.text=[strDate uppercaseString];
+
+            
             cell.contentView.backgroundColor=[UIColor si_getColorWithHexString:model.colours];
+            
+            cell.deleteBtn.tag=model.cellId;
+            
+            [cell.deleteBtn addTarget:self action:@selector(deleteFolder:) forControlEvents:UIControlEventTouchUpInside];
+            
+
+            
             return cell;
             
         }
@@ -989,9 +1276,16 @@
                 NSString *firstCapChar = [[model.cellName substringToIndex:1] capitalizedString];
                 NSString *cappedString = [model.cellName stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:firstCapChar];
                 cell.lblDetail1.text = cappedString;
-                cell.lblTitle1.text=model.cellDetail;//[_cellDeatil si_objectOrNilAtIndex:convertedIndex];
+                cell.lblTitle1.text=model.cellDetail;
                 cell.view1.backgroundColor=[UIColor si_getColorWithHexString:model.colours];
-                cell.timeLbl1.text=model.createdtime;
+                //cell.timeLbl1.text=model.createdtime;
+                
+                
+                NSDate *dateGmt=[self str2date:model.createdtime onlyDate:NO];
+                
+                NSString *strDate=[self date2strLocal:dateGmt onlyDate:NO];
+                
+                cell.timeLbl1.text=[strDate uppercaseString];
                 
                 
             }
@@ -1010,9 +1304,16 @@
                 NSString *cappedString = [model.cellName stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:firstCapChar];
                 cell.lblDetail2.text = cappedString;
                 
-                cell.lblTitle2.text=model.cellDetail;//[_cellDeatil si_objectOrNilAtIndex:convertedIndex+1];
+                cell.lblTitle2.text=model.cellDetail;
                 cell.view2.backgroundColor=[UIColor si_getColorWithHexString:model.colours];
-                cell.timeLbl2.text=model.createdtime;
+               // cell.timeLbl2.text=model.createdtime;
+                
+                NSDate *dateGmt=[self str2date:model.createdtime onlyDate:NO];
+                
+                NSString *strDate=[self date2strLocal:dateGmt onlyDate:NO];
+                
+                cell.timeLbl2.text=[strDate uppercaseString];
+
             }
             
             else
@@ -1092,7 +1393,55 @@
     
 }
 
+-(IBAction)deleteFolder:(id)sender
+{
+    
+    btn=(UIButton*)sender;
+    
+    NSLog(@"Folder Id Is:%ld",(long)btn
+          .tag);
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Delete" message:@"Are you sure you want to delete this note?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: @"OK",nil];
+    [alert show];
+    alert.tag=3000;
+    
+    
+    
+
+    
+}
+
 - (IBAction)sideBar:(id)sender {
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    
+        
+}
+
+#pragma mark-DrawerDelegate
+-(void)revealController:(SWRevealViewController *)revealController drawerStatus:(DRAWERSTATUS)status
+{
+    
+    switch (status) {
+        case OPEN:
+            
+        {
+            self.view.userInteractionEnabled = NO;
+            
+        }
+            break;
+        case CLOSE:
+            
+        {
+            self.view.userInteractionEnabled = YES;
+            
+        }
+            break;
+            
+        default:
+            break;
+    }
 }
 
 

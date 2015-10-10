@@ -24,6 +24,7 @@
 
 
 @property (strong, nonatomic) IBOutlet UITextField *viewSearch;
+@property (strong, nonatomic) IBOutlet UIButton *searchBtn;
 
 //buttons
 - (IBAction)sort:(id)sender;

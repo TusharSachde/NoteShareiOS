@@ -648,15 +648,41 @@ static NSString * const SWSegueRightIdentifier = @"sw_right";
 
 - (void)revealToggleAnimated:(BOOL)animated
 {
+    
+    
+   
+    
     FrontViewPosition toogledFrontViewPosition = FrontViewPositionLeft;
     if (_frontViewPosition <= FrontViewPositionLeft)
         toogledFrontViewPosition = FrontViewPositionRight;
     
     [self setFrontViewPosition:toogledFrontViewPosition animated:animated];
+    
+    if (_frontViewPosition==FrontViewPositionRight)
+    {
+         NSLog(@"open drawer");
+        
+        if ([_delegate respondsToSelector:@selector(revealController:drawerStatus:)])
+        {
+            [_delegate revealController:self drawerStatus:OPEN];
+        }
+        
+    }
+    else if (_frontViewPosition==FrontViewPositionLeft)
+    {
+         NSLog(@"close drawer");
+        if ([_delegate respondsToSelector:@selector(revealController:drawerStatus:)])
+        {
+            [_delegate revealController:self drawerStatus:CLOSE];
+        }
+    }
 }
 
 - (void)rightRevealToggleAnimated:(BOOL)animated
 {
+    
+      NSLog(@"Right Open drawer");
+    
     FrontViewPosition toogledFrontViewPosition = FrontViewPositionLeft;
     if (_frontViewPosition >= FrontViewPositionLeft)
         toogledFrontViewPosition = FrontViewPositionLeftSide;
@@ -901,6 +927,25 @@ static NSString * const SWSegueRightIdentifier = @"sw_right";
         xLocation <= _draggableBorderWidth || xLocation >= (width - _draggableBorderWidth) );
 
     // allow gesture only within the bounds defined by the draggableBorderWidth property
+    
+    if (_frontViewPosition==FrontViewPositionLeft)
+    {
+        NSLog(@"Open");
+        if ([_delegate respondsToSelector:@selector(revealController:drawerStatus:)])
+        {
+            [_delegate revealController:self drawerStatus:OPEN];
+        }
+        
+    }
+    else if (_frontViewPosition==FrontViewPositionRight) {
+        
+        NSLog(@"Close");
+        if ([_delegate respondsToSelector:@selector(revealController:drawerStatus:)])
+        {
+            [_delegate revealController:self drawerStatus:CLOSE];
+        }
+
+    }
     return draggableBorderAllowing ;
 }
 

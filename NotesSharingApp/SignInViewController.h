@@ -25,6 +25,7 @@
 - (IBAction)facebookButton:(id)sender;
 - (IBAction)gmailButton:(id)sender;
 
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *loader;
 
 
 //gmail

@@ -9,7 +9,7 @@
 #import "rateUsViewController.h"
 #import "SWRevealViewController.h"
 
-@interface rateUsViewController ()
+@interface rateUsViewController ()<SWRevealViewControllerDelegate>
 
 @end
 
@@ -19,13 +19,9 @@
     [super viewDidLoad];
     
     
-    SWRevealViewController *revealViewController = self.revealViewController;
-    if ( revealViewController )
-    {
-        [self.sidebarButton setTarget: self.revealViewController];
-        [self.sidebarButton setAction: @selector( revealToggle: )];
-        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-    }
+    SWRevealViewController *revealController = [self revealViewController];
+    
+    revealController.delegate=self;
     
      [self getLeftBtn];
 }
@@ -70,6 +66,30 @@
 - (IBAction)sideBar:(id)sender{
 }
 
+#pragma mark-DrawerDelegate
+-(void)revealController:(SWRevealViewController *)revealController drawerStatus:(DRAWERSTATUS)status
+{
+    
+    switch (status) {
+        case OPEN:
+            
+        {
+            self.view.userInteractionEnabled = NO;
+
+        }
+            break;
+        case CLOSE:
+            
+        {
+            self.view.userInteractionEnabled = YES;
+           
+        }
+            break;
+            
+        default:
+            break;
+    }
+}
 
 
 

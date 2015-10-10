@@ -9,12 +9,11 @@
 #import <UIKit/UIKit.h>
 
 
-extern NSString *selectedFolderID;
+extern NSString *viewVar;
 
 
 @interface GlobalVariablesViewController : UIViewController
 
-@property (retain, nonatomic) NSString  *selectedFolderID;
-
+@property (retain, nonatomic) NSString  *viewVar;
 
 @end

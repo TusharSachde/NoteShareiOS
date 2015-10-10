@@ -30,9 +30,9 @@ bool isPauseButton;
     _playButton.hidden=NO;
     _pauseButton.hidden=YES;
     
-        if ([_delegate respondsToSelector:@selector(didPlaycontrolTapped:isPlay:isPaused:inView:)])
+        if ([_delegate respondsToSelector:@selector(didPlaycontrolTapped:isPlay:isPaused:inView:atIndex:)])
         {
-            [_delegate didPlaycontrolTapped:_noteitemList isPlay:NO isPaused:YES inView:self];
+            [_delegate didPlaycontrolTapped:_noteitemList isPlay:NO isPaused:YES inView:self atIndex:_IndexOfCell];
         }
     
 }
@@ -42,10 +42,19 @@ bool isPauseButton;
     _playButton.hidden=YES;
     _pauseButton.hidden=NO;
     
-    if ([_delegate respondsToSelector:@selector(didPlaycontrolTapped:isPlay:isPaused:inView:)])
+    if ([_delegate respondsToSelector:@selector(didPlaycontrolTapped:isPlay:isPaused:inView: atIndex:)])
     {
-        [_delegate didPlaycontrolTapped:_noteitemList isPlay:YES isPaused:NO inView:self];
+        [_delegate didPlaycontrolTapped:_noteitemList isPlay:YES isPaused:NO inView:self atIndex:_IndexOfCell];
     }
 }
+- (IBAction)cellTapped:(id)sender
+{
+    
+    if ([_delegate respondsToSelector:@selector(didCellTapped:atIndex:)])
+    {
+        [_delegate didCellTapped:_noteitemList atIndex:_IndexOfCell];
+    }
+}
+
 
 @end

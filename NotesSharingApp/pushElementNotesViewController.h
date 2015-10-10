@@ -16,31 +16,31 @@
 #import "DBManager.h"
 
 
-typedef enum : NSUInteger {
-    AUDIO,
-    IMAGES,
-    TEXT,
-} NOTETYPE;
-
-
-
-@interface NoteListItem:NSObject
-{
-    
-    
-}
-
-@property(nonatomic,strong) UIImage *noteimage;
-@property(nonatomic,assign)NOTETYPE notetype;
-@property(nonatomic,strong)NSURL *audioPlayPath;
-@property(nonatomic,strong)NSString *imagePath;
-@property(nonatomic,strong)NSString *noteElementID;
-@property(nonatomic,strong)NSString *strAudioPlayPath;
-@property(nonatomic,strong)NSString *strAudioTotalTime;
-@property(nonatomic,strong)NSString *textString;
-@property(nonatomic,assign)BOOL isEdited;
-@property(nonatomic,assign)NSInteger positionIn;
-@end
+//typedef enum : NSUInteger {
+//    AUDIO,
+//    IMAGES,
+//    TEXT,
+//} NOTETYPE;
+//
+//
+//
+//@interface NoteListItem:NSObject
+//{
+//    
+//    
+//}
+//
+//@property(nonatomic,strong) UIImage *noteimage;
+//@property(nonatomic,assign)NOTETYPE notetype;
+//@property(nonatomic,strong)NSURL *audioPlayPath;
+//@property(nonatomic,strong)NSString *imagePath;
+//@property(nonatomic,strong)NSString *noteElementID;
+//@property(nonatomic,strong)NSString *strAudioPlayPath;
+//@property(nonatomic,strong)NSString *strAudioTotalTime;
+//@property(nonatomic,strong)NSString *textString;
+//@property(nonatomic,assign)BOOL isEdited;
+//@property(nonatomic,assign)NSInteger positionIn;
+//@end
 
 
 

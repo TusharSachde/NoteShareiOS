@@ -13,7 +13,7 @@
 #import "settingPopupScreenViewController.h"
 #import "settingPopSizeViewController.h"
 
-@interface settingSideBarViewController ()<PopUpViewDelegate>
+@interface settingSideBarViewController ()<PopUpViewDelegate,SWRevealViewControllerDelegate>
 {
 
 BOOL checkboxSelected;
@@ -31,27 +31,9 @@ BOOL checkboxSelected;
     self.title=@"SETTINGS";
     
     
-//    SWRevealViewController *revealViewController = self.revealViewController;
-//    if ( revealViewController )
-//    {
-//        [self.sidebarButton setTarget: self.revealViewController];
-//        [self.sidebarButton setAction: @selector( revealToggle: )];
-//        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-//    }
-    
-    
     SWRevealViewController *revealController = [self revealViewController];
     
-    
-    [revealController panGestureRecognizer];
-    [revealController tapGestureRecognizer];
-    
-    SWRevealViewController *revealViewController = self.revealViewController;
-    if ( revealViewController )
-    {
-        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-    }
-    
+    revealController.delegate=self;
     
   //default
     _defaultScreen.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
@@ -208,5 +190,30 @@ _fontLabel.text=((settingPopSizeViewController*)sender).sizeStr;
 - (IBAction)backUp:(id)sender {
 }
 
+
+#pragma mark-DrawerDelegate
+-(void)revealController:(SWRevealViewController *)revealController drawerStatus:(DRAWERSTATUS)status
+{
+    
+    switch (status) {
+        case OPEN:
+            
+        {
+            self.view.userInteractionEnabled = NO;
+            
+        }
+            break;
+        case CLOSE:
+            
+        {
+            self.view.userInteractionEnabled = YES;
+           
+        }
+            break;
+            
+        default:
+            break;
+    }
+}
 
 @end

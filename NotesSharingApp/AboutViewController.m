@@ -9,7 +9,7 @@
 #import "AboutViewController.h"
 #import "SWRevealViewController.h"
 
-@interface AboutViewController ()
+@interface AboutViewController ()<SWRevealViewControllerDelegate>
 
 @end
 
@@ -31,14 +31,9 @@
     
     [self getLeftBtn];
     
-    SWRevealViewController *revealViewController = self.revealViewController;
-    if ( revealViewController )
-    {
-        [self.sidebarButton setTarget: self.revealViewController];
-        [self.sidebarButton setAction: @selector( revealToggle: )];
-        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-    }
+    SWRevealViewController *revealController = [self revealViewController];
     
+    revealController.delegate=self;
     
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName : [UIColor whiteColor]};
 }
@@ -49,7 +44,6 @@
     viewLeftnavBar.backgroundColor=[UIColor clearColor];
     
     UIButton *Btn=[[UIButton alloc]initWithFrame:CGRectMake(0.0, 5.0, 30, 30)];
-    // Btn.backgroundColor = [UIColor yellowColor];
     
     Btn.imageView.image=[UIImage imageNamed:@"sidebarIcon40x40.png"];
     
@@ -85,6 +79,31 @@
 
 -(IBAction)sideBar:(id)sender{
 
+}
+
+#pragma mark-DrawerDelegate
+-(void)revealController:(SWRevealViewController *)revealController drawerStatus:(DRAWERSTATUS)status
+{
+    
+    switch (status) {
+        case OPEN:
+            
+        {
+            self.view.userInteractionEnabled = NO;
+            
+        }
+            break;
+        case CLOSE:
+            
+        {
+            self.view.userInteractionEnabled = YES;
+            
+        }
+            break;
+            
+        default:
+            break;
+    }
 }
 
 @end

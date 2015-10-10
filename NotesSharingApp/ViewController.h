@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import <FacebookSDK/FacebookSDK.h>
+#import <GoogleSignIn/GoogleSignIn.h>
 
 
-@interface ViewController : UIViewController<UITextFieldDelegate>
+@interface ViewController : UIViewController<UITextFieldDelegate,GIDSignInUIDelegate>
 
 
 //text fields
@@ -21,6 +22,7 @@
 @property (strong, nonatomic) IBOutlet UITextField *password;
 @property (strong, nonatomic) IBOutlet UITextField *confirmPassword;
 
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *loader;
 
 //Buttons
 

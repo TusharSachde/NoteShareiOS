@@ -65,7 +65,7 @@
 {
     
    
-    _arrItems=[[NSArray alloc]initWithObjects:@"Lock",@"Delete",@"Remind",@"Time Bomb",@"Attach", nil];
+    _arrItems=[[NSArray alloc]initWithObjects:@"Remind",nil];
     
     _tableViewSlide=[[UITableView alloc]initWithFrame:CGRectMake(180.0,self.frame.size.height-255,self.frame.size.width-180, 215)];
     _tableViewSlide.layer.borderWidth = 1.0;
@@ -132,7 +132,7 @@
         Cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:string];
         
         OptionsSlidePopUpViewCell *Cust=[[OptionsSlidePopUpViewCell alloc]initWithFrame:CGRectMake(0.0,0.0,screensize.size.width,44)];
-        Cust.lbltitle.text=[_arrItems objectAtIndex:indexPath.row];//
+        Cust.lbltitle.text=[_arrItems objectAtIndex:indexPath.row];
         Cust.lbltitle.textAlignment=NSTextAlignmentCenter;
         Cust.tag=2000;
         Cust.autoresizesSubviews=YES;

@@ -20,4 +20,20 @@
     // Configure the view for the selected state
 }
 
+
+
+-(IBAction)tile1Click:(id)sender
+{
+    
+    [_tileDelegate DidTileSelected:_slideDataModel1 withTileIndex:_tileIndex1] ;
+}
+-(IBAction)tile2Click:(id)sender
+{
+    
+    [_tileDelegate DidTileSelected:_slideDataModel2 withTileIndex:_tileIndex2];
+}
+
+
+
+
 @end

@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "64EE73FEC380A0A7DAF06EB1DE1D3792ECAD07F6",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "71B50F339D08C4778848854672C74338D303B07C" : 0,
+    "64EE73FEC380A0A7DAF06EB1DE1D3792ECAD07F6" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "BEA344BE-09F8-4DE8-8DFE-93D5D0463C89",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "71B50F339D08C4778848854672C74338D303B07C" : "",
+    "64EE73FEC380A0A7DAF06EB1DE1D3792ECAD07F6" : "NotesSharing"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "NoteShare",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "NoteShare.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/WohligTechnology\/NoteShareiOS.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "64EE73FEC380A0A7DAF06EB1DE1D3792ECAD07F6"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/ktilakraj\/MyNativeCode1.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "71B50F339D08C4778848854672C74338D303B07C"
+    }
+  ]
+}

@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		238A45611BAA73D300FAAFF7 /* sharingOptions.txt in Resources */ = {isa = PBXBuildFile; fileRef = 238A45601BAA73D300FAAFF7 /* sharingOptions.txt */; };
 		238A45631BAA7F5200FAAFF7 /* FBSDKMessengerShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 238A45621BAA7F5200FAAFF7 /* FBSDKMessengerShareKit.framework */; };
+		23A206841BAD677200504FC4 /* masterCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 23A206821BAD677200504FC4 /* masterCodeViewController.m */; };
+		23A206851BAD677200504FC4 /* masterCodeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23A206831BAD677200504FC4 /* masterCodeViewController.xib */; };
+		23A206871BAD730400504FC4 /* codeBackBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A206861BAD730400504FC4 /* codeBackBtn.png */; };
+		23ECA7091BBE67D200535BA4 /* userdefault_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 23ECA7081BBE67D200535BA4 /* userdefault_bg.png */; };
 		23F5C3AD1B581F9D0046D481 /* FolderGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 23F5C3AC1B581F9D0046D481 /* FolderGridCell.m */; };
 		23F5C3B51B583B040046D481 /* CHTCollectionViewWaterfallCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 23F5C3B01B583B040046D481 /* CHTCollectionViewWaterfallCell.m */; };
 		23F5C3B61B583B040046D481 /* CHTCollectionViewWaterfallFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = 23F5C3B21B583B040046D481 /* CHTCollectionViewWaterfallFooter.m */; };
@@ -34,6 +38,36 @@
 		833D62C51B5BFCC900BDB60C /* UIViewController+CWPopup.m in Sources */ = {isa = PBXBuildFile; fileRef = 833D62C11B5BFCC900BDB60C /* UIViewController+CWPopup.m */; };
 		833D62C61B5BFCC900BDB60C /* SamplePopupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 833D62C31B5BFCC900BDB60C /* SamplePopupViewController.m */; };
 		833D62C71B5BFCC900BDB60C /* SamplePopupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 833D62C41B5BFCC900BDB60C /* SamplePopupViewController.xib */; };
+		833E92F21BB2B0B300BFB254 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 833E92F11BB2B0B200BFB254 /* Social.framework */; };
+		833E92F41BB2B0C400BFB254 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 833E92F31BB2B0C400BFB254 /* Accounts.framework */; };
+		8371E08F1BB32961002286E3 /* blankFolders.png in Resources */ = {isa = PBXBuildFile; fileRef = 8371E08D1BB32961002286E3 /* blankFolders.png */; };
+		8371E0901BB32961002286E3 /* blankNotes.png in Resources */ = {isa = PBXBuildFile; fileRef = 8371E08E1BB32961002286E3 /* blankNotes.png */; };
+		837DBC591BC02C4D006381D7 /* ChangeProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 837DBC571BC02C4D006381D7 /* ChangeProfileViewController.m */; settings = {ASSET_TAGS = (); }; };
+		837DBC5A1BC02C4D006381D7 /* ChangeProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 837DBC581BC02C4D006381D7 /* ChangeProfileViewController.xib */; settings = {ASSET_TAGS = (); }; };
+		8388FC891BB7F70F006B9B29 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8388FC871BB7F70F006B9B29 /* EventKit.framework */; };
+		8388FC8A1BB7F70F006B9B29 /* EventKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8388FC881BB7F70F006B9B29 /* EventKitUI.framework */; };
+		8388FC8C1BB80886006B9B29 /* FolderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8388FC8B1BB80886006B9B29 /* FolderTableViewCell.xib */; };
+		8388FC8E1BB85389006B9B29 /* redLock.png in Resources */ = {isa = PBXBuildFile; fileRef = 8388FC8D1BB85389006B9B29 /* redLock.png */; };
+		83955CDA1BBA9DD900021E73 /* titleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 83955CD91BBA9DD800021E73 /* titleCell.m */; };
+		83955CDC1BBACFA100021E73 /* search icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 83955CDB1BBACFA100021E73 /* search icon.png */; };
+		83955CE11BBAFC7500021E73 /* CommonVariableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83955CE01BBAFC7500021E73 /* CommonVariableViewController.m */; };
+		83955CED1BBC77C800021E73 /* AudioCell_1.m in Sources */ = {isa = PBXBuildFile; fileRef = 83955CE81BBC77C700021E73 /* AudioCell_1.m */; };
+		83955CEE1BBC77C800021E73 /* AudioCell_1.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83955CE91BBC77C700021E73 /* AudioCell_1.xib */; };
+		83955CEF1BBC77C800021E73 /* AudioFullViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83955CEB1BBC77C700021E73 /* AudioFullViewController.m */; };
+		83955CF01BBC77C800021E73 /* AudioFullViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83955CEC1BBC77C800021E73 /* AudioFullViewController.xib */; };
+		83955CF61BBC793500021E73 /* NoteListItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 83955CF51BBC793400021E73 /* NoteListItem.m */; };
+		839D8B8E1BB1C85D0037D7E1 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 839D8B8D1BB1C85D0037D7E1 /* AdSupport.framework */; };
+		839D8B901BB1C8FC0037D7E1 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 839D8B8F1BB1C8FC0037D7E1 /* CoreMotion.framework */; };
+		83AF97BC1BAF425900637187 /* brush1.png in Resources */ = {isa = PBXBuildFile; fileRef = 83AF97B21BAF425800637187 /* brush1.png */; };
+		83AF97BD1BAF425900637187 /* brush2.png in Resources */ = {isa = PBXBuildFile; fileRef = 83AF97B31BAF425800637187 /* brush2.png */; };
+		83AF97BE1BAF425900637187 /* brush3.png in Resources */ = {isa = PBXBuildFile; fileRef = 83AF97B41BAF425800637187 /* brush3.png */; };
+		83AF97BF1BAF425900637187 /* brush4.png in Resources */ = {isa = PBXBuildFile; fileRef = 83AF97B51BAF425800637187 /* brush4.png */; };
+		83AF97C01BAF425900637187 /* brush5.png in Resources */ = {isa = PBXBuildFile; fileRef = 83AF97B61BAF425800637187 /* brush5.png */; };
+		83AF97C11BAF425900637187 /* brush6.png in Resources */ = {isa = PBXBuildFile; fileRef = 83AF97B71BAF425800637187 /* brush6.png */; };
+		83AF97C21BAF425900637187 /* brush7.png in Resources */ = {isa = PBXBuildFile; fileRef = 83AF97B81BAF425800637187 /* brush7.png */; };
+		83AF97C31BAF425900637187 /* brush8.png in Resources */ = {isa = PBXBuildFile; fileRef = 83AF97B91BAF425800637187 /* brush8.png */; };
+		83AF97C41BAF425900637187 /* brush9.png in Resources */ = {isa = PBXBuildFile; fileRef = 83AF97BA1BAF425800637187 /* brush9.png */; };
+		83AF97C51BAF425900637187 /* brush10.png in Resources */ = {isa = PBXBuildFile; fileRef = 83AF97BB1BAF425800637187 /* brush10.png */; };
 		83C5B11F1B3ABAF800A08940 /* AudioViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C5B11E1B3ABAF800A08940 /* AudioViewController.m */; };
 		83C5B1211B3ABC0300A08940 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C5B1201B3ABC0300A08940 /* AVFoundation.framework */; };
 		83C5B1241B3ABDF900A08940 /* AddProjectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C5B1231B3ABDF900A08940 /* AddProjectViewController.m */; };
@@ -57,6 +91,12 @@
 		83C6FDAB1B389A92002E186B /* SidebarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C6FDAA1B389A92002E186B /* SidebarViewController.m */; };
 		83C8F6C41BA3503A00A3DEB8 /* textCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C8F6C31BA3503A00A3DEB8 /* textCell.m */; };
 		83D5C0EE1B3CA70800276031 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83D5C0ED1B3CA70800276031 /* AboutViewController.m */; };
+		83D6E8DD1BB4432F002198F0 /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 83D6E8D11BB4432F002198F0 /* SDImageCache.m */; };
+		83D6E8DE1BB4432F002198F0 /* SDNetworkActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 83D6E8D41BB4432F002198F0 /* SDNetworkActivityIndicator.m */; };
+		83D6E8DF1BB4432F002198F0 /* SDWebImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 83D6E8D61BB4432F002198F0 /* SDWebImageDownloader.m */; };
+		83D6E8E01BB4432F002198F0 /* SDWebImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 83D6E8D91BB4432F002198F0 /* SDWebImageManager.m */; };
+		83D6E8E11BB4432F002198F0 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 83D6E8DC1BB4432F002198F0 /* UIImageView+WebCache.m */; };
+		83D6E8E31BB44B6B002198F0 /* redTimeBomb.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D6E8E21BB44B6B002198F0 /* redTimeBomb.png */; };
 		83D7DE121B4DC23B00B44093 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83D7DE111B4DC23B00B44093 /* MessageUI.framework */; };
 		83DBEDD11B5F93BB005724E7 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83DBEDCA1B5F93BB005724E7 /* FacebookSDK.framework */; };
 		83DBEDD21B5F93BB005724E7 /* FacebookSDKStrings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 83DBEDCB1B5F93BB005724E7 /* FacebookSDKStrings.bundle */; };
@@ -252,7 +292,6 @@
 		83DD4F1E1BA90BC900638B72 /* FolderListPopupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83DD4F1C1BA90BC900638B72 /* FolderListPopupViewController.m */; };
 		83DD4F1F1BA90BC900638B72 /* FolderListPopupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83DD4F1D1BA90BC900638B72 /* FolderListPopupViewController.xib */; };
 		83DD4F221BA9181300638B72 /* pushNoteInFolderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83DD4F211BA9181300638B72 /* pushNoteInFolderViewController.m */; };
-		83DD4F251BA91FF300638B72 /* GlobalVariablesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83DD4F241BA91FF300638B72 /* GlobalVariablesViewController.m */; };
 		83DD4F271BA9B0A800638B72 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83DD4F261BA9B0A800638B72 /* OpenGLES.framework */; };
 		83DD4F291BA9B0B800638B72 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83DD4F281BA9B0B800638B72 /* SystemConfiguration.framework */; };
 		83DD4F2B1BA9B0C200638B72 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83DD4F2A1BA9B0C200638B72 /* StoreKit.framework */; };
@@ -343,6 +382,8 @@
 		83E36D7A1B6A8F860083E039 /* SWTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E36D721B6A8F860083E039 /* SWTableViewCell.m */; };
 		83E36D7B1B6A8F860083E039 /* SWUtilityButtonTapGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E36D741B6A8F860083E039 /* SWUtilityButtonTapGestureRecognizer.m */; };
 		83E36D7C1B6A8F860083E039 /* SWUtilityButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E36D761B6A8F860083E039 /* SWUtilityButtonView.m */; };
+		BDB416611BBFEBE3006AD720 /* newPauseBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = BDB4165F1BBFEBE3006AD720 /* newPauseBtn.png */; settings = {ASSET_TAGS = (); }; };
+		BDB416621BBFEBE3006AD720 /* newPlayBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = BDB416601BBFEBE3006AD720 /* newPlayBtn.png */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -358,6 +399,11 @@
 /* Begin PBXFileReference section */
 		238A45601BAA73D300FAAFF7 /* sharingOptions.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sharingOptions.txt; sourceTree = "<group>"; };
 		238A45621BAA7F5200FAAFF7 /* FBSDKMessengerShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKMessengerShareKit.framework; sourceTree = "<group>"; };
+		23A206811BAD677200504FC4 /* masterCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = masterCodeViewController.h; sourceTree = "<group>"; };
+		23A206821BAD677200504FC4 /* masterCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = masterCodeViewController.m; sourceTree = "<group>"; };
+		23A206831BAD677200504FC4 /* masterCodeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = masterCodeViewController.xib; sourceTree = "<group>"; };
+		23A206861BAD730400504FC4 /* codeBackBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = codeBackBtn.png; path = ../codeBackBtn.png; sourceTree = "<group>"; };
+		23ECA7081BBE67D200535BA4 /* userdefault_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = userdefault_bg.png; sourceTree = "<group>"; };
 		23F5C3AB1B581F9D0046D481 /* FolderGridCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderGridCell.h; sourceTree = "<group>"; };
 		23F5C3AC1B581F9D0046D481 /* FolderGridCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FolderGridCell.m; sourceTree = "<group>"; };
 		23F5C3AF1B583B040046D481 /* CHTCollectionViewWaterfallCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHTCollectionViewWaterfallCell.h; sourceTree = "<group>"; };
@@ -399,6 +445,42 @@
 		833D62C21B5BFCC900BDB60C /* SamplePopupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SamplePopupViewController.h; path = ../SamplePopupViewController.h; sourceTree = "<group>"; };
 		833D62C31B5BFCC900BDB60C /* SamplePopupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SamplePopupViewController.m; path = ../SamplePopupViewController.m; sourceTree = "<group>"; };
 		833D62C41B5BFCC900BDB60C /* SamplePopupViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SamplePopupViewController.xib; path = ../SamplePopupViewController.xib; sourceTree = "<group>"; };
+		833E92F11BB2B0B200BFB254 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		833E92F31BB2B0C400BFB254 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		8371E08D1BB32961002286E3 /* blankFolders.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blankFolders.png; path = ../blankFolders.png; sourceTree = "<group>"; };
+		8371E08E1BB32961002286E3 /* blankNotes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blankNotes.png; path = ../blankNotes.png; sourceTree = "<group>"; };
+		837DBC561BC02C4D006381D7 /* ChangeProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChangeProfileViewController.h; sourceTree = "<group>"; };
+		837DBC571BC02C4D006381D7 /* ChangeProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangeProfileViewController.m; sourceTree = "<group>"; };
+		837DBC581BC02C4D006381D7 /* ChangeProfileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChangeProfileViewController.xib; sourceTree = "<group>"; };
+		8388FC871BB7F70F006B9B29 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
+		8388FC881BB7F70F006B9B29 /* EventKitUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKitUI.framework; path = System/Library/Frameworks/EventKitUI.framework; sourceTree = SDKROOT; };
+		8388FC8B1BB80886006B9B29 /* FolderTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FolderTableViewCell.xib; sourceTree = "<group>"; };
+		8388FC8D1BB85389006B9B29 /* redLock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redLock.png; sourceTree = "<group>"; };
+		83955CD81BBA9DD800021E73 /* titleCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = titleCell.h; sourceTree = "<group>"; };
+		83955CD91BBA9DD800021E73 /* titleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = titleCell.m; sourceTree = "<group>"; };
+		83955CDB1BBACFA100021E73 /* search icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "search icon.png"; sourceTree = "<group>"; };
+		83955CDF1BBAFC7500021E73 /* CommonVariableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonVariableViewController.h; sourceTree = "<group>"; };
+		83955CE01BBAFC7500021E73 /* CommonVariableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonVariableViewController.m; sourceTree = "<group>"; };
+		83955CE71BBC77C700021E73 /* AudioCell_1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioCell_1.h; sourceTree = "<group>"; };
+		83955CE81BBC77C700021E73 /* AudioCell_1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioCell_1.m; sourceTree = "<group>"; };
+		83955CE91BBC77C700021E73 /* AudioCell_1.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AudioCell_1.xib; sourceTree = "<group>"; };
+		83955CEA1BBC77C700021E73 /* AudioFullViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioFullViewController.h; sourceTree = "<group>"; };
+		83955CEB1BBC77C700021E73 /* AudioFullViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioFullViewController.m; sourceTree = "<group>"; };
+		83955CEC1BBC77C800021E73 /* AudioFullViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AudioFullViewController.xib; sourceTree = "<group>"; };
+		83955CF41BBC793400021E73 /* NoteListItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoteListItem.h; sourceTree = "<group>"; };
+		83955CF51BBC793400021E73 /* NoteListItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoteListItem.m; sourceTree = "<group>"; };
+		839D8B8D1BB1C85D0037D7E1 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		839D8B8F1BB1C8FC0037D7E1 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		83AF97B21BAF425800637187 /* brush1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = brush1.png; path = "untitled folder/brush1.png"; sourceTree = SOURCE_ROOT; };
+		83AF97B31BAF425800637187 /* brush2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = brush2.png; path = "untitled folder/brush2.png"; sourceTree = SOURCE_ROOT; };
+		83AF97B41BAF425800637187 /* brush3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = brush3.png; path = "untitled folder/brush3.png"; sourceTree = SOURCE_ROOT; };
+		83AF97B51BAF425800637187 /* brush4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = brush4.png; path = "untitled folder/brush4.png"; sourceTree = SOURCE_ROOT; };
+		83AF97B61BAF425800637187 /* brush5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = brush5.png; path = "untitled folder/brush5.png"; sourceTree = SOURCE_ROOT; };
+		83AF97B71BAF425800637187 /* brush6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = brush6.png; path = "untitled folder/brush6.png"; sourceTree = SOURCE_ROOT; };
+		83AF97B81BAF425800637187 /* brush7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = brush7.png; path = "untitled folder/brush7.png"; sourceTree = SOURCE_ROOT; };
+		83AF97B91BAF425800637187 /* brush8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = brush8.png; path = "untitled folder/brush8.png"; sourceTree = SOURCE_ROOT; };
+		83AF97BA1BAF425800637187 /* brush9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = brush9.png; path = "untitled folder/brush9.png"; sourceTree = SOURCE_ROOT; };
+		83AF97BB1BAF425800637187 /* brush10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = brush10.png; path = "untitled folder/brush10.png"; sourceTree = SOURCE_ROOT; };
 		83C5B11D1B3ABAF800A08940 /* AudioViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioViewController.h; sourceTree = "<group>"; };
 		83C5B11E1B3ABAF800A08940 /* AudioViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioViewController.m; sourceTree = "<group>"; };
 		83C5B1201B3ABC0300A08940 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -440,6 +522,20 @@
 		83C8F6C31BA3503A00A3DEB8 /* textCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = textCell.m; sourceTree = "<group>"; };
 		83D5C0EC1B3CA70800276031 /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
 		83D5C0ED1B3CA70800276031 /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
+		83D6E8D01BB4432F002198F0 /* SDImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDImageCache.h; sourceTree = "<group>"; };
+		83D6E8D11BB4432F002198F0 /* SDImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDImageCache.m; sourceTree = "<group>"; };
+		83D6E8D21BB4432F002198F0 /* SDImageCacheDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDImageCacheDelegate.h; sourceTree = "<group>"; };
+		83D6E8D31BB4432F002198F0 /* SDNetworkActivityIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDNetworkActivityIndicator.h; sourceTree = "<group>"; };
+		83D6E8D41BB4432F002198F0 /* SDNetworkActivityIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDNetworkActivityIndicator.m; sourceTree = "<group>"; };
+		83D6E8D51BB4432F002198F0 /* SDWebImageDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDWebImageDownloader.h; sourceTree = "<group>"; };
+		83D6E8D61BB4432F002198F0 /* SDWebImageDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWebImageDownloader.m; sourceTree = "<group>"; };
+		83D6E8D71BB4432F002198F0 /* SDWebImageDownloaderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDWebImageDownloaderDelegate.h; sourceTree = "<group>"; };
+		83D6E8D81BB4432F002198F0 /* SDWebImageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDWebImageManager.h; sourceTree = "<group>"; };
+		83D6E8D91BB4432F002198F0 /* SDWebImageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWebImageManager.m; sourceTree = "<group>"; };
+		83D6E8DA1BB4432F002198F0 /* SDWebImageManagerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDWebImageManagerDelegate.h; sourceTree = "<group>"; };
+		83D6E8DB1BB4432F002198F0 /* UIImageView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+WebCache.h"; sourceTree = "<group>"; };
+		83D6E8DC1BB4432F002198F0 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
+		83D6E8E21BB44B6B002198F0 /* redTimeBomb.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redTimeBomb.png; sourceTree = "<group>"; };
 		83D7DE111B4DC23B00B44093 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		83DBEDCA1B5F93BB005724E7 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		83DBEDCB1B5F93BB005724E7 /* FacebookSDKStrings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FacebookSDKStrings.bundle; sourceTree = "<group>"; };
@@ -642,8 +738,6 @@
 		83DD4F1D1BA90BC900638B72 /* FolderListPopupViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FolderListPopupViewController.xib; sourceTree = "<group>"; };
 		83DD4F201BA9181300638B72 /* pushNoteInFolderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pushNoteInFolderViewController.h; sourceTree = "<group>"; };
 		83DD4F211BA9181300638B72 /* pushNoteInFolderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = pushNoteInFolderViewController.m; sourceTree = "<group>"; };
-		83DD4F231BA91FF300638B72 /* GlobalVariablesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GlobalVariablesViewController.h; path = ProjectImages/GlobalVariablesViewController.h; sourceTree = "<group>"; };
-		83DD4F241BA91FF300638B72 /* GlobalVariablesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GlobalVariablesViewController.m; path = ProjectImages/GlobalVariablesViewController.m; sourceTree = "<group>"; };
 		83DD4F261BA9B0A800638B72 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		83DD4F281BA9B0B800638B72 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		83DD4F2A1BA9B0C200638B72 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -764,6 +858,8 @@
 		83E36D741B6A8F860083E039 /* SWUtilityButtonTapGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWUtilityButtonTapGestureRecognizer.m; sourceTree = "<group>"; };
 		83E36D751B6A8F860083E039 /* SWUtilityButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWUtilityButtonView.h; sourceTree = "<group>"; };
 		83E36D761B6A8F860083E039 /* SWUtilityButtonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWUtilityButtonView.m; sourceTree = "<group>"; };
+		BDB4165F1BBFEBE3006AD720 /* newPauseBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = newPauseBtn.png; sourceTree = "<group>"; };
+		BDB416601BBFEBE3006AD720 /* newPlayBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = newPlayBtn.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -771,6 +867,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8388FC891BB7F70F006B9B29 /* EventKit.framework in Frameworks */,
+				8388FC8A1BB7F70F006B9B29 /* EventKitUI.framework in Frameworks */,
+				833E92F41BB2B0C400BFB254 /* Accounts.framework in Frameworks */,
+				833E92F21BB2B0B300BFB254 /* Social.framework in Frameworks */,
+				839D8B901BB1C8FC0037D7E1 /* CoreMotion.framework in Frameworks */,
+				839D8B8E1BB1C85D0037D7E1 /* AdSupport.framework in Frameworks */,
 				83D7DE121B4DC23B00B44093 /* MessageUI.framework in Frameworks */,
 				83DD4F2D1BA9B0CD00638B72 /* AddressBook.framework in Frameworks */,
 				83DD4F2B1BA9B0C200638B72 /* StoreKit.framework in Frameworks */,
@@ -880,13 +982,28 @@
 		83C6FBC81B3411EB002E186B = {
 			isa = PBXGroup;
 			children = (
-				238A45621BAA7F5200FAAFF7 /* FBSDKMessengerShareKit.framework */,
-				83DD4F231BA91FF300638B72 /* GlobalVariablesViewController.h */,
-				83DD4F241BA91FF300638B72 /* GlobalVariablesViewController.m */,
+				837DBC561BC02C4D006381D7 /* ChangeProfileViewController.h */,
+				837DBC571BC02C4D006381D7 /* ChangeProfileViewController.m */,
+				837DBC581BC02C4D006381D7 /* ChangeProfileViewController.xib */,
+				83955CF41BBC793400021E73 /* NoteListItem.h */,
+				83955CF51BBC793400021E73 /* NoteListItem.m */,
+				83955CE71BBC77C700021E73 /* AudioCell_1.h */,
+				83955CE81BBC77C700021E73 /* AudioCell_1.m */,
+				83955CE91BBC77C700021E73 /* AudioCell_1.xib */,
+				83955CEA1BBC77C700021E73 /* AudioFullViewController.h */,
+				83955CEB1BBC77C700021E73 /* AudioFullViewController.m */,
+				83955CEC1BBC77C800021E73 /* AudioFullViewController.xib */,
+				83955CDF1BBAFC7500021E73 /* CommonVariableViewController.h */,
+				83955CE01BBAFC7500021E73 /* CommonVariableViewController.m */,
+				83955CD81BBA9DD800021E73 /* titleCell.h */,
+				83955CD91BBA9DD800021E73 /* titleCell.m */,
+				83D6E8CF1BB44316002198F0 /* SDWebImage */,
+				23A206811BAD677200504FC4 /* masterCodeViewController.h */,
+				23A206821BAD677200504FC4 /* masterCodeViewController.m */,
+				23A206831BAD677200504FC4 /* masterCodeViewController.xib */,
 				83DC13AA1BA56C0C000CDAEC /* ProjectImages */,
 				83DE0ED71B970F2E005D40DB /* DBManager.h */,
 				83DE0ED81B970F2E005D40DB /* DBManager.m */,
-				83DBBAE81B8F75A60026F58F /* newImages */,
 				83DC0B301B89F71E00CADDED /* fontsSizes.h */,
 				83DC0B311B89F71E00CADDED /* fontsSizes.m */,
 				83DC0B2E1B89F21700CADDED /* sizes.txt */,
@@ -988,6 +1105,13 @@
 		83C6FDA21B389516002E186B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8388FC871BB7F70F006B9B29 /* EventKit.framework */,
+				8388FC881BB7F70F006B9B29 /* EventKitUI.framework */,
+				238A45621BAA7F5200FAAFF7 /* FBSDKMessengerShareKit.framework */,
+				833E92F31BB2B0C400BFB254 /* Accounts.framework */,
+				833E92F11BB2B0B200BFB254 /* Social.framework */,
+				839D8B8F1BB1C8FC0037D7E1 /* CoreMotion.framework */,
+				839D8B8D1BB1C85D0037D7E1 /* AdSupport.framework */,
 				83DD4F2E1BA9B0E500638B72 /* GoogleSignIn.bundle */,
 				83DD4F2F1BA9B0E500638B72 /* GoogleSignIn.framework */,
 				83DD4F2C1BA9B0CD00638B72 /* AddressBook.framework */,
@@ -1012,16 +1136,48 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		83DBBAE81B8F75A60026F58F /* newImages */ = {
+		83D6E8CF1BB44316002198F0 /* SDWebImage */ = {
 			isa = PBXGroup;
 			children = (
+				83D6E8D01BB4432F002198F0 /* SDImageCache.h */,
+				83D6E8D11BB4432F002198F0 /* SDImageCache.m */,
+				83D6E8D21BB4432F002198F0 /* SDImageCacheDelegate.h */,
+				83D6E8D31BB4432F002198F0 /* SDNetworkActivityIndicator.h */,
+				83D6E8D41BB4432F002198F0 /* SDNetworkActivityIndicator.m */,
+				83D6E8D51BB4432F002198F0 /* SDWebImageDownloader.h */,
+				83D6E8D61BB4432F002198F0 /* SDWebImageDownloader.m */,
+				83D6E8D71BB4432F002198F0 /* SDWebImageDownloaderDelegate.h */,
+				83D6E8D81BB4432F002198F0 /* SDWebImageManager.h */,
+				83D6E8D91BB4432F002198F0 /* SDWebImageManager.m */,
+				83D6E8DA1BB4432F002198F0 /* SDWebImageManagerDelegate.h */,
+				83D6E8DB1BB4432F002198F0 /* UIImageView+WebCache.h */,
+				83D6E8DC1BB4432F002198F0 /* UIImageView+WebCache.m */,
 			);
-			name = newImages;
+			name = SDWebImage;
 			sourceTree = "<group>";
 		};
 		83DC13AA1BA56C0C000CDAEC /* ProjectImages */ = {
 			isa = PBXGroup;
 			children = (
+				BDB4165F1BBFEBE3006AD720 /* newPauseBtn.png */,
+				BDB416601BBFEBE3006AD720 /* newPlayBtn.png */,
+				23ECA7081BBE67D200535BA4 /* userdefault_bg.png */,
+				83955CDB1BBACFA100021E73 /* search icon.png */,
+				8388FC8D1BB85389006B9B29 /* redLock.png */,
+				83D6E8E21BB44B6B002198F0 /* redTimeBomb.png */,
+				8371E08D1BB32961002286E3 /* blankFolders.png */,
+				8371E08E1BB32961002286E3 /* blankNotes.png */,
+				23A206861BAD730400504FC4 /* codeBackBtn.png */,
+				83AF97B21BAF425800637187 /* brush1.png */,
+				83AF97B31BAF425800637187 /* brush2.png */,
+				83AF97B41BAF425800637187 /* brush3.png */,
+				83AF97B51BAF425800637187 /* brush4.png */,
+				83AF97B61BAF425800637187 /* brush5.png */,
+				83AF97B71BAF425800637187 /* brush6.png */,
+				83AF97B81BAF425800637187 /* brush7.png */,
+				83AF97B91BAF425800637187 /* brush8.png */,
+				83AF97BA1BAF425800637187 /* brush9.png */,
+				83AF97BB1BAF425800637187 /* brush10.png */,
 				83DC15051BA56DDE000CDAEC /* highlighter.png */,
 				83DC15091BA56EC9000CDAEC /* bold.png */,
 				83DC15031BA56DD7000CDAEC /* italic.png */,
@@ -1317,6 +1473,7 @@
 				83C6FC0C1B34EE33002E186B /* FolderViewController.m */,
 				83C6FC0E1B34F1DB002E186B /* FolderTableViewCell.h */,
 				83C6FC0F1B34F1DB002E186B /* FolderTableViewCell.m */,
+				8388FC8B1BB80886006B9B29 /* FolderTableViewCell.xib */,
 				23F5C3AB1B581F9D0046D481 /* FolderGridCell.h */,
 				23F5C3AC1B581F9D0046D481 /* FolderGridCell.m */,
 			);
@@ -1466,6 +1623,7 @@
 				TargetAttributes = {
 					83C6FBD01B3411EB002E186B = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = YVWVDTRG4B;
 					};
 					83C6FBE91B3411EB002E186B = {
 						CreatedOnToolsVersion = 6.3.1;
@@ -1502,6 +1660,7 @@
 				83DC14EF1BA56C0D000CDAEC /* text_icon.png in Resources */,
 				83DC14941BA56C0D000CDAEC /* LightGreen.png in Resources */,
 				83DC14781BA56C0D000CDAEC /* color_sort_view.png in Resources */,
+				83D6E8E31BB44B6B002198F0 /* redTimeBomb.png in Resources */,
 				83DE5ACD1B729DCE00DE3EEE /* screen33.png in Resources */,
 				83DC14DC1BA56C0D000CDAEC /* share55x55.png in Resources */,
 				83DC149B1BA56C0D000CDAEC /* lock50x.png in Resources */,
@@ -1528,6 +1687,7 @@
 				83DC14D91BA56C0D000CDAEC /* share40.@2x.png in Resources */,
 				83DC14F61BA56C0D000CDAEC /* Yellow.png in Resources */,
 				83DC14961BA56C0D000CDAEC /* line.png in Resources */,
+				83AF97C11BAF425900637187 /* brush6.png in Resources */,
 				833D62B61B5BCA5700BDB60C /* slidemenu.txt in Resources */,
 				83DC14B91BA56C0D000CDAEC /* paper1.png in Resources */,
 				83DD4F1F1BA90BC900638B72 /* FolderListPopupViewController.xib in Resources */,
@@ -1547,6 +1707,7 @@
 				83DC14B61BA56C0D000CDAEC /* page1.png in Resources */,
 				83DC14A31BA56C0D000CDAEC /* moveTry55@3x.png in Resources */,
 				83DC14A91BA56C0D000CDAEC /* newsort.png in Resources */,
+				8371E08F1BB32961002286E3 /* blankFolders.png in Resources */,
 				83DC14BE1BA56C0D000CDAEC /* paper6.png in Resources */,
 				83DC14601BA56C0D000CDAEC /* Blue.png in Resources */,
 				83DC149D1BA56C0D000CDAEC /* logout.png in Resources */,
@@ -1558,6 +1719,8 @@
 				83DE5AC81B729DCE00DE3EEE /* screen28.png in Resources */,
 				83DC14671BA56C0D000CDAEC /* bombTry55@2x.png in Resources */,
 				83DC14F31BA56C0D000CDAEC /* view_pop_up.png in Resources */,
+				83AF97BD1BAF425900637187 /* brush2.png in Resources */,
+				83AF97C31BAF425900637187 /* brush8.png in Resources */,
 				83DC0B2D1B89F0F000CADDED /* fonts.txt in Resources */,
 				83DC14B11BA56C0D000CDAEC /* notificationCenter.png in Resources */,
 				83DC14E11BA56C0D000CDAEC /* sidebarIcon40x40.png in Resources */,
@@ -1565,12 +1728,16 @@
 				83DC14C31BA56C0D000CDAEC /* play_audio.png in Resources */,
 				83DC14F11BA56C0D000CDAEC /* thickness.png in Resources */,
 				83DE5AC01B729DCE00DE3EEE /* screen20.png in Resources */,
+				23A206851BAD677200504FC4 /* masterCodeViewController.xib in Resources */,
 				83DC14AC1BA56C0D000CDAEC /* newview@2x.png in Resources */,
+				8388FC8E1BB85389006B9B29 /* redLock.png in Resources */,
 				83DC14AD1BA56C0D000CDAEC /* notes.png in Resources */,
+				8388FC8C1BB80886006B9B29 /* FolderTableViewCell.xib in Resources */,
 				83DC14A11BA56C0D000CDAEC /* moveTry55.png in Resources */,
 				83DC14711BA56C0D000CDAEC /* brush40@2x.png in Resources */,
 				83DC14591BA56C0D000CDAEC /* audio.png in Resources */,
 				83DC14FC1BA56DC8000CDAEC /* text2.png in Resources */,
+				837DBC5A1BC02C4D006381D7 /* ChangeProfileViewController.xib in Resources */,
 				83DC14701BA56C0D000CDAEC /* brush40.png in Resources */,
 				83DE5A901B72823800DE3EEE /* screen4.png in Resources */,
 				83DE5A931B72823800DE3EEE /* screen7.png in Resources */,
@@ -1593,6 +1760,7 @@
 				83DC14FE1BA56DCC000CDAEC /* text1.png in Resources */,
 				83DC15021BA56DD3000CDAEC /* iconBrush.png in Resources */,
 				83DC15041BA56DD7000CDAEC /* italic.png in Resources */,
+				8371E0901BB32961002286E3 /* blankNotes.png in Resources */,
 				83DE5AB81B729DCE00DE3EEE /* screen12.png in Resources */,
 				83DC14951BA56C0D000CDAEC /* likeOnFb.png in Resources */,
 				833D62AA1B5BB57200BDB60C /* PopUpViewController.xib in Resources */,
@@ -1602,9 +1770,12 @@
 				23F5C3BF1B583D710046D481 /* cat1.jpg in Resources */,
 				83DC14651BA56C0D000CDAEC /* bomb55x55.png in Resources */,
 				83DC14731BA56C0D000CDAEC /* calender.png in Resources */,
+				23ECA7091BBE67D200535BA4 /* userdefault_bg.png in Resources */,
 				83DC14CC1BA56C0D000CDAEC /* send00.png in Resources */,
 				83DC14871BA56C0D000CDAEC /* detail_view_logo.png in Resources */,
+				23A206871BAD730400504FC4 /* codeBackBtn.png in Resources */,
 				83DC14801BA56C0D000CDAEC /* delete00@3x.png in Resources */,
+				83AF97C01BAF425900637187 /* brush5.png in Resources */,
 				83DC14831BA56C0D000CDAEC /* deleteIcon.png in Resources */,
 				83DE5AD01B729DCE00DE3EEE /* screen36.png in Resources */,
 				23F5C3C01B583D710046D481 /* cat2.jpg in Resources */,
@@ -1626,7 +1797,10 @@
 				83DF1CBE1BA1E28A00A8A945 /* NoteColorViewController.xib in Resources */,
 				833D62AF1B5BC0CC00BDB60C /* SlidePopUpView.xib in Resources */,
 				83DC14D31BA56C0D000CDAEC /* Setting-2.png in Resources */,
+				83AF97BC1BAF425900637187 /* brush1.png in Resources */,
+				83AF97BE1BAF425900637187 /* brush3.png in Resources */,
 				83DC146D1BA56C0D000CDAEC /* brush13.png in Resources */,
+				83955CEE1BBC77C800021E73 /* AudioCell_1.xib in Resources */,
 				83DC0B2F1B89F21700CADDED /* sizes.txt in Resources */,
 				83DC14981BA56C0D000CDAEC /* lock00.png in Resources */,
 				83DC145E1BA56C0D000CDAEC /* Black.png in Resources */,
@@ -1636,6 +1810,7 @@
 				83DC14C41BA56C0D000CDAEC /* plusButton.png in Resources */,
 				83DC14A01BA56C0D000CDAEC /* modifiedtime_sort_view.png in Resources */,
 				83DC14BF1BA56C0D000CDAEC /* pause_audio.png in Resources */,
+				83955CDC1BBACFA100021E73 /* search icon.png in Resources */,
 				83DC147D1BA56C0D000CDAEC /* DarkOrange.png in Resources */,
 				83DC14D11BA56C0D000CDAEC /* sendFeedback.png in Resources */,
 				83DC14841BA56C0D000CDAEC /* deleteTry55.png in Resources */,
@@ -1650,6 +1825,7 @@
 				83DC14E31BA56C0D000CDAEC /* socialmail.png in Resources */,
 				83DE5AC61B729DCE00DE3EEE /* screen26.png in Resources */,
 				83DC14DF1BA56C0D000CDAEC /* shareTry55@3x.png in Resources */,
+				83AF97BF1BAF425900637187 /* brush4.png in Resources */,
 				23F5C3C11B583D710046D481 /* cat3.jpg in Resources */,
 				83DC14AB1BA56C0D000CDAEC /* newview.png in Resources */,
 				83DC14D81BA56C0D000CDAEC /* share00@3x.png in Resources */,
@@ -1657,6 +1833,7 @@
 				83DC14511BA56C0D000CDAEC /* 02.jpg in Resources */,
 				83DC14901BA56C0D000CDAEC /* greyLine.png in Resources */,
 				83DC14E21BA56C0D000CDAEC /* socialFB.png in Resources */,
+				83955CF01BBC77C800021E73 /* AudioFullViewController.xib in Resources */,
 				83DC148C1BA56C0D000CDAEC /* g.png in Resources */,
 				83DC149E1BA56C0D000CDAEC /* mic.png in Resources */,
 				83DC14AA1BA56C0D000CDAEC /* newsort@2x.png in Resources */,
@@ -1680,10 +1857,12 @@
 				83DC145D1BA56C0D000CDAEC /* birdIcon.png in Resources */,
 				83DC14B31BA56C0D000CDAEC /* ns_logo@2x.png in Resources */,
 				83DE5ABF1B729DCE00DE3EEE /* screen19.png in Resources */,
+				BDB416611BBFEBE3006AD720 /* newPauseBtn.png in Resources */,
 				83DC14CD1BA56C0D000CDAEC /* send00@2x.png in Resources */,
 				83DC145B1BA56C0D000CDAEC /* back_button_icon.png in Resources */,
 				83DC14C71BA56C0D000CDAEC /* recording_status.png in Resources */,
 				83DC14F01BA56C0D000CDAEC /* textIcon.png in Resources */,
+				BDB416621BBFEBE3006AD720 /* newPlayBtn.png in Resources */,
 				83DE5ABE1B729DCE00DE3EEE /* screen18.png in Resources */,
 				83DC146A1BA56C0D000CDAEC /* brush.png in Resources */,
 				83DE5AB71B729DCE00DE3EEE /* screen11.png in Resources */,
@@ -1700,12 +1879,14 @@
 				83DC14F81BA56CBF000CDAEC /* colorPlate.png in Resources */,
 				83DC14D51BA56C0D000CDAEC /* share.png in Resources */,
 				83DC14BC1BA56C0D000CDAEC /* paper4.png in Resources */,
+				83AF97C51BAF425900637187 /* brush10.png in Resources */,
 				83DC14C51BA56C0D000CDAEC /* r.png in Resources */,
 				83DC14A21BA56C0D000CDAEC /* moveTry55@2x.png in Resources */,
 				83DC14641BA56C0D000CDAEC /* bomb50x.png in Resources */,
 				83DC147E1BA56C0D000CDAEC /* delete00.png in Resources */,
 				83DC14621BA56C0D000CDAEC /* bomb00@2x.png in Resources */,
 				83DC14681BA56C0D000CDAEC /* bombTry55@3x.png in Resources */,
+				83AF97C21BAF425900637187 /* brush7.png in Resources */,
 				83DC14BD1BA56C0D000CDAEC /* paper5.png in Resources */,
 				83DC14B21BA56C0D000CDAEC /* ns_logo.png in Resources */,
 				83DE5A951B72823800DE3EEE /* screen9.png in Resources */,
@@ -1722,6 +1903,7 @@
 				83DC14CB1BA56C0D000CDAEC /* save.png in Resources */,
 				83DC14DE1BA56C0D000CDAEC /* shareTry55@2x.png in Resources */,
 				83DF9DA51B750E500090E4A2 /* fontLabelCell.xib in Resources */,
+				83AF97C41BAF425900637187 /* brush9.png in Resources */,
 				83DC14861BA56C0D000CDAEC /* deleteTry55@3x.png in Resources */,
 				83DC14571BA56C0D000CDAEC /* addPlus120@2x.png in Resources */,
 				83DC14C61BA56C0D000CDAEC /* RecorderBgImagePro.png in Resources */,
@@ -1764,7 +1946,10 @@
 			files = (
 				83C5B1241B3ABDF900A08940 /* AddProjectViewController.m in Sources */,
 				83C6FDAB1B389A92002E186B /* SidebarViewController.m in Sources */,
+				83D6E8DE1BB4432F002198F0 /* SDNetworkActivityIndicator.m in Sources */,
 				83DE5A2F1B715A7400DE3EEE /* TutorialViewController.m in Sources */,
+				83955CDA1BBA9DD900021E73 /* titleCell.m in Sources */,
+				83955CF61BBC793500021E73 /* NoteListItem.m in Sources */,
 				833D62B21B5BC85400BDB60C /* SlideDataModel.m in Sources */,
 				83DE54C71B6F9F5A00F274FB /* shareOptionPopViewController.m in Sources */,
 				23F5C3B71B583B040046D481 /* CHTCollectionViewWaterfallHeader.m in Sources */,
@@ -1783,6 +1968,7 @@
 				833D62871B5BB3E700BDB60C /* NSArray+SIAdditions.m in Sources */,
 				83DE5A7D1B72548800DE3EEE /* RMMapper.m in Sources */,
 				83C698891B3F45F200F79122 /* rateUsViewController.m in Sources */,
+				23A206841BAD677200504FC4 /* masterCodeViewController.m in Sources */,
 				83E36D7C1B6A8F860083E039 /* SWUtilityButtonView.m in Sources */,
 				83DF9DB01B7934FD0090E4A2 /* settingPopSizeViewController.m in Sources */,
 				83DD4F1E1BA90BC900638B72 /* FolderListPopupViewController.m in Sources */,
@@ -1790,14 +1976,17 @@
 				83DE0ED91B970F2E005D40DB /* DBManager.m in Sources */,
 				83C6FC0D1B34EE33002E186B /* FolderViewController.m in Sources */,
 				23F5C3B51B583B040046D481 /* CHTCollectionViewWaterfallCell.m in Sources */,
-				83DD4F251BA91FF300638B72 /* GlobalVariablesViewController.m in Sources */,
 				833D628B1B5BB3E700BDB60C /* UIImage+SIAdditions.m in Sources */,
+				83D6E8E11BB4432F002198F0 /* UIImageView+WebCache.m in Sources */,
 				83C6FC071B34E573002E186B /* SignInViewController.m in Sources */,
 				83C5B11F1B3ABAF800A08940 /* AudioViewController.m in Sources */,
 				83DE5A7C1B72548800DE3EEE /* NSUserDefaults+RMSaveCustomObject.m in Sources */,
 				83DF9DAB1B791CC80090E4A2 /* settingPopupScreenViewController.m in Sources */,
 				83DD44801B67C332007B6335 /* brushAlertViewController.m in Sources */,
+				83D6E8DD1BB4432F002198F0 /* SDImageCache.m in Sources */,
+				83955CE11BBAFC7500021E73 /* CommonVariableViewController.m in Sources */,
 				83DC0B321B89F71E00CADDED /* fontsSizes.m in Sources */,
+				83D6E8E01BB4432F002198F0 /* SDWebImageManager.m in Sources */,
 				83DE5A7A1B72548800DE3EEE /* NSObject+RMArchivable.m in Sources */,
 				83C8F6C41BA3503A00A3DEB8 /* textCell.m in Sources */,
 				83C6FD9E1B389341002E186B /* SWRevealViewController.m in Sources */,
@@ -1807,6 +1996,7 @@
 				23F5C3AD1B581F9D0046D481 /* FolderGridCell.m in Sources */,
 				83DE9B6A1B5E80D90098FE5B /* customAlertBoxViewController.m in Sources */,
 				833D62891B5BB3E700BDB60C /* SMCThemesSupport.m in Sources */,
+				83D6E8DF1BB4432F002198F0 /* SDWebImageDownloader.m in Sources */,
 				833D62A91B5BB57200BDB60C /* PopUpViewController.m in Sources */,
 				83DE54CC1B6FD4C400F274FB /* colorPaperPopupViewController.m in Sources */,
 				833D62C61B5BFCC900BDB60C /* SamplePopupViewController.m in Sources */,
@@ -1816,7 +2006,9 @@
 				83DE9B7C1B5EE5130098FE5B /* NotifyCell.m in Sources */,
 				83C6FBD71B3411EB002E186B /* main.m in Sources */,
 				83DCA8241B73B7DB00ADFE2B /* ImageCell.m in Sources */,
+				837DBC591BC02C4D006381D7 /* ChangeProfileViewController.m in Sources */,
 				83DE9B771B5E95CB0098FE5B /* settingSideBarViewController.m in Sources */,
+				83955CEF1BBC77C800021E73 /* AudioFullViewController.m in Sources */,
 				83DF9D8D1B74BBE00090E4A2 /* FontPopupViewController.m in Sources */,
 				83DC0BFA1B8A2BC000CADDED /* audioCell.m in Sources */,
 				83DE9B711B5E93130098FE5B /* feedbackViewController.m in Sources */,
@@ -1824,6 +2016,7 @@
 				83C6988C1B3F460C00F79122 /* inviteFriendsViewController.m in Sources */,
 				83DE5A011B70C0F000DE3EEE /* sharePopupCell.m in Sources */,
 				83DE5A821B72584200DE3EEE /* DataManger.m in Sources */,
+				83955CED1BBC77C800021E73 /* AudioCell_1.m in Sources */,
 				83DE5A831B72584200DE3EEE /* UserDetail.m in Sources */,
 				833D625E1B57EA6D00BDB60C /* createFoldersViewController.m in Sources */,
 				83DE5A7B1B72548800DE3EEE /* NSObject+RMCopyable.m in Sources */,
@@ -1911,6 +2104,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-lc++",
+					"-ObjC",
+				);
 				PROVISIONING_PROFILE = "d71c43d7-5d44-4368-be14-a20dfe8e1b14";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1949,6 +2146,10 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = (
+					"-lc++",
+					"-ObjC",
+				);
 				PROVISIONING_PROFILE = "d71c43d7-5d44-4368-be14-a20dfe8e1b14";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1960,8 +2161,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/heba/Documents/FacebookSDK,
@@ -1970,8 +2172,9 @@
 				INFOPLIST_FILE = NotesSharingApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = NoteShare;
-				PROVISIONING_PROFILE = "d71c43d7-5d44-4368-be14-a20dfe8e1b14";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1980,8 +2183,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/heba/Documents/FacebookSDK,
@@ -1990,8 +2194,9 @@
 				INFOPLIST_FILE = NotesSharingApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = NoteShare;
-				PROVISIONING_PROFILE = "d71c43d7-5d44-4368-be14-a20dfe8e1b14";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -2012,6 +2217,7 @@
 				);
 				INFOPLIST_FILE = NotesSharingAppTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = NoteShareTests;
 				PROVISIONING_PROFILE = "ef9f5e3b-d151-4d49-bf37-5272572bb0ab";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NoteShare.app/NoteShare";
@@ -2030,6 +2236,7 @@
 				);
 				INFOPLIST_FILE = NotesSharingAppTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = NoteShareTests;
 				PROVISIONING_PROFILE = "ef9f5e3b-d151-4d49-bf37-5272572bb0ab";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NoteShare.app/NoteShare";

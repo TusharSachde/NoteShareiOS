@@ -13,48 +13,51 @@
 #import "CHTCollectionViewWaterfallFooter.h"
 #import "NSArray+SIAdditions.h"
 #import "UIColor+SIAdditions.h"
-//#import "customAlertBoxViewController.h"
+#import "masterCodeViewController.h"
 #import "NoteColorViewController.h"
-
 #import "AddProjectViewController.h"
-
 #import "UIViewController+CWPopup.h"
 #import "NSArray+SIAdditions.h"
 #import "AddFolderViewController.h"
-
 #import "SWTableViewCell.h"
-
 #import "FolderListPopupViewController.h"
-
 #import "shareOptionPopViewController.h"
-
-
-
 #import "SMCThemesSupport.h"
 #import "DBManager.h"
 #import <MessageUI/MessageUI.h>
 #import <FBSDKMessengerShareKit/FBSDKMessengerShareKit.h>
-
-
+#import "DataManger.h"
+#import "CommonVariableViewController.h"
 
 #define CELL_COUNT 30
 #define CELL_IDENTIFIER @"WaterfallCell"
 #define HEADER_IDENTIFIER @"WaterfallHeader"
 #define FOOTER_IDENTIFIER @"WaterfallFooter"
 
+
+#define isBombImage [UIImage imageNamed:@"bomb00.png"]//put image
+#define isNotBombImage [UIImage imageNamed:@""]//no image
+
 @implementation NoteDatamodel
 
 @end
 
 
-@interface FolderViewController ()<SlidePopUpViewDelegate,PopUpViewDelegate,PopUpViewDelegate1,SWTableViewCellDelegate,UIAlertViewDelegate,UIGestureRecognizerDelegate,PopUpNoteColorDelegate,PopUpFolderViewDelegate,MFMailComposeViewControllerDelegate,MFMessageComposeViewControllerDelegate>
+@interface FolderViewController ()<SlidePopUpViewDelegate,PopUpViewDelegate,PopUpViewDelegate1,SWTableViewCellDelegate,UIAlertViewDelegate,UIGestureRecognizerDelegate,PopUpNoteColorDelegate,PopUpFolderViewDelegate,MFMailComposeViewControllerDelegate,MFMessageComposeViewControllerDelegate,masterCodeViewControllerDelagte,UITextViewDelegate,SWRevealViewControllerDelegate,FolderGridCellDelegate>
 
 {
     MFMailComposeViewController *mailComposer;
+    
+    NSIndexPath *indexPath2;
+    NSString *MyCount;
+    NSUInteger elements;
+    NSArray *sortedArray;
+    UILabel *count;
+    UIView *viewLeftnavBar;
 }
 @property (nonatomic) UITextField *txtSearch;
 
-
+@property(nonatomic,strong)NSString *toNoteshareEmail;
 @property (nonatomic,assign) NSInteger temp;
 @property (nonatomic,assign) NSInteger pop;
 @property(nonatomic,assign)NSInteger selectedButton;
@@ -66,7 +69,7 @@
 @property (nonatomic, strong) SlidePopUpView *popup;
 @property (nonatomic, strong)DBNoteItems *noteItems1;
 @property(nonatomic,strong)UIView *searchView;
-
+@property(nonatomic,assign)NSInteger sortByKey;
 
 
 //define global array
@@ -76,7 +79,7 @@
 @property (nonatomic,strong)NSArray *colorArr;
 @property (nonatomic,strong) NSMutableArray *rightUtilityButtons ;
 @property(nonatomic,strong)DBManager *dbManager;
-@property(nonatomic,strong)NSArray *arrAll;
+@property(nonatomic,strong)NSMutableArray *arrAll;
 @property(nonatomic,strong)NSArray *arrAll1;
 @property(nonatomic,strong)NSString *bgColor;
 @property(nonatomic,assign)NSUInteger alertInteger;
@@ -91,20 +94,57 @@
 -(IBAction)btnCancelClick:(id)sender;
 -(IBAction)btnDoneClick:(id)sender;
 
+@property(nonatomic,assign)NSInteger seletedIndex;
+
+@property(nonatomic,strong)masterCodeViewController *masterLockVC;
+
 
 @end
 
 @implementation FolderViewController
 
-NSIndexPath *indexPath2;
-NSString *MyCount;
-NSUInteger elements;
-NSArray *sortedArray;
-UILabel *count;
-UIView *viewLeftnavBar;
+-(masterCodeViewController *)masterLockVC
+{
+    if (!_masterLockVC)
+    {
+        _masterLockVC=[[masterCodeViewController alloc]initWithNibName:@"masterCodeViewController" bundle:nil];
+        _masterLockVC.delegate=self;
+    }
+    
+    return _masterLockVC;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadViewWillApper:) name:postNotification object:nil];
+    
+    
+    
+   
+    if (_sortByKey==@"".integerValue) {
+        
+        _sortByKey=21;
+    }
+    
+    [[DataManger sharedmanager]getSortBy];
+    
+    
+    
+    if (viewVar==nil) {
+        
+        _selectedButton=202;
+    }
+    else
+    {
+        _selectedButton=viewVar.integerValue;
+    }
+    
+    _selectedIndexPath=0;
+    _seletedIndex=-1;
+    
+    _txtSearch.tag=400;
     
     [self showAndHidePickerView:NO];
     
@@ -113,45 +153,10 @@ UIView *viewLeftnavBar;
     _dbManager=[[DBManager alloc]init];
     
     [_dbManager createDbANdTable];
+    [_dbManager insert:[_dbManager getDbFilePath] withName:@"" note_default_Font:@"" note_default_Password:@"" note_user_id:[[DataManger sharedmanager] getUserId] note_default_color:@""];
     
+    [_dbManager getSettingRecords:[_dbManager getDbFilePath]];
     
-    
-    
-    /*
-     #pragma mark-uptaedNote
-     
-     if (!_arrAll || !_arrAll.count){
-     
-     }
-     else
-     {
-     
-     DBNoteItems *noteItems =_arrAll[0];
-     
-     NSLog(@"{%@ \n  %@ \n %@ \n %@\n %@\n}",noteItems.note_Id,noteItems.note_Title,noteItems.note_Created_Time,noteItems.note_Deleted,noteItems.note_Color);
-     NSString *strModifiedTime=[self date2str:[NSDate date] onlyDate:NO];
-     noteItems.note_Modified_Time=strModifiedTime;
-     noteItems.note_Deleted=@"0";
-     
-     [_dbManager UpdateNoteElements:[_dbManager getDbFilePath] withNoteItem:noteItems];
-     
-     }
-     
-     #pragma mark-get all uptaedNote
-     
-     _arrAll1=[_dbManager getRecords:[_dbManager getDbFilePath] ];
-     
-     for (DBNoteItems *noteItems in _arrAll1)
-     {
-     NSLog(@"Updated values:{%@ \n  %@ \n %@ \n %@\n %@ \n}",noteItems.note_Id,noteItems.note_Title,noteItems.note_Created_Time,noteItems.note_Deleted,noteItems.note_Modified_Time);
-     
-     }
-     
-     
-     #pragma mark-DeleteNote
-     
-     // DBNoteItems *noteItems1 =arrAll1[0];
-     //[_dbManager deleteNote:[_dbManager getDbFilePath] withNoteItem:noteItems1];*/
     
     viewLeftnavBar=[[UIView alloc]initWithFrame:CGRectMake(0.0, 0.0,40.0, 40)];
     viewLeftnavBar.backgroundColor=[UIColor clearColor];
@@ -163,15 +168,33 @@ UIView *viewLeftnavBar;
     
     // search view
     self.searchView = [[UIView alloc]initWithFrame:CGRectMake(0, -40, self.view.frame.size.width, 40)];
-    //self.viewSearch.layer.borderWidth = 1.0f;
-    //self.viewSearch.layer.borderColor = [[UIColor colorWithRed:(255/255) green:(90/255) blue:(96/255) alpha:1.0] CGColor];
     
+    self.searchView.backgroundColor=[UIColor colorWithRed:(236.0/255) green:(236.0/255) blue:(236.0/255) alpha:(1.0)];
     
     [self.tbl addSubview:self.searchView];
     
-    self.viewSearch = [[UITextField alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
-    self.viewSearch.placeholder=@"Search Text...";
+    self.viewSearch = [[UITextField alloc]initWithFrame:CGRectMake(20, 5, self.view.frame.size.width-60, 28)];
+    //To make the border look very close to a UITextField
+    [self.viewSearch.layer setBorderColor:[[[UIColor grayColor] colorWithAlphaComponent:0.5] CGColor]];
+    [self.viewSearch.layer setBorderWidth:1.0];
+    
+    //The rounded corner part, where you specify your view's corner radius:
+    self.viewSearch.layer.cornerRadius = 5;
+    self.viewSearch.clipsToBounds = YES;
+
+    self.viewSearch.backgroundColor=[UIColor whiteColor];
+    self.searchBtn=[[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width-35,4, 25, 25)];
+    self.viewSearch.delegate=self;
+    
+    self.viewSearch.placeholder=@"  Search Text...";
+    [self.viewSearch addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    
+    //self.searchBtn.backgroundColor=[UIColor yellowColor];
+    //search icon.png
+    [self.searchBtn setBackgroundImage:[UIImage imageNamed:@"search icon.png"] forState:UIControlStateNormal];
+    [self.searchBtn addTarget:self action:@selector(searchText:) forControlEvents:UIControlEventTouchUpInside];
     [self.searchView addSubview:self.viewSearch];
+    [self.searchView addSubview:self.searchBtn];
     
     
     _viewArr=[[NSMutableArray alloc]init];
@@ -191,15 +214,7 @@ UIView *viewLeftnavBar;
     
     SWRevealViewController *revealController = [self revealViewController];
     
-    
-    [revealController panGestureRecognizer];
-    [revealController tapGestureRecognizer];
-    
-    SWRevealViewController *revealViewController = self.revealViewController;
-    if ( revealViewController )
-    {
-        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-    }
+    revealController.delegate=self;
     
     
     [self getLeftBtn];
@@ -213,9 +228,7 @@ UIView *viewLeftnavBar;
     _imgView.layer.borderWidth = 1.0f;
     _imgView.layer.borderColor = [[UIColor colorWithRed:(246/255.0) green:(65/255.0) blue:(79/255.0) alpha:1]CGColor];
     
-    _selectedButton=202;
-    _selectedIndexPath=0;
-    
+
     [_tbl reloadData];
     
     self.viewCollectionview.hidden=YES;
@@ -224,8 +237,14 @@ UIView *viewLeftnavBar;
     
     //pop up vc
     _popup=[[SlidePopUpView alloc]initWithFrame:CGRectMake(0.0,self.self.view.frame.size.height,self.view.frame.size.width, 300)];
+    
+    UIButton *slideBtn=[[UIButton alloc]initWithFrame:CGRectMake(294.0,10.0, 25, 25)];
+    [slideBtn setTitle:@"OK" forState:UIControlStateNormal];
+    [slideBtn addTarget:self action:@selector(slideBtn:) forControlEvents:UIControlEventTouchUpInside];
+    
     _popup.delegate=self;
     [self.view addSubview:_popup];
+    [_popup addSubview:slideBtn];
     
     
     //UIGesture Long Pressed Cell
@@ -235,6 +254,57 @@ UIView *viewLeftnavBar;
     _lpgr.delegate = self;
     [self.tbl addGestureRecognizer:_lpgr];
     
+    
+    
+    UITapGestureRecognizer *tapGesture=[[UITapGestureRecognizer alloc]init];
+    [tapGesture addTarget:self action:@selector(handletap:)];
+    
+    
+    
+}
+
+-(void)searchText:(id)sender{
+
+    _arrAll=[NSMutableArray arrayWithArray:[_dbManager getRecordsWithSearch:[_dbManager getDbFilePath] searchText:self.viewSearch.text]];
+    
+   // self.viewSearch.text=@"";
+    [self updatenotelistfromDb];
+
+
+}
+
+-(void)textFieldDidChange :(UITextField *)theTextField{
+    
+    
+        _arrAll=[NSMutableArray arrayWithArray:[_dbManager getRecordsWithSearch:[_dbManager getDbFilePath] searchText:theTextField.text]];
+        
+        // self.viewSearch.text=@"";
+        [self updatenotelistfromDb];
+        
+        [self.tbl reloadData];
+        
+    
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView{
+
+
+   _arrAll=[NSMutableArray arrayWithArray:[_dbManager getRecordsWithSearch:[_dbManager getDbFilePath] searchText:textView.text]];
+    [self updatenotelistfromDb];
+    
+
+}
+
+-(IBAction)slideBtn:(id)sender{
+
+    [self hideSheet];
+
+}
+
+
+-(void)reloadViewWillApper:(id)sender
+{
+    [self getAllNotes];
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -256,7 +326,6 @@ UIView *viewLeftnavBar;
         [UIView setAnimationDuration:0.2];
         
         self.tbl.contentInset = UIEdgeInsetsMake(40, 0, 0, 0);
-        //[self.txtSearch becomeFirstResponder];
         [viewLeftnavBar addSubview:count];
         [UIView commitAnimations];
         
@@ -278,6 +347,8 @@ UIView *viewLeftnavBar;
         
         
     }
+    
+
 }
 
 -(UIStatusBarStyle)preferredStatusBarStyle{
@@ -286,7 +357,6 @@ UIView *viewLeftnavBar;
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 -(void)getLeftBtn{
@@ -308,6 +378,7 @@ UIView *viewLeftnavBar;
     
 }
 
+
 -(IBAction)sideBarBtn:(id)sender{
     
     [[self revealViewController ]revealToggleAnimated:YES];
@@ -316,32 +387,32 @@ UIView *viewLeftnavBar;
 
 -(void)getSaveBtn{
     
-    UIView *viewLeftnavBar=[[UIView alloc]initWithFrame:CGRectMake(0.0, 0.0,80, 40)];
-    viewLeftnavBar.backgroundColor=[UIColor clearColor];
-    
-    UIButton *Btn=[[UIButton alloc]initWithFrame:CGRectMake(18.0, 5.0, 30, 30)];
-    
-    
-    [Btn setBackgroundImage:[UIImage imageNamed:[NSString stringWithFormat:@"nabBtn2"]]  forState:UIControlStateNormal];
-    [Btn addTarget:self action:@selector(button2:) forControlEvents:UIControlEventTouchUpInside];
-    [viewLeftnavBar addSubview:Btn];
-    
-    
-    UIButton *Btn2=[[UIButton alloc]initWithFrame:CGRectMake(60.0, 5.0, 30, 30)];
-    [Btn2 setBackgroundImage:[UIImage imageNamed:[NSString stringWithFormat:@"calender.png"]]  forState:UIControlStateNormal];
-    [Btn2 addTarget:self action:@selector(calender:) forControlEvents:UIControlEventTouchUpInside];
-    [viewLeftnavBar addSubview:Btn2];
-    
-    
-    
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithCustomView:viewLeftnavBar];
-    [self.navigationItem setRightBarButtonItem:addButton];
+//    UIView *viewLeftNavBar=[[UIView alloc]initWithFrame:CGRectMake(0.0, 0.0,80, 40)];
+//    viewLeftNavBar.backgroundColor=[UIColor clearColor];
+//    
+//    UIButton *Btn=[[UIButton alloc]initWithFrame:CGRectMake(18.0, 5.0, 30, 30)];
+//    
+//    
+//    [Btn setBackgroundImage:[UIImage imageNamed:[NSString stringWithFormat:@"nabBtn2"]]  forState:UIControlStateNormal];
+//    [Btn addTarget:self action:@selector(button2:) forControlEvents:UIControlEventTouchUpInside];
+//    [viewLeftNavBar addSubview:Btn];
+//    
+//    
+//    UIButton *Btn2=[[UIButton alloc]initWithFrame:CGRectMake(60.0, 5.0, 30, 30)];
+//    [Btn2 setBackgroundImage:[UIImage imageNamed:[NSString stringWithFormat:@"calender.png"]]  forState:UIControlStateNormal];
+//    [Btn2 addTarget:self action:@selector(calender:) forControlEvents:UIControlEventTouchUpInside];
+//    [viewLeftNavBar addSubview:Btn2];
+//    
+//    
+//    
+//    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithCustomView:viewLeftNavBar];
+//    [self.navigationItem setRightBarButtonItem:addButton];
     
 }
 
 -(IBAction)calender:(id)sender{
     
-    //calender code
+
 }
 
 -(IBAction)button2:(id)sender{
@@ -409,9 +480,15 @@ UIView *viewLeftnavBar;
 
 
 -(void)updatenotelistfromDb{
+    
 #pragma mark-Note list detail
     
     [_arrNotes removeAllObjects];
+    
+    NSMutableArray *arrData=[[NSMutableArray alloc]init];
+    
+    
+    
     for (DBNoteItems *noteItem in _arrAll)
     {
         
@@ -431,14 +508,51 @@ UIView *viewLeftnavBar;
         model.modifiedtime=noteItem.note_Modified_Time;
         model.createdtime=noteItem.note_Created_Time;
         model.timebomb=noteItem.note_Time_bomb;
+        model.remindertime=noteItem.note_Reminder;
+        model.celllock=noteItem.note_lock;
+        
+       NSArray *arrNoteElement=[_dbManager getAllNoteElementWithNote_Id:[_dbManager getDbFilePath] where:noteItem.note_Id];
+        DBNoteItems *itemsNote=[arrNoteElement si_objectOrNilAtIndex:0];
+        
+        if (itemsNote)
+        {
+           model.noteType=itemsNote.NOTE_ELEMENT_TYPE;
+        }
+        
+
+        if (![model.timebomb isEqualToString:@"0"]&&model.timebomb)
+        {
+            
+            BOOL status=[self isEndDateIsSmallerThanCurrent:model.timebomb];
+            if (!status)
+            {
+                [_arrNotes addObject:model];
+                [arrData addObject:noteItem];
+                
+                
+            }
+            else
+            {
+                //remove object
+            }
+            
+        }
+        else
+        {
+            
+            [_arrNotes addObject:model];
+            [arrData addObject:noteItem];
+        }
         
         
-        [_arrNotes addObject:model];
+        
         
     }
     
     
     MyCount=[NSString stringWithFormat:@"NOTES (%i)",(int)_arrNotes.count];
+    _arrAll=[[NSMutableArray alloc]initWithArray:arrData];
+    
     [_tbl reloadData];
 }
 
@@ -566,23 +680,38 @@ UIView *viewLeftnavBar;
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     
-    DBNoteItems *noteItem=[_arrAll si_objectOrNilAtIndex:indexPath.row];
     
-    if ([noteItem.note_lock boolValue]==YES)
+    if (_selectedButton!=203)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"UNLOCK" message:@"Please unlock your note" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
-    }
-    else
-    {
-        _selectedIndexPath=indexPath.row;
+        DBNoteItems *noteItem=[_arrAll si_objectOrNilAtIndex:indexPath.row];
         
-        [self performSegueWithIdentifier:@"noteElement" sender:nil];
+        if ([noteItem.note_lock boolValue]==YES)
+        {
+            
+            _selectedIndexPath=indexPath.row;
+            [self.masterLockVC setNoteItems:noteItem];
+            [self.masterLockVC setIsCommingFrom:YES];
+            
+            [self presentViewController:self.masterLockVC animated:YES completion:^{
+                
+            }];
+            
+            
+        }
+        else
+        {
+            _selectedIndexPath=indexPath.row;
+            
+            [self performSegueWithIdentifier:@"noteElement" sender:nil];
+        }
+ 
     }
     
-    
-    //[[self revealViewController]revealToggleAnimated:YES];
-    
+}
+
+-(void)openNote:(BOOL)isunlock
+{
+    [self performSegueWithIdentifier:@"noteElement" sender:nil];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
@@ -598,8 +727,7 @@ UIView *viewLeftnavBar;
         [addProjectViewController setDbnotelistItem:noteItem];
         
     }
-    
-    
+
 }
 
 -(void)dismissView:(OPTIONSELECTED)selectedOption
@@ -625,7 +753,10 @@ UIView *viewLeftnavBar;
     layout.columnCount = UIInterfaceOrientationIsPortrait(orientation) ? 2 : 3;
 }
 
+#pragma mark-Sorting click
+
 - (IBAction)sort:(id)sender{
+    
     _pop=1;
     [self showSheeet];
     
@@ -636,7 +767,7 @@ UIView *viewLeftnavBar;
     [_popup setHeaderdetail:model];
     
     [_popup setArrItems:[NSArray arrayWithArray:_sortArr]];
-    
+
 }
 
 - (IBAction)addField:(id)sender {
@@ -651,18 +782,16 @@ UIView *viewLeftnavBar;
     alertTextField.keyboardType = UIKeyboardTypeDefault;
     alertTextField.placeholder = @"Note title here";
     [alert show];
-    
-    
+
 }
 
 -(void)dismissFolderView:(CREATEFOLDER)selectOption   WithTag:(NSInteger)selectedOption{
     
     [self dismissPopupViewControllerAnimated:YES completion:^{
         
-        
+        [_tbl reloadData];
     }];
-    
-    
+ 
 }
 
 - (IBAction)view:(id)sender {
@@ -690,6 +819,8 @@ UIView *viewLeftnavBar;
             _viewCollectionview.hidden=YES;
             
             _selectedButton=201;
+            viewVar=[NSString stringWithFormat:@"%ld",(long)_selectedButton];
+        
             [_tbl reloadData];
             
             
@@ -700,6 +831,7 @@ UIView *viewLeftnavBar;
             
             _viewCollectionview.hidden=YES;
             _selectedButton=202;
+            viewVar=[NSString stringWithFormat:@"%ld",(long)_selectedButton];
             [_tbl reloadData];
             
             
@@ -711,6 +843,7 @@ UIView *viewLeftnavBar;
             _viewCollectionview.hidden=YES;
             
             _selectedButton=203;
+            viewVar=[NSString stringWithFormat:@"%ld",(long)_selectedButton];
             [_tbl reloadData];
             
             
@@ -722,6 +855,7 @@ UIView *viewLeftnavBar;
             
             _viewCollectionview.hidden=NO;
             _selectedButton=204;
+            viewVar=[NSString stringWithFormat:@"%ld",(long)_selectedButton];
             [_tbl reloadData];
             
         }
@@ -731,27 +865,34 @@ UIView *viewLeftnavBar;
         {
             
             
+#pragma mark-Sort by name
+            
+            _sortByKey=21;
             
             NSSortDescriptor *sortDescriptor =
             [NSSortDescriptor sortDescriptorWithKey:@"cellName"
                                           ascending:YES
                                            selector:@selector(caseInsensitiveCompare:)];
+            
+            
             NSArray *arr=[_arrNotes sortedArrayUsingDescriptors:@[sortDescriptor]];
             
             _arrNotes=[NSMutableArray arrayWithArray:arr];
             
+            [[DataManger sharedmanager]setSortBy:[NSString stringWithFormat:@"%ld",(long)_sortByKey]];
             
             [_tbl reloadData];
             
-            
-            
-            
+ 
         }
             break;
             
         case 22:
         {
             
+#pragma mark-Sort by color
+            
+            _sortByKey=22;
             
             NSSortDescriptor *sortDescriptor =
             [NSSortDescriptor sortDescriptorWithKey:@"colours"
@@ -759,8 +900,11 @@ UIView *viewLeftnavBar;
                                            selector:@selector(caseInsensitiveCompare:)];
             NSArray *arr=[_arrNotes sortedArrayUsingDescriptors:@[sortDescriptor]];
             
+            
+            
             _arrNotes=[NSMutableArray arrayWithArray:arr];
             
+            [[DataManger sharedmanager]setSortBy:[NSString stringWithFormat:@"%ld",(long)_sortByKey]];
             
             [_tbl reloadData];
             
@@ -770,17 +914,34 @@ UIView *viewLeftnavBar;
         case 23://CREATED TIME
         {
             
+#pragma mark-Sort by created time
             
-            NSSortDescriptor *sortDescriptor =
-            [NSSortDescriptor sortDescriptorWithKey:@"createdtime"
-                                          ascending:YES
-                                           selector:@selector(caseInsensitiveCompare:)];
-            NSArray *arr=[_arrNotes sortedArrayUsingDescriptors:@[sortDescriptor]];
+      
+            _sortByKey=23;
             
-            _arrNotes=[NSMutableArray arrayWithArray:arr];
+            NSArray* newArray = [_arrNotes sortedArrayUsingComparator: ^NSComparisonResult(SlideDataModel *c1, SlideDataModel *c2)
+                                 {
+                                     NSDate *d1 = [self str2date:c1.createdtime onlyDate:NO];
+                                     NSDate *d2 = [self str2date:c2.createdtime onlyDate:NO];
+                                     
+                                     return [d2 compare:d1];
+                                 }];
             
+            NSArray* newArray1 = [_arrAll sortedArrayUsingComparator: ^NSComparisonResult(DBNoteItems *c1, DBNoteItems *c2)
+                                  {
+                                      NSDate *d1 = [self str2date:c1.note_Created_Time onlyDate:NO];
+                                      NSDate *d2 = [self str2date:c2.note_Created_Time onlyDate:NO];
+                                      
+                                      return [d2 compare:d1];
+                                  }];
+            
+            _arrAll=[NSMutableArray arrayWithArray:newArray1];
+            _arrNotes=[NSMutableArray arrayWithArray:newArray];
+            
+            [[DataManger sharedmanager]setSortBy:[NSString stringWithFormat:@"%ld",(long)_sortByKey]];
             
             [_tbl reloadData];
+            
             
         }
             break;
@@ -788,15 +949,30 @@ UIView *viewLeftnavBar;
         case 24://Modified time
         {
             
+#pragma mark-Sort by modified time
             
-            NSSortDescriptor *sortDescriptor =
-            [NSSortDescriptor sortDescriptorWithKey:@"modifiedtime"
-                                          ascending:YES
-                                           selector:@selector(caseInsensitiveCompare:)];
-            NSArray *arr=[_arrNotes sortedArrayUsingDescriptors:@[sortDescriptor]];
+            _sortByKey=24;
             
-            _arrNotes=[NSMutableArray arrayWithArray:arr];
+            NSArray* newArray = [_arrNotes sortedArrayUsingComparator: ^NSComparisonResult(SlideDataModel *c1, SlideDataModel *c2)
+                                 {
+                                     NSDate *d1 = [self str2date:c1.modifiedtime onlyDate:NO];
+                                     NSDate *d2 = [self str2date:c2.modifiedtime onlyDate:NO];
+                                     
+                                     return [d2 compare:d1];
+                                 }];
             
+            NSArray* newArray1 = [_arrAll sortedArrayUsingComparator: ^NSComparisonResult(DBNoteItems *c1, DBNoteItems *c2)
+                                  {
+                                      NSDate *d1 = [self str2date:c1.note_Modified_Time onlyDate:NO];
+                                      NSDate *d2 = [self str2date:c2.note_Modified_Time onlyDate:NO];
+                                      
+                                      return [d2 compare:d1];
+                                  }];
+            
+            _arrAll=[NSMutableArray arrayWithArray:newArray1];
+            _arrNotes=[NSMutableArray arrayWithArray:newArray];
+            
+            [[DataManger sharedmanager]setSortBy:[NSString stringWithFormat:@"%ld",(long)_sortByKey]];
             
             [_tbl reloadData];
             
@@ -806,7 +982,85 @@ UIView *viewLeftnavBar;
             
         case 25://reminder time
         {
+#pragma mark-Sort by reminder time
             
+            _sortByKey=25;
+            
+            NSMutableArray *Arr=[[NSMutableArray alloc]init];//table
+            NSMutableArray *Arr1=[[NSMutableArray alloc]init];//db
+            
+            
+            NSMutableArray *Arr3=[[NSMutableArray alloc]init];//table
+            NSMutableArray *Arr4=[[NSMutableArray alloc]init];//db
+            
+            for (SlideDataModel *object1 in _arrNotes)
+            {
+                
+                if (![object1.remindertime isEqualToString:@""]&&object1.remindertime)
+                {
+                    [Arr addObject:object1];
+                }
+                else{
+                    
+                    [Arr3 addObject:object1];
+                }
+                
+            }
+            
+            for (DBNoteItems *object1 in _arrAll)
+            {
+                
+                if (![object1.note_Reminder isEqualToString:@""]&&object1.note_Reminder){
+                    [Arr1 addObject:object1];
+                }
+                else
+                {
+                    [Arr4 addObject:object1];
+                }
+                
+                
+            }
+            
+            
+            
+            
+            NSArray* newArray = [Arr sortedArrayUsingComparator: ^NSComparisonResult(SlideDataModel *c1, SlideDataModel *c2)
+                                 {
+                                     NSDate *d1 = [self str2date:c1.remindertime onlyDate:NO];
+                                     NSDate *d2 = [self str2date:c2.remindertime onlyDate:NO];
+                                     
+                                     return [d2 compare:d1];
+                                 }];
+            
+            NSArray* newArray1 = [Arr1 sortedArrayUsingComparator: ^NSComparisonResult(DBNoteItems *c1, DBNoteItems *c2)
+                                  {
+                                      NSDate *d1 = [self str2date:c1.note_Reminder onlyDate:NO];
+                                      NSDate *d2 = [self str2date:c2.note_Reminder onlyDate:NO];
+                                      
+                                      return [d2 compare:d1];
+                                  }];
+            
+            
+            
+            
+            
+            _arrAll=[NSMutableArray arrayWithArray:newArray1];
+            
+            for (DBNoteItems *model in Arr4)
+            {
+                [_arrAll addObject:model];
+            }
+            
+            _arrNotes=[NSMutableArray arrayWithArray:newArray];
+            
+            for (SlideDataModel *model in Arr3)
+            {
+                [_arrNotes addObject:model];
+            }
+            
+            [[DataManger sharedmanager]setSortBy:[NSString stringWithFormat:@"%ld",(long)_sortByKey]];
+            
+            [_tbl reloadData];
             
             
         }
@@ -816,17 +1070,86 @@ UIView *viewLeftnavBar;
         case 26://time bomb
         {
             
+#pragma mark-Sort by  time bomb
             
-            NSSortDescriptor *sortDescriptor =
-            [NSSortDescriptor sortDescriptorWithKey:@"timebomb"
-                                          ascending:YES
-                                           selector:@selector(caseInsensitiveCompare:)];
-            NSArray *arr=[_arrNotes sortedArrayUsingDescriptors:@[sortDescriptor]];
+            _sortByKey=26;
             
-            _arrNotes=[NSMutableArray arrayWithArray:arr];
             
+            NSMutableArray *Arr=[[NSMutableArray alloc]init];//table
+            NSMutableArray *Arr1=[[NSMutableArray alloc]init];//db
+            
+            
+            NSMutableArray *Arr3=[[NSMutableArray alloc]init];//table
+            NSMutableArray *Arr4=[[NSMutableArray alloc]init];//db
+            
+            for (SlideDataModel *object1 in _arrNotes)
+            {
+                
+                if (![object1.timebomb isEqualToString:@"0"]&&object1.timebomb){
+                    [Arr addObject:object1];
+                }
+                else{
+                    
+                    [Arr3 addObject:object1];
+                }
+                
+            }
+            
+            for (DBNoteItems *object1 in _arrAll)
+            {
+                
+                if (![object1.note_Time_bomb isEqualToString:@"0"]&&object1.note_Time_bomb){
+                    [Arr1 addObject:object1];
+                }
+                else
+                {
+                    [Arr4 addObject:object1];
+                }
+                
+                
+            }
+            
+            
+            
+            
+            NSArray* newArray = [Arr sortedArrayUsingComparator: ^NSComparisonResult(SlideDataModel *c1, SlideDataModel *c2)
+                                 {
+                                     NSDate *d1 = [self str2date:c1.timebomb onlyDate:NO];
+                                     NSDate *d2 = [self str2date:c2.timebomb onlyDate:NO];
+                                     
+                                     return [d2 compare:d1];
+                                 }];
+            
+            NSArray* newArray1 = [Arr1 sortedArrayUsingComparator: ^NSComparisonResult(DBNoteItems *c1, DBNoteItems *c2)
+                                  {
+                                      NSDate *d1 = [self str2date:c1.note_Time_bomb onlyDate:NO];
+                                      NSDate *d2 = [self str2date:c2.note_Time_bomb onlyDate:NO];
+                                      
+                                      return [d2 compare:d1];
+                                  }];
+            
+            
+            
+            
+            
+            _arrAll=[NSMutableArray arrayWithArray:newArray1];
+            
+            for (DBNoteItems *model in Arr4)
+            {
+                [_arrAll addObject:model];
+            }
+            
+            _arrNotes=[NSMutableArray arrayWithArray:newArray];
+            
+            for (SlideDataModel *model in Arr3)
+            {
+                [_arrNotes addObject:model];
+            }
+            
+            [[DataManger sharedmanager]setSortBy:[NSString stringWithFormat:@"%ld",(long)_sortByKey]];
             
             [_tbl reloadData];
+             
             
         }
             break;
@@ -837,6 +1160,30 @@ UIView *viewLeftnavBar;
     
     [self hideSheet];
     [_tbl setContentOffset:CGPointMake(0, 0)];
+}
+
+
+-(void)didNoteUnlock:(BOOL)isunlock
+{
+    if (isunlock)
+    {
+     [[[UIAlertView alloc]initWithTitle:@"" message:@"Note unlocked successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil]show ];
+    }else
+    {
+        [[[UIAlertView alloc]initWithTitle:@"" message:@"Note locked successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil]show ];
+    }
+    
+    
+    [self getAllNotes];
+    
+}
+-(void)handletap:(UITapGestureRecognizer*)gaesture
+{
+    
+    
+    [self hideSheet];
+    [_txtSearch resignFirstResponder];
+    
 }
 
 -(void)hideSheet{
@@ -868,7 +1215,7 @@ UIView *viewLeftnavBar;
         [UIView animateWithDuration:0.2 animations:^{
             
             
-            _popup.frame=CGRectMake(0.0,self.self.view.frame.size.height-230,self.view.frame.size.width, 300);
+            _popup.frame=CGRectMake(0.0,self.self.view.frame.size.height-180,self.view.frame.size.width, 300);
             _popup.backgroundColor=[UIColor clearColor];
             [_popup layoutSubviews];
         }];
@@ -897,58 +1244,7 @@ UIView *viewLeftnavBar;
             }
                 break;
                 
-            case 1:
-                //color
-            {
-                // _selectedButton=102;
-                
-                
-                
-                
-                
-            }
-                break;
-                
-            case 2:
-                //created time
-            {
-                //_selectedButton=103;
-                
-            }
-                break;
-            case 3:
-                //Modified time
-            {
-                //_selectedButton=104;
-                
-                
-            }
-                break;
-            case 4:
-                //reminder time
-            {
-                //_selectedButton=105;
-                
-                
-            }
-                break;
-            case 5:
-                //Time bomb
-            {
-                //_selectedButton=106;
-                
-                
-            }
-                break;
-                
-                
-            case 6:
-            {
-                //Cancel Button Clicked
-                
-                
-            }
-                break;
+            
         }
         
     }
@@ -1074,57 +1370,58 @@ UIView *viewLeftnavBar;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    UITableViewCell *cell1 = [tableView dequeueReusableCellWithIdentifier:@"FolderCell"];
-    
-    UITableViewCell *cellDetail = [tableView dequeueReusableCellWithIdentifier:@"FolderCell"];
-    
-    UITableViewCell *cellGrid = [tableView dequeueReusableCellWithIdentifier:@"FolderGridCell"];
-    
-    
+
     //view
     switch (_selectedButton)
     {
+          
             
+#pragma mark-list
         case 201:
             
         {
             //list
             
-            FolderTableViewCell *cell=(FolderTableViewCell*)cell1;
-            
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            
-            if (cell == nil) {
-                cell = [[FolderTableViewCell alloc] init];
-            }
-            
+            UITableViewCell *cellList = [tableView dequeueReusableCellWithIdentifier:@"FolderCell"];
             
             NSMutableArray *rightUtilityButtons = [NSMutableArray new];
             
+            if (cellList == nil)
+            {
+                cellList = [[[NSBundle mainBundle] loadNibNamed:@"FolderTableViewCell" owner:self options:nil] si_objectOrNilAtIndex:0];
+                cellList.selectionStyle = UITableViewCellSelectionStyleNone;
+                
+            }
+            
+            
             
             [rightUtilityButtons sw_addUtilityButtonWithColor:
              [UIColor colorWithRed:(246/255.0) green:(65/255.0) blue:(79/255.0) alpha:1]
-                                                         icon:[UIImage imageNamed:@"delete00.png"]];
+                                                         icon:[UIImage imageNamed:@"delete00.png"]withtag:indexPath.row];
             [rightUtilityButtons sw_addUtilityButtonWithColor:
              [UIColor colorWithRed:(246/255.0) green:(65/255.0) blue:(79/255.0) alpha:1]
-                                                         icon:[UIImage imageNamed:@"lock00.png"]];
+                                                         icon:[UIImage imageNamed:@"lock00.png"]withtag:indexPath.row];
             
             [rightUtilityButtons sw_addUtilityButtonWithColor:
              [UIColor colorWithRed:(246/255.0) green:(65/255.0) blue:(79/255.0) alpha:1]
-                                                         icon:[UIImage imageNamed:@"bomb00.png"]];
+                                                         icon:[UIImage imageNamed:@"bomb00.png"]withtag:indexPath.row];
             [rightUtilityButtons sw_addUtilityButtonWithColor:
              [UIColor colorWithRed:(246/255.0) green:(65/255.0) blue:(79/255.0) alpha:1]
-                                                         icon:[UIImage imageNamed:@"send00.png"]];
+                                                         icon:[UIImage imageNamed:@"send00.png"]withtag:indexPath.row];
             
             [rightUtilityButtons sw_addUtilityButtonWithColor:
              [UIColor colorWithRed:(246/255.0) green:(65/255.0) blue:(79/255.0) alpha:1]
-                                                         icon:[UIImage imageNamed:@"share00.png"]];
+                                                         icon:[UIImage imageNamed:@"share00.png"]withtag:indexPath.row];
             
+            
+            
+            FolderTableViewCell *cell=(FolderTableViewCell*)cellList;
+            
+        
+            cell.delegate = self;
             
             
             cell.rightUtilityButtons = rightUtilityButtons;
-            
-            cell.delegate = self;
             
             
             SlideDataModel *model=[_arrNotes si_objectOrNilAtIndex:indexPath.row];
@@ -1143,57 +1440,52 @@ UIView *viewLeftnavBar;
                 cell.timeStamp.text =@"";
                 cell.contentView.backgroundColor=[UIColor si_getColorWithHexString:model.colours];
             }
-            
-            
-            
-            
-            
+
             return cell;
             
         }
             break;
+            #pragma mark-list Detail
+            
         case 202:
             
         {
             //list detail
-            
-            
-            FolderTableViewCell *cell=(FolderTableViewCell*)cellDetail;
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            
-            if (cell == nil) {
-                cell = [[FolderTableViewCell alloc] init];
-            }
-            
+            UITableViewCell *cellDetail = [tableView dequeueReusableCellWithIdentifier:@"FolderCell"];
             
             NSMutableArray *rightUtilityButtons = [NSMutableArray new];
             
+            if (cellDetail == nil)
+            {
+                cellDetail = [[[NSBundle mainBundle] loadNibNamed:@"FolderTableViewCell" owner:self options:nil] si_objectOrNilAtIndex:0];
+                cellDetail.selectionStyle = UITableViewCellSelectionStyleNone;
+
+            }
+            
+            
             [rightUtilityButtons sw_addUtilityButtonWithColor:
              [UIColor colorWithRed:(246/255.0) green:(65/255.0) blue:(79/255.0) alpha:1]
-                                                         icon:[UIImage imageNamed:@"deleteTry55.png"] withtag:indexPath.row+100];
+                                                         icon:[UIImage imageNamed:@"deleteTry55.png"] withtag:indexPath.row];
             [rightUtilityButtons sw_addUtilityButtonWithColor:
              [UIColor colorWithRed:(246/255.0) green:(65/255.0) blue:(79/255.0) alpha:1]
-                                                         icon:[UIImage imageNamed:@"newLock55.png"] withtag:indexPath.row+100];
+                                                         icon:[UIImage imageNamed:@"newLock55.png"] withtag:indexPath.row];
             
             [rightUtilityButtons sw_addUtilityButtonWithColor:
              [UIColor colorWithRed:(246/255.0) green:(65/255.0) blue:(79/255.0) alpha:1]
                                                          icon:[UIImage imageNamed:@"bombTry55.png"] withtag:indexPath.row];
             [rightUtilityButtons sw_addUtilityButtonWithColor:
              [UIColor colorWithRed:(246/255.0) green:(65/255.0) blue:(79/255.0) alpha:1]
-                                                         icon:[UIImage imageNamed:@"moveTry55.png"] withtag:indexPath.row+100];
+                                                         icon:[UIImage imageNamed:@"moveTry55.png"] withtag:indexPath.row];
             
             [rightUtilityButtons sw_addUtilityButtonWithColor:
              [UIColor colorWithRed:(246/255.0) green:(65/255.0) blue:(79/255.0) alpha:1]
-                                                         icon:[UIImage imageNamed:@"shareTry55.png"] withtag:indexPath.row+100];
+                                                         icon:[UIImage imageNamed:@"shareTry55.png"] withtag:indexPath.row];
             
-            
-            cell.rightUtilityButtons = rightUtilityButtons;
+             FolderTableViewCell *cell=(FolderTableViewCell*)cellDetail;
+             cell.rightUtilityButtons = rightUtilityButtons;
             cell.delegate = self;
             
-            
-            
-            
-            
+
             
             //these are not right utility buttons..They are ui images not required
             cell.shareBtn.hidden=NO;
@@ -1212,11 +1504,70 @@ UIView *viewLeftnavBar;
                 NSString *cappedString = [model.cellName stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:firstCapChar];
                 
                 cell.nameOfFolder.text = cappedString;
-                cell.notesDesc.text = model.cellDetail;
-                cell.timeStamp.text = model.createdtime;
+                
+                //[model.noteType valueForKey:@"note_type"];
+                if ([model.noteType  isEqualToString:@"IMAGE"])
+                {
+                   cell.notesDesc.text = @"IMAGE";
+                    
+                }
+                else if ([model.noteType  isEqualToString:@"AUDIO"])
+                {
+                    cell.notesDesc.text = @"AUDIO";
+                    
+                }
+                else if ([model.noteType  isEqualToString:@"TEXT"])
+                {
+                    cell.notesDesc.text = @"TEXT";
+                }else{
+                    
+                    cell.notesDesc.text=@"";
+                }
+
+                NSDate *dateGmt=[self str2date:model.createdtime onlyDate:NO];
+                
+                NSString *strDate=[self date2strLocal:dateGmt onlyDate:NO];
+                
+                
+                cell.timeStamp.text = [strDate uppercaseString];
                 cell.contentView.backgroundColor=[UIColor si_getColorWithHexString:model.colours];
             }
             
+            if (![model.timebomb isEqualToString:@"0"]&&model.timebomb)
+            {
+                
+                NSLog(@"time bomb set");
+                
+                
+                [cell.bombImage setImage:[UIImage imageNamed:@"redTimeBomb.png"]];
+                
+            }
+            else
+            {
+                
+            //no image
+            [cell.bombImage setImage:[UIImage imageNamed:@""]];
+                
+            }
+            
+            
+            
+            if ([model.celllock isEqualToString:@"1"]&&model.celllock)
+            {
+                
+                NSLog(@"lock is set");
+                
+                
+                [cell.lockImage setImage:[UIImage imageNamed:@"redLock.png"]];
+                
+            }
+            else
+            {
+                
+                //no image
+                
+                [cell.lockImage setImage:[UIImage imageNamed:@""]];
+            }
             
             
             
@@ -1226,9 +1577,13 @@ UIView *viewLeftnavBar;
             break;
             
             
+             #pragma mark-Tile
+            
         case 203:
             
         {
+            
+            UITableViewCell *cellGrid = [tableView dequeueReusableCellWithIdentifier:@"FolderGridCell"];
             
             NSUInteger convertedIndex=indexPath.row*2;
             //grid
@@ -1236,24 +1591,49 @@ UIView *viewLeftnavBar;
             FolderGridCell *cell=(FolderGridCell*)cellGrid;
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             
+            
+            
             if (cell == nil) {
                 cell = [[FolderGridCell alloc] init];
                 
-                cell.view1.frame=CGRectMake(2.0, 1.0,(self.tbl.frame.size.width/2.0f)-2, 118);
+                cell.view1.frame=CGRectMake(2.0, 1.0,(self.tbl.frame.size.width/2.0f)-2, 200);
                 cell.view1.clipsToBounds=YES;
                 
-                cell.view2.frame=CGRectMake((self.tbl.frame.size.width/2.0f)+1, 1.0,self.tbl.frame.size.width/2.0f-2, 118);
+                cell.view2.frame=CGRectMake((self.tbl.frame.size.width/2.0f)+1, 1.0,self.tbl.frame.size.width/2.0f-2, 200);
                 cell.view2.clipsToBounds=YES;
             }
             
-            UIView *myBackView = [[UIView alloc] initWithFrame:cell.frame];
+            cell.tileDelegate=self;
+            
+             //FolderGridCell *cell=(FolderGridCell*)cellGrid;
+            
+            cell.view1.frame=CGRectMake(2.0, 1.0,(cell.frame.size.width/2.0f)-2, 200);
+            
+            cell.view1.layer.borderColor = [UIColor lightGrayColor].CGColor;
+            cell.view1.layer.borderWidth = 0.5f;
+            
+            cell.view1.clipsToBounds=YES;
+            
+            cell.view2.frame=CGRectMake((cell.frame.size.width/2.0f)+1, 1.0,cell.frame.size.width/2.0f-2, 200);
+            
+            cell.view2.clipsToBounds=YES;
+            
+            
+            
+            UIView *myBackView = [[UIView alloc] initWithFrame:cellGrid.frame];
             myBackView.backgroundColor = [UIColor colorWithRed:(255/255.0) green:(119/255.0) blue:(121/255.0) alpha:0.5];
-            cell.selectedBackgroundView = myBackView;
+            cellGrid.selectedBackgroundView = myBackView;
             
             if (convertedIndex < _arrNotes.count)
                 
             {
                 SlideDataModel *model=[_arrNotes si_objectOrNilAtIndex:convertedIndex];
+                
+                [cell setTileIndex1:convertedIndex];
+                
+                [cell setSlideDataModel1:[_arrAll si_objectOrNilAtIndex:convertedIndex]];
+                
+                
                 
                 cell.view1.hidden=NO;
                 
@@ -1263,10 +1643,36 @@ UIView *viewLeftnavBar;
                     NSString *cappedString = [model.cellName stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:firstCapChar];
                     cell.lblDetail1.text = cappedString;
                     cell.lblTitle1.text=model.cellDetail;
+                    if ([model.noteType  isEqualToString:@"IMAGE"])
+                    {
+                        cell.lblTitle1.text = @"IMAGE";
+                        
+                    }
+                    else if ([model.noteType  isEqualToString:@"AUDIO"])
+                    {
+                        cell.lblTitle1.text = @"AUDIO";
+                        
+                    }
+                    else if ([model.noteType  isEqualToString:@"TEXT"])
+                    {
+                        cell.lblTitle1.text = @"TEXT";
+                    }else{
+                        
+                        cell.lblTitle1.text=@"";
+                    }
                     cell.view1.backgroundColor=[UIColor si_getColorWithHexString:model.colours];
-                    cell.timeLbl1.text=model.createdtime;
+                    
+                    
+                    NSDate *dateGmt=[self str2date:model.createdtime onlyDate:NO];
+                    
+                    NSString *strDate=[self date2strLocal:dateGmt onlyDate:NO];
+                    
+                    
+                   // cell.timeStamp.text = [strDate uppercaseString];
+                    
+                    cell.timeLbl1.text=[strDate uppercaseString];//model.createdtime;
                 }
-                
+
             }
             
             else{
@@ -1278,6 +1684,11 @@ UIView *viewLeftnavBar;
             {
                 SlideDataModel *model=[_arrNotes si_objectOrNilAtIndex:convertedIndex+1];
                 
+                [cell setTileIndex2:convertedIndex+1];
+                
+                
+                [cell setSlideDataModel2:[_arrAll si_objectOrNilAtIndex:convertedIndex+1]];
+                
                 cell.view2.hidden=NO;
                 
                 if (model.cellName.length>0)
@@ -1285,9 +1696,40 @@ UIView *viewLeftnavBar;
                     NSString *firstCapChar = [[model.cellName substringToIndex:1] capitalizedString];
                     NSString *cappedString = [model.cellName stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:firstCapChar];
                     cell.lblDetail2.text = cappedString;
-                    cell.lblTitle2.text=model.cellDetail;//[_cellDeatil si_objectOrNilAtIndex:convertedIndex+1];
+                   // cell.lblTitle2.text=model.cellDetail;
+                    if ([model.noteType  isEqualToString:@"IMAGE"])
+                    {
+                        cell.lblTitle2.text = @"IMAGE";
+                        
+                    }
+                    else if ([model.noteType  isEqualToString:@"AUDIO"])
+                    {
+                        cell.lblTitle2.text = @"AUDIO";
+                        
+                    }
+                    else if ([model.noteType  isEqualToString:@"TEXT"])
+                    {
+                        cell.lblTitle2.text = @"TEXT";
+                    }else{
+                        
+                        cell.lblTitle2.text=@"";
+                    }
                     cell.view2.backgroundColor=[UIColor si_getColorWithHexString:model.colours];
-                    cell.timeLbl2.text=model.createdtime;
+                    cell.view2.layer.borderColor = [UIColor lightGrayColor].CGColor;
+                    cell.view2.layer.borderWidth = 0.5f;
+                    
+                    
+                    
+                    NSDate *dateGmt=[self str2date:model.createdtime onlyDate:NO];
+                    
+                    NSString *strDate=[self date2strLocal:dateGmt onlyDate:NO];
+                    
+                    
+                    // cell.timeStamp.text = [strDate uppercaseString];
+                    
+                    cell.timeLbl2.text=[strDate uppercaseString];//model.createdtime;
+                    
+                   // cell.timeLbl2.text=model.createdtime;
                 }
                 
                 
@@ -1297,6 +1739,9 @@ UIView *viewLeftnavBar;
             {
                 cell.view2.hidden=YES;
             }
+            
+            
+            
             
             return cell;
             
@@ -1342,7 +1787,7 @@ UIView *viewLeftnavBar;
             
         {
             //list detail
-            return 100;
+            return 110;
             
         }
             break;
@@ -1399,6 +1844,11 @@ UIView *viewLeftnavBar;
     
     [_dbManager UpdateNoteMoveTofolder:[_dbManager getDbFilePath] withNoteItem:_noteItems1];
     
+    [_tbl reloadData];
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Moved" message:@"Note moved to Folder" delegate:self cancelButtonTitle:nil otherButtonTitles: @"OK",nil];
+    [alert show];
+    
     NSLog(@"%@",sender);
 }
 
@@ -1422,80 +1872,107 @@ UIView *viewLeftnavBar;
     CGPoint p = [gestureRecognizer locationInView:self.tbl];
     // CGPoint location = [gestureRecognizer locationInView:self.view];
     
-    indexPath2 = [self.tbl indexPathForRowAtPoint:p];
+    if (_selectedButton!=203)
+    {
+        
+        indexPath2 = [self.tbl indexPathForRowAtPoint:p];
+        
+        if (indexPath2 == nil)
+        {
+            NSLog(@"long press on table view but not on a row");
+        }
+        else if (gestureRecognizer.state == UIGestureRecognizerStateBegan)
+        {
+            
+            _selectedIndexPath=indexPath2.row;
+            
+            // CGRect targetRectangle = CGRectMake(location.x,location.y,50,50);
+            
+            NSLog(@"Long Gesture pressed");
+            
+            NoteColorViewController *samplePopupViewController = [[NoteColorViewController alloc] initWithNibName:@"NoteColorViewController" bundle:nil];
+            //[samplePopupViewController setStringAlertTitle:@"Select Color"];
+            samplePopupViewController.delegate=self;
+            
+            [self presentPopupViewController:samplePopupViewController animated:YES completion:^(void) {
+                NSLog(@"popup view presented");
+            }];
+            
+        }
+        else {
+            
+            
+        }
+    }
     
-    if (indexPath2 == nil)
-    {
-        NSLog(@"long press on table view but not on a row");
-    }
-    else if (gestureRecognizer.state == UIGestureRecognizerStateBegan)
-    {
-        
-        _selectedIndexPath=indexPath2.row;
-        
-        // CGRect targetRectangle = CGRectMake(location.x,location.y,50,50);
-        
-        NSLog(@"Long Gesture pressed");
-        
-        NoteColorViewController *samplePopupViewController = [[NoteColorViewController alloc] initWithNibName:@"NoteColorViewController" bundle:nil];
-        //[samplePopupViewController setStringAlertTitle:@"Select Color"];
-        samplePopupViewController.delegate=self;
-        
-        [self presentPopupViewController:samplePopupViewController animated:YES completion:^(void) {
-            NSLog(@"popup view presented");
-        }];
-        
-    }
-    else {
-        
-        
-    }
+    
 }
+
+
 
 - (void)swipeableTableViewCell:(SWTableViewCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index withCellIndex:(NSInteger)cellIndex{
     
-    _noteItems1 =  [_arrAll si_objectOrNilAtIndex:cellIndex];
     
+    _noteItems1 =  [_arrAll si_objectOrNilAtIndex:cellIndex];
+    _seletedIndex=cellIndex;
     
     switch (index) {
             
         case 0:
         {
+
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Delete" message:@"Are you sure you want to delete this note?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: @"OK",nil];
+            [alert show];
+            alert.tag=3000;
             
-            [_dbManager deleteNote:[_dbManager getDbFilePath] withNoteItem:_noteItems1];
-            [_arrNotes removeObjectAtIndex:cellIndex];
-            [_tbl reloadData];
-            
-            
+        
             
             break;
         }
         case 1:
         {
             
-            if (![_noteItems1.note_lock boolValue])
+            
+#pragma mark-Lock the note
+            
+            if ([[[DataManger sharedmanager] getMasterLockCode] length]>0)
             {
-                
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Lock" message:@"Are you sure you want to lock this note?" delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles: @"OK",nil];
-                [alert show];
-                
-                alert.tag=200;
-                _alertInteger=alert.tag;
-                alert.delegate=self;
-            }else
-            {
-                
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Lock" message:@"Not already Lock,Please unlock" delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles: @"OK",nil];
-                [alert show];
+                if (![_noteItems1.note_lock boolValue])
+                {
+                    
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Lock" message:@"Are you sure you want to lock this note?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: @"OK",nil];
+                    [alert show];
+                    
+                    alert.tag=200;
+                    _alertInteger=alert.tag;
+                    alert.delegate=self;
+                }
+                else
+                {
+                    
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Lock" message:@"Note already Locked! Please unlock" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK",nil];
+                    
+                    
+                    [alert show];
+                    alert.tag=8000;
+                    
+                   
+                    
+                    
+                }
             }
+            else
+            {
             
-            
-            
-            
-            
-            
-            
-            
+                [self.masterLockVC setNoteItems:_noteItems1];
+                [self.masterLockVC setIsCommingFrom:NO];
+                [self.navigationController presentViewController:self.masterLockVC animated:YES completion:^{
+                    
+                }];
+                
+                
+            }
+
             break;
         }
             
@@ -1503,12 +1980,29 @@ UIView *viewLeftnavBar;
         {
             
             
-            [self showAndHidePickerView:YES];
-            
-            
-            
-            
-            
+            if (![_noteItems1.note_Time_bomb isEqualToString:@"0"]&&_noteItems1.note_Time_bomb)
+            {
+                
+                
+               NSDate *dateGmt=[self str2date:_noteItems1.note_Time_bomb onlyDate:NO];
+                
+                NSString *strDate=[self date2strLocal:dateGmt onlyDate:NO];
+                
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"Time bomb already set for  this note,It willl expire on :%@",strDate] delegate:self cancelButtonTitle:@"OK" otherButtonTitles:@"EDIT",nil];
+                
+                
+                [alert show];
+                alert.tag=4000;
+                
+                
+                
+            }else{
+                
+                [self showAndHidePickerView:YES];
+                
+            }
+ 
             
             break;
         }
@@ -1568,6 +2062,17 @@ UIView *viewLeftnavBar;
         {
             //Note share
             
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Enter Friends NoteShare Email Id" delegate:self cancelButtonTitle:@"Continue" otherButtonTitles:@"Cancel",nil];
+            alert.delegate=self;
+            alert.tag=100;
+            
+            alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+            UITextField * alertTextField = [alert textFieldAtIndex:0];
+             _toNoteshareEmail=alertTextField.text;
+            alertTextField.keyboardType = UIKeyboardTypeDefault;
+            alertTextField.placeholder = @"Enter valid email id here";
+            [alert show];
+            
             
             
         }
@@ -1577,7 +2082,7 @@ UIView *viewLeftnavBar;
         {
             //WhatsApp
             
-            NSString * msg =_noteItems1.note_Title;
+            NSString * msg =@"Check out NoteShare App for your smartphone.Download it today from https://noteshare.com/dl/";
             NSString * urlWhats = [NSString stringWithFormat:@"whatsapp://send?text=%@",msg];
             NSURL * whatsappURL = [NSURL URLWithString:[urlWhats stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
             if ([[UIApplication sharedApplication] canOpenURL: whatsappURL]) {
@@ -1599,8 +2104,8 @@ UIView *viewLeftnavBar;
             
             mailComposer = [[MFMailComposeViewController alloc]init];
             mailComposer.mailComposeDelegate = self;
-            [mailComposer setSubject:_noteItems1.note_Title];
-            [mailComposer setMessageBody:_noteItems1.note_Title isHTML:NO];
+            [mailComposer setSubject:@""];
+            [mailComposer setMessageBody:@"Check out NoteShare App for your smartphone.Download it today from https://noteshare.com/dl/" isHTML:NO];
             [self presentViewController:mailComposer animated:YES completion:^{
                 
             }];
@@ -1615,7 +2120,7 @@ UIView *viewLeftnavBar;
             MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init] ;
             if([MFMessageComposeViewController canSendText])
             {
-                controller.body = _noteItems1.note_Title;
+                controller.body = @"Check out NoteShare App for your smartphone.Download it today from https://noteshare.com/dl/";
                 //controller.recipients = [NSArray arrayWithObjects:@"12345678", @"87654321", nil];
                 controller.messageComposeDelegate = self;
                 
@@ -1721,10 +2226,46 @@ UIView *viewLeftnavBar;
     return stringFromDate;
 }
 
+-(NSString*)date2strLocal:(NSDate*)myNSDateInstance onlyDate:(BOOL)onlyDate{
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    if (onlyDate)
+    {
+        [formatter setDateFormat:@"dd MMM yyyy"];
+    }
+    else
+    {
+        [formatter setDateFormat: @"dd MMM yyyy hh:mm a"];
+    }
+    
+    //Optionally for time zone conversions
+    [formatter setTimeZone:[NSTimeZone localTimeZone]];
+    
+    NSString *stringFromDate = [formatter stringFromDate:myNSDateInstance];
+    return stringFromDate;
+}
+
+
+-(NSDate*)str2date:(NSString*)myNSDateInstance onlyDate:(BOOL)onlyDate
+{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    if (onlyDate) {
+        [formatter setDateFormat:@"yyyy-MM-dd"];
+    }else{
+        [formatter setDateFormat: @"yyyy-MM-dd HH:mm:ss z"];
+    }
+    
+    //Optionally for time zone conversions
+    // [formatter setTimeZone:[NSTimeZone timeZoneWithName:@"GMT"]];
+    
+    NSDate *stringFromDate = [formatter dateFromString:myNSDateInstance];
+    return stringFromDate;
+}
+
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     
-    if (_alertInteger==200) {
+    if (alertView.tag==200) {
         
         
         switch (buttonIndex)
@@ -1732,20 +2273,23 @@ UIView *viewLeftnavBar;
             case 0:
             {
                 //cancel
-                
+                [_tbl reloadData];
                 
             }
                 break;
             case 1:
             {
                 //ok
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"LOCKED" message:@"Your note is locked?" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"LOCKED" message:@"Your note is locked!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alert show];
                 
                 _noteItems1.note_lock=@"1";
+            
                 
                 [_dbManager UpdateNoteLock:[_dbManager getDbFilePath] withNoteItem:_noteItems1]
                 ;
+                
+                [self getAllNotes];
                 
             }
                 break;
@@ -1755,25 +2299,28 @@ UIView *viewLeftnavBar;
         
         
     }
-    
-    
     //create note
-    
     else if(alertView.tag==2000)
     {
+        
+        
+        NSString *strTitle=[alertView textFieldAtIndex:0].text;
+        if (![strTitle isEqualToString:@""]) {
+            
+
         switch (buttonIndex)
         {
             case 0:
             {
                 NSString *strCreateTime=[self date2str:[NSDate date] onlyDate:NO];
                 
-                NSString *strTitle=[alertView textFieldAtIndex:0].text;
+                
                 NSLog(@"ADDED TITILE:%@",strTitle);
                 
                 
 #pragma mark-insert note
                 
-                int success= [_dbManager insert:[_dbManager getDbFilePath] withName:strTitle color:@"#ffffff" created_time:strCreateTime modified_time:strCreateTime time_bomb:0 reminder_time:strCreateTime user_id:@"1234" folder_id:@"" note_element:@"" server_key:@""note_color:@"#ffffff"];
+                int success= [_dbManager insert:[_dbManager getDbFilePath] withName:strTitle color:@"#ffffff" created_time:strCreateTime modified_time:strCreateTime time_bomb:0 reminder_time:@"" user_id:[[DataManger sharedmanager] getUserId] folder_id:@"" note_element:@"" server_key:@""note_color:@"#ffffff"];
                 
                 if (success==0)
                 {
@@ -1801,8 +2348,9 @@ UIView *viewLeftnavBar;
                         [_arrNotes addObject:model];
                     }
                     
-                    _arrAll=[_dbManager getRecords:[_dbManager getDbFilePath]];
-                    [_tbl  reloadData];
+
+                    MyCount=[NSString stringWithFormat:@"NOTES (%i)",(int)_arrNotes.count];
+                    [self getAllNotes];
                     
                 }
                 
@@ -1812,25 +2360,253 @@ UIView *viewLeftnavBar;
             case 1:
             {
                 NSLog(@"1");//no
+                [_tbl reloadData];
+            }
+                break;
+        }
+        
+        }
+        
+        else//alert error
+        {
+            
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Field cannot be blank" delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+            [alert show];
+            [_tbl reloadData];
+            
+        }
+    
+    }
+    
+    else if (alertView.tag==3000)
+    {
+        SlideDataModel *model=[_arrNotes si_objectOrNilAtIndex:_seletedIndex];
+        
+        switch (buttonIndex)
+        {
+            case 1:
+            {
+                
+                if ([model.celllock isEqualToString:@"1"]&&model.celllock)
+                {
+                //alert
+                    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Unlock to delete note" delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+                    [alert show];
+                    [_tbl reloadData];
+                }
+                else
+                {
+                    [_dbManager deleteNote:[_dbManager getDbFilePath] withNoteItem:_noteItems1];
+                    [_arrNotes removeObjectAtIndex:_seletedIndex];
+                    [_arrAll removeObjectAtIndex:_seletedIndex];
+                    MyCount=[NSString stringWithFormat:@"NOTES (%i)",(int)_arrNotes.count];
+                    [_tbl reloadData];
+                }
+                
+                
+            }
+                break;
+                
+            default:
+                [_tbl reloadData];
+                break;
+        }
+    }
+    else if (alertView.tag==4000)
+    {
+        
+        switch (buttonIndex) {
+            case 0:
+            {
+                
+                NSLog(@"OK");
+            }
+                break;
+            case 1:
+            {
+                NSLog(@"Edit");
+                
+                [self showAndHidePickerView:YES];
+            }
+                break;
+                
+            default:
+                break;
+        }
+        
+    }
+    else if(alertView.tag==8000)
+    {
+        
+        switch (buttonIndex)
+        {
+            case 1:
+                
+            {
+                [self.masterLockVC setNoteItems:_noteItems1];
+                [self.masterLockVC setIsCommingFrom:NO];
+                
+                [self.navigationController presentViewController:self.masterLockVC animated:YES completion:^{
+                    
+                }];
             }
                 break;
                 
                 
+            default:
+                break;
         }
-        
     }
+    
+    else if (alertView.tag==100)//noteshare to noteshare alert view
+        
+    {
+        switch (buttonIndex)
+        {
+                
+            case 0:
+                
+            {
+                NSLog(@"case 0");//continue
+                [self noteshareMethod];
+                [_tbl reloadData];
+            }
+                break;
+                
+            case 1:
+                
+            {
+                NSLog(@"case 1");//cancel
+                [_tbl reloadData];
+            }
+                break;
+                
+                
+            default:
+                break;
+        }
+    
+    
+    }
+    else
+    {
+        
+        [_tbl reloadData];
+    }
+    
+    
     
 }
 
+
+-(void)noteshareMethod{
+
+    
+    UserDetail *detail=[[DataManger sharedmanager]getLoogedInUserdetail];
+
+    NSString *URLString = [NSString stringWithFormat:@"http://104.154.57.170/user/login"];
+    
+    
+    NSMutableDictionary *dictParameter=[[NSMutableDictionary alloc]init];
+    
+    
+    
+    [dictParameter setObject:_toNoteshareEmail forKey:@"email"];
+    [dictParameter setObject:detail.userID forKey:@"userfrom"];
+    [dictParameter setObject:@"" forKey:@"note"];
+    
+    
+    
+    
+    NSData *dataobject=[NSJSONSerialization dataWithJSONObject:dictParameter options:NSJSONWritingPrettyPrinted error:nil];
+    
+    NSString *strparameter=[[NSString alloc]initWithData:dataobject encoding:NSUTF8StringEncoding];
+    
+    
+    NSURL *url = [NSURL URLWithString:[URLString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    
+    NSMutableURLRequest *requestPost=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
+    
+    [requestPost setHTTPMethod:@"POST"];
+    requestPost.HTTPBody=[strparameter dataUsingEncoding:NSUTF8StringEncoding];
+    [requestPost setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    
+    NSError *requestError=nil;
+    NSURLResponse *response = nil;
+    NSData *data=[NSURLConnection sendSynchronousRequest:requestPost returningResponse:&response error:&requestError];
+    
+    
+    if (requestError == nil) {
+        if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+            NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
+            if (statusCode != 200) {
+                NSLog(@"Warning, status code of response was not 200, it was %ld", (long)statusCode);
+            }
+        }
+        
+        NSError *error;
+        
+        NSDictionary *returnDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+        
+        
+        NSString *value = [returnDictionary valueForKey:@"value"];
+        
+        
+        if (returnDictionary)
+        {
+           
+            if ([value isEqualToString:@"true"]) {
+                
+                
+            }
+            
+            else
+            {
+            
+            
+            }
+            
+
+        }
+        
+        else
+        {
+            NSLog(@"error parsing JSON response: %@", error);
+            
+            NSString *returnString = [[NSString alloc] initWithBytes:[data bytes] length:[data length] encoding:NSUTF8StringEncoding];
+            NSLog(@"returnString: %@", returnString);
+        }
+    }
+    
+    else
+        
+    {
+        NSLog(@"NSURLConnection sendSynchronousRequest error: %@", requestError);
+        
+    }
+
+
+}
+
+
 -(void)viewWillAppear:(BOOL)animated{
     
+    [self getAllNotes];
+   // [[DataManger sharedmanager]setSortBy:_arrNotes];
+    
+}
+
+
 #pragma mark-get allNote
+
+-(void)getAllNotes
+{
+    [_arrNotes removeAllObjects];
     
+    _arrAll=[[NSMutableArray alloc]initWithArray:[_dbManager getRecords:[_dbManager getDbFilePath]]];
     
-    _arrAll=[_dbManager getRecords:[_dbManager getDbFilePath]];
     [ self  updatenotelistfromDb];
     [_tbl  reloadData];
-    
     
 }
 
@@ -1859,15 +2635,17 @@ UIView *viewLeftnavBar;
 }
 -(IBAction)btnPickerSelcted:(id)sender
 {
-    //[self showAndHidePickerView:NO];
+    
 }
 -(IBAction)btnCancelClick:(id)sender
 {
     [self showAndHidePickerView:NO];
 }
+
+
 -(IBAction)btnDoneClick:(id)sender
+
 {
-    
     
     NSDateFormatter * formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss z"];
@@ -1878,10 +2656,31 @@ UIView *viewLeftnavBar;
     
     _noteItems1.note_Time_bomb=dateString;
     
-    [_dbManager UpdateNoteTimeBomb:[_dbManager getDbFilePath] withNoteItem:_noteItems1];
-    
+    if (_noteItems1)
+    {
+        [_dbManager UpdateNoteTimeBomb:[_dbManager getDbFilePath] withNoteItem:_noteItems1];
+        
+        [[[UIAlertView alloc]initWithTitle:@"Time Bomb" message:@"Time Bomb has been set." delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+        
+        [self getAllNotes];
+        
+        //[_tbl performSelectorOnMainThread:@selector(updateMethod) withObject:nil waitUntilDone:YES];
+        
+    }else
+    {
+        [[[UIAlertView alloc]initWithTitle:@"Time Bomb" message:@"Time Bomb has not been set." delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+    }
+
     
     [self showAndHidePickerView:NO];
+    
+
+}
+
+-(void)updateMethod{
+
+    [_tbl reloadData];
+    
 }
 
 #pragma mark - mail compose delegate
@@ -1944,6 +2743,91 @@ UIView *viewLeftnavBar;
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
+#pragma mark-date compare
+
+///If return yes do not fetch the note
+
+- (BOOL)isEndDateIsSmallerThanCurrent:(NSString *)checkEndDate
+{
+    NSDate* enddate =[self str2date:checkEndDate onlyDate:NO] ;
+    
+    
+    NSDate* currentdate = [NSDate date];
+    
+    NSString *strCurrendate=[self date2str:currentdate onlyDate:NO];
+    currentdate=[self str2date:strCurrendate onlyDate:NO];
+    
+    NSTimeInterval distanceBetweenDates = [enddate timeIntervalSinceDate:currentdate];
+    double secondsInMinute = 60;
+    NSInteger secondsBetweenDates = distanceBetweenDates / secondsInMinute;
+    
+    if (secondsBetweenDates == 0)
+        return YES;
+    else if (secondsBetweenDates < 0)
+        return YES;
+    
+    else
+        return NO;
+}
+
+#pragma mark-DrawerDelegate
+-(void)revealController:(SWRevealViewController *)revealController drawerStatus:(DRAWERSTATUS)status
+{
+    
+    switch (status) {
+        case OPEN:
+            
+        {
+            self.view.userInteractionEnabled = NO;
+        }
+            break;
+        case CLOSE:
+            
+        {
+            self.view.userInteractionEnabled = YES;;
+        }
+            break;
+            
+        default:
+            break;
+    }
+}
+
+#pragma mark-Did tileClick
+
+-(void)DidTileSelected:(DBNoteItems*)datamodel withTileIndex:(NSInteger)tileIndex
+{
+    
+    NSLog(@"%@",datamodel.note_Title);
+    
+    
+    _selectedIndexPath=tileIndex;
+    
+    if (datamodel)
+    {
+        if ([datamodel.note_lock boolValue]==YES)
+        {
+            
+            //_selectedIndexPath=indexPath.row;
+            [self.masterLockVC setNoteItems:datamodel];
+            [self.masterLockVC setIsCommingFrom:YES];
+            
+            [self presentViewController:self.masterLockVC animated:YES completion:^{
+                
+            }];
+            
+        }
+        else
+        {
+            //_selectedIndexPath=indexPath.row;
+            
+            [self performSegueWithIdentifier:@"noteElement" sender:nil];
+        }
+ 
+    }
     
 }
 

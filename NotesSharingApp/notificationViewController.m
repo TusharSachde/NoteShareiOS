@@ -11,7 +11,7 @@
 #import "NotifyCell.h"
 #import "NSArray+SIAdditions.h"
 
-@interface notificationViewController ()
+@interface notificationViewController ()<SWRevealViewControllerDelegate>
 
 @property(nonatomic,strong)NSArray *notifyArr;
 @property(nonatomic,strong)NSArray *timeArr;
@@ -29,12 +29,7 @@
     [self getLeftBtn];
     self.title=@"NOTIFICATIONS";
     SWRevealViewController *revealViewController = self.revealViewController;
-    if ( revealViewController )
-    {
-        [self.sidebarButton setTarget: self.revealViewController];
-        [self.sidebarButton setAction: @selector( revealToggle: )];
-        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-    }
+    revealViewController.delegate=self;
     
 }
 
@@ -113,6 +108,30 @@
         return 80;
 }
 
+#pragma mark-DrawerDelegate
+-(void)revealController:(SWRevealViewController *)revealController drawerStatus:(DRAWERSTATUS)status
+{
+    
+    switch (status) {
+        case OPEN:
+            
+        {
+            self.view.userInteractionEnabled = NO;
+            
+        }
+            break;
+        case CLOSE:
+            
+        {
+            self.view.userInteractionEnabled = YES;
+            
+        }
+            break;
+            
+        default:
+            break;
+    }
+}
 
 
 @end

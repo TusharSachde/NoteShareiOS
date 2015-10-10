@@ -12,35 +12,39 @@
 //#import "SlidePopUpView.h"
 #import "customAlertBoxViewController.h"
 
-#import "OptionsSlidePopUpView.h"
+#define defaultText @""//Start typing here.......
+
+//#import "OptionsSlidePopUpView.h"
 #import "DBManager.h"
 
 
-typedef enum : NSUInteger {
-    AUDIO,
-    IMAGES,
-    TEXT,
-} NOTETYPE;
-
-
-
-@interface NoteListItem:NSObject
-{
-    
-    
-}
-
-@property(nonatomic,strong) UIImage *noteimage;
-@property(nonatomic,assign)NOTETYPE notetype;
-@property(nonatomic,strong)NSURL *audioPlayPath;
-@property(nonatomic,strong)NSString *imagePath;
-@property(nonatomic,strong)NSString *noteElementID;
-@property(nonatomic,strong)NSString *strAudioPlayPath;
-@property(nonatomic,strong)NSString *strAudioTotalTime;
-@property(nonatomic,strong)NSString *textString;
-@property(nonatomic,assign)BOOL isEdited;
-@property(nonatomic,assign)NSInteger positionIn;
-@end
+//typedef enum : NSUInteger {
+//    AUDIO,
+//    IMAGES,
+//    TEXT,
+//} NOTETYPE;
+//
+//
+//
+//@interface NoteListItem:NSObject
+//{
+//    
+//    
+//}
+//
+//@property(nonatomic,strong) UIImage *noteimage;
+//@property(nonatomic,assign)NOTETYPE notetype;
+//@property(nonatomic,strong)NSURL *audioPlayPath;
+//@property(nonatomic,strong)NSString *imagePath;
+//@property(nonatomic,strong)NSString *noteElementID;
+//@property(nonatomic,strong)NSString *strAudioPlayPath;
+//@property(nonatomic,strong)NSString *strAudioTotalTime;
+//@property(nonatomic,strong)NSString *textString;
+//@property(nonatomic,assign)BOOL isEdited;
+//@property(nonatomic,assign)NSInteger positionIn;
+//@property(nonatomic,strong)NSString *reminderTime;
+//
+//@end
 
 @interface AddProjectViewController : UIViewController<UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UITableViewDataSource,UITableViewDelegate,UIGestureRecognizerDelegate,AVAudioRecorderDelegate, AVAudioPlayerDelegate,UITextViewDelegate,UITextFieldDelegate>
 {
@@ -62,7 +66,7 @@ typedef enum : NSUInteger {
     
 }
 
-@property (strong, nonatomic)  OptionsSlidePopUpView *optionsSlidePopupView;
+//@property (strong, nonatomic)  OptionsSlidePopUpView *optionsSlidePopupView;
 @property (strong, nonatomic)  DBNoteItems *dbnotelistItem;
 
 //buttons
@@ -93,7 +97,7 @@ typedef enum : NSUInteger {
 @property (strong, nonatomic) IBOutlet UIView *defaultView;
 @property (strong, nonatomic) IBOutlet UIView *textIconView;
 @property (strong, nonatomic) IBOutlet UIView *scribbleIconView;
-@property (strong, nonatomic) IBOutlet UIView *audioIconView;
+//@property (strong, nonatomic) IBOutlet UIView *audioIconView;
 
 
 //contentViews
@@ -201,11 +205,7 @@ typedef enum : NSUInteger {
 //text options
 
 @property (strong, nonatomic) IBOutlet UITextView *textField;
-//@property (strong, nonatomic) IBOutlet UILabel *textPreview;
-//-(IBAction)previewBtn:(id)sender;
-//@property (strong,nonatomic)IBOutlet UIButton *previewBtn;
 
-//@property (strong, nonatomic) IBOutlet UIScrollView *scrollTextPreview;
 
 
 //buttons
@@ -218,6 +218,13 @@ typedef enum : NSUInteger {
 
 @property (strong, nonatomic) IBOutlet UITapGestureRecognizer *tapdismiss;
 
-//scrollview
+//title bar note name
+
+@property (strong, nonatomic) IBOutlet UINavigationItem *noteTitle;
+
+@property (strong, nonatomic) IBOutlet UIButton *noteTitleBtn;
+- (IBAction)noteTitleBtn:(id)sender;
+
+
 
 @end

@@ -111,8 +111,16 @@
     UIView *viewContainer=[[UIView alloc]initWithFrame:CGRectMake(0.0,0.0,150,44)];
     
     UIImageView *imageView=[[UIImageView alloc]initWithFrame:CGRectMake(24.0,10.0, 25, 25)];
-    //imageView.backgroundColor=[UIColor greenColor];
+    
+//    UIButton *slideBtn=[[UIButton alloc]initWithFrame:CGRectMake(184.0,10.0, 25, 25)];
+//    [slideBtn setTitle:@"OK" forState:UIControlStateNormal];
+//    [slideBtn addTarget:self action:@selector(slideBtn:) forControlEvents:UIControlEventTouchUpInside];
+  //  [viewContainer addSubview:slideBtn];
+    
+    
+  
     [viewContainer addSubview:imageView];
+    
     
     UILabel *lblHeadrTitle=[[UILabel alloc]initWithFrame:CGRectMake(58.0,12.0, viewContainer.frame.size.width, 20.0)];
     
@@ -122,6 +130,7 @@
     
     //lblHeadrTitle.textAlignment=NSTextAlignmentCenter;
     [imageView setImage:[UIImage imageNamed:_headerdetail.strIconName]];
+    
     imageView .contentMode=UIViewContentModeScaleAspectFit;
     
     
@@ -135,6 +144,11 @@
     viewHeader.backgroundColor=[UIColor redColor];
     
     return viewHeader;
+}
+
+-(IBAction)slideBtn:(id)sender{
+    NSLog(@"button clicked");
+
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{

@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface textCell : UITableViewCell
-@property (strong, nonatomic) IBOutlet UITextView *textView;
+
 @property (strong, nonatomic) IBOutlet UILabel *displayLabel;
+@property (strong, nonatomic) IBOutlet UITextView *textView;
+
 @end
